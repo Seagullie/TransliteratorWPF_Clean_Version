@@ -1,0 +1,64 @@
+﻿<Application
+    x:Class="TransliteratorBackend.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    ShutdownMode="OnMainWindowClose"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemeResources>
+                    <ui:ThemeResources.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <ResourceDictionary.MergedDictionaries>
+                                <ui:ColorPaletteResources TargetTheme="Light" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Dark">
+                            <ResourceDictionary.MergedDictionaries>
+                                <ui:ColorPaletteResources
+                                    Accent="LightSlateGray"
+                                    AltHigh="DimGray"
+                                    AltLow="#FFFF0202"
+                                    AltMedium="#FF7B2F2F"
+                                    AltMediumHigh="#FF3935B1"
+                                    AltMediumLow="#FF3AA445"
+                                    BaseHigh="LightGray"
+                                    BaseLow="LightPink"
+                                    BaseMedium="Red"
+                                    BaseMediumHigh="#FFFFA402"
+                                    ChromeMediumLow="DimGray"
+                                    ListMedium="#FF3D8E21"
+                                    TargetTheme="Dark" />
+
+                                <!--
+                                    Gotta figure out which property is used for dropdown list color
+                                    BaseMediumLow is for disabled elements
+
+                                    ChromeMediumLow is for dropdown backgrounds
+                                    AltLow/ListLow/BaseMedium is for context's highlighted item color
+                                -->
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </ui:ThemeResources.ThemeDictionaries>
+                </ui:ThemeResources>
+                <ui:XamlControlsResources />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="DiscordWindowStyle" TargetType="{x:Type Window}">
+                <Setter Property="AllowsTransparency" Value="True" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="WindowStyle" Value="None" />
+            </Style>
+
+            <Style x:Key="StandardWindowStyle" TargetType="{x:Type Window}">
+
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="WindowStyle" Value="None" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,342 @@
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+
+using System.Threading;
+using WindowsInput;
+using WindowsInput.Native;
+using Transliterator;
+using System.Media;
+using RichTextBox = System.Windows.Controls.RichTextBox;
+using MouseButton = System.Windows.Input.MouseButton;
+using ModernWpf;
+using Application = System.Windows.Application;
+using Label = System.Windows.Controls.Label;
+using Binding = System.Windows.Data.Binding;
+using ComboBox = System.Windows.Controls.ComboBox;
+using TransliteratorBackend;
+using TransliteratorWPF_Version.Properties;
+
+namespace TranslitBaseWindow
+{
+    public partial class DebugWindow : Window
+    {
+        private SoundPlayer soundCont = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.cont);
+
+        private SoundPlayer soundPause = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.pause);
+        public bool logsEnabled = true;
+
+        public TransliteratorBackend.App app = ((TransliteratorBackend.App)Application.Current);
+
+        public DebugWindow()
+        {
+            InitializeComponent();
+
+        }
+
+        public static void Send(Key key)
+        {
+            if (Keyboard.PrimaryDevice != null)
+            {
+                if (Keyboard.PrimaryDevice.ActiveSource != null)
+                {
+                    var e = new System.Windows.Input.KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, key)
+                    {
+                        RoutedEvent = Keyboard.KeyDownEvent
+                    };
+                    InputManager.Current.ProcessInput(e);
+
+                }
+            }
+        }
+
+        public static void SimulateKeyPressThroughInputSimulator(VirtualKeyCode keyCode)
+        {
+            var inputSimulator = new InputSimulator();
+            inputSimulator.Keyboard.KeyDown(keyCode);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Thread.Sleep(3000);
+            WinAPI.WriteStringThroughSendInput("test");
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+        }
+
+        public void initializeTablesComboBox(bool reinitialze = false)
+        {
+            int selectedIndexBeforeReinitialization = translitTablesBox.SelectedIndex;
+
+            if (reinitialze)
+            {
+                translitTablesBox.Items.Clear();
+            }
+
+            string[] tables = getAllTranslitTableNames();
+
+            foreach (string table in tables)
+            {
+                translitTablesBox.Items.Add(table);
+            }
+
+            translitTablesBox.SelectedIndex = selectedIndexBeforeReinitialization >= (translitTablesBox.Items.Count - 1) ? translitTablesBox.Items.Count - 1 : selectedIndexBeforeReinitialization;
+        }
+
+        public string[] getAllTranslitTableNames()
+        {
+            string[] tables = GlobalUtilities.getAllFilesInFolder(@"Resources/translitTables");
+
+            return tables;
+        }
+
+        public void ConsoleLog(string text, string? color = null)    
+        {
+            if (!logsEnabled)
+            {
+                return;
+            }
+
+            text = text + "\n";
+
+            if (color != null)
+            {
+                AppendColoredText(outputTextBox, text, color.ToString());
+            }
+            else
+            {
+                outputTextBox.AppendText(text);
+            }
+
+            outputTextBox.ScrollToEnd();
+        }
+
+        public void AppendColoredText(RichTextBox box, string text, string color)
+        {
+            BrushConverter bc = new BrushConverter();
+            TextRange tr = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd);
+            tr.Text = text;
+            try
+            {
+                tr.ApplyPropertyValue(TextElement.ForegroundProperty,
+                    bc.ConvertFromString(color));
+            }
+            catch (FormatException) { }
+        }
+
+        public void toggleTranslit_Click()
+        {
+            app.liveTranslit.keyLogger.Toggle();
+            string stateDesc = (app.liveTranslit.keyLogger.state == 1 ? "On" : "Off");
+
+            if ((TransliteratorWPF_Version.Properties.Settings.Default.playSoundOnTranslitToggle))
+            {
+                SoundPlayer soundToPlay = app.liveTranslit.keyLogger.state == 1 ? soundCont : soundPause;
+                soundToPlay.Play();
+            }
+
+            ConsoleLog($"Translit {stateDesc}");
+            stateLabel.Content = stateDesc;
+            if (app.liveTranslit.keyLogger.state == 1)
+            {
+                stateLabel.Foreground = new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                stateLabel.Foreground = new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        private void toggleTranslitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            toggleTranslit_Click();
+        }
+
+        private void underTestByWinDriverCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void translitTablesBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void translitTablesBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (translitTablesBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            string selectedTable = translitTablesBox.SelectedItem.ToString();
+            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{selectedTable}");
+        }
+
+        private void testTextBox1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+        }
+
+        private void settingsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settings = new SettingsWindow();
+            settings.Show();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var stateBindingObject = new Binding("stateDesc")
+            {
+                Mode = BindingMode.OneWay,
+                Source = app.liveTranslit.keyLogger
+            };
+
+            BindingOperations.SetBinding(stateLabel, Label.ContentProperty, stateBindingObject);
+
+            var stateColorBindingObject = new Binding("stateDesc")
+            {
+                Mode = BindingMode.OneWay,
+                Source = app.liveTranslit.keyLogger
+            };
+
+            IValueConverter converterFunc = new StateToColorConverter();
+            stateColorBindingObject.Converter = converterFunc;
+
+            BindingOperations.SetBinding(stateLabel, Label.ForegroundProperty, stateColorBindingObject);
+
+            var tablesComboBoxItemsBindingObject = new Binding("translitTables")
+            {
+                Mode = BindingMode.OneWay,
+                Source = app.liveTranslit.ukrTranslit
+            };
+
+            BindingOperations.SetBinding(translitTablesBox, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
+
+            var tablesComboBoxSelectedIndex = new Binding("selectedTranslitTableIndex")
+            {
+                Mode = BindingMode.TwoWay,
+                Source = app.liveTranslit.ukrTranslit
+            };
+
+            BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
+
+            ConsoleLog("Up And Running");
+            ConsoleLog($"BaseDir is: {TransliteratorBackend.App.BaseDir}");
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Settings.Default.Save();
+        }
+
+        private void outputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+        }
+
+        private void allowInjectedKeysButton_Click(object sender, RoutedEventArgs e)
+        {
+            app.liveTranslit.keyLogger.gkh.alwaysAllowInjected = true;
+        }
+
+        private void toggleLogsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            logsEnabled = !logsEnabled;
+        }
+
+        private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(app.liveTranslit.ukrTranslit.replacement_map, Newtonsoft.Json.Formatting.Indented);
+            ConsoleLog("\n" + serializedTable);
+        }
+
+        private void checkCaseButtonsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            bool isCAPSLOCKon = app.liveTranslit.keyLogger.keyStateChecker.isCAPSLOCKon();
+            bool isShiftPressedDown = app.liveTranslit.keyLogger.keyStateChecker.isShiftPressedDown();
+
+            ConsoleLog($"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
+        }
+
+        private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
+        {
+            textBox1.Focus();
+            await app.liveTranslit.WriteInjected("simulated");
+        }
+
+        private void getKeyLoggerMemoryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string memory = app.liveTranslit.keyLogger.GetMemoryAsString();
+            ConsoleLog($"Key Logger memory: [{memory}]");
+        }
+
+        private void allowInjectedKeysBtn_Click(object sender, RoutedEventArgs e)
+        {
+            app.liveTranslit.keyLogger.gkh.alwaysAllowInjected = true;
+        }
+
+        private void slowDownKBEInjectionsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            app.liveTranslit.slowDownKBEInjections = 2000;
+        }
+
+        private void getLayoutBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string layout = GlobalUtilities.GetCurrentKbLayout();
+            ConsoleLog(layout);
+        }
+
+        private void closeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void minimizeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void MainWindow1_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        private void MainWindow1_StateChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void MainWindow1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
+
+        private void changeThemeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+            }
+            else
+            {
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+            }
+        }
+
+        private void MainWindow1_Activated(object sender, EventArgs e)
+        {
+            void action() => this.InvalidateMeasure();
+            this.Dispatcher.BeginInvoke((Action)action);
+
+        }
+
+        private void launchMainWindowBtn_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
+    }
+}
