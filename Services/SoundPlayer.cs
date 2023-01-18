@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Services
 {
     public class Sound
     {

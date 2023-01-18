@@ -7,12 +7,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
+using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Services
 {
     public sealed class KeyLogger : INotifyPropertyChanged
     {
@@ -20,7 +21,7 @@ namespace TransliteratorWPF_Version
 
         private string lang = "EN";
 
-        private App app = ((App)Application.Current);
+        private App app = (App)Application.Current;
 
         public string alphabet;
 
@@ -51,7 +52,7 @@ namespace TransliteratorWPF_Version
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -60,15 +61,15 @@ namespace TransliteratorWPF_Version
         {
             get
             {
-                return (MainWindow)System.Windows.Application.Current.MainWindow;
+                return (MainWindow)Application.Current.MainWindow;
             }
         }
 
-        public DebugWindow? debugWindow
+        public DebugWindow debugWindow
         {
             get
             {
-                WindowCollection windows = System.Windows.Application.Current.Windows;
+                WindowCollection windows = Application.Current.Windows;
                 foreach (Window window in windows)
                 {
                     if (window.Name == "DebugWindow1")
@@ -81,7 +82,7 @@ namespace TransliteratorWPF_Version
         }
 
         private KeyEventHandler gkh_KeyDownHandler;
-        
+
 
         public List<string> memory = new List<string>();
 
@@ -89,7 +90,7 @@ namespace TransliteratorWPF_Version
 
         public List<string> keysToIgnore = new List<string> { };
 
-        public globalKeyboardHook gkh;
+        public GlobalKeyboardHook gkh;
 
         public HashSet<string> _ToggleTranslitShortcut = new HashSet<string>();
 
@@ -116,7 +117,7 @@ namespace TransliteratorWPF_Version
 
         private KeyLogger()
         {
-            gkh = new globalKeyboardHook();
+            gkh = new GlobalKeyboardHook();
 
             fetchToggleTranslitShortcutFromSettings();
             gkh_KeyDownHandler = new KeyEventHandler(gkh_KeyDown);
@@ -135,7 +136,7 @@ namespace TransliteratorWPF_Version
 
         public void fetchToggleTranslitShortcutFromSettings()
         {
-            string SettingsString = TransliteratorWPF_Version.Properties.Settings.Default.toggleTranslitShortcut;
+            string SettingsString = Settings.Default.toggleTranslitShortcut;
             string[] SettingStringAsArray;
             if (SettingsString.Contains("+"))
             {
@@ -152,7 +153,7 @@ namespace TransliteratorWPF_Version
 
         public string GetMemoryAsString()
         {
-            return string.Join("", this.memory);
+            return string.Join("", memory);
         }
 
         public void LogKeys()
@@ -178,11 +179,11 @@ namespace TransliteratorWPF_Version
             gkh.HookedKeys.Add(Keys.OemQuestion);
             gkh.HookedKeys.Add(Keys.Oemcomma);
             gkh.HookedKeys.Add(Keys.OemPeriod);
-            gkh.HookedKeys.Add(Keys.OemCloseBrackets);     
-            gkh.HookedKeys.Add(Keys.OemOpenBrackets);  
-            gkh.HookedKeys.Add(Keys.OemQuotes);          
+            gkh.HookedKeys.Add(Keys.OemCloseBrackets);
+            gkh.HookedKeys.Add(Keys.OemOpenBrackets);
+            gkh.HookedKeys.Add(Keys.OemQuotes);
             gkh.HookedKeys.Add(Keys.OemMinus);
-            gkh.KeyDown += gkh_KeyDownHandler;       
+            gkh.KeyDown += gkh_KeyDownHandler;
         }
 
         public string KeyCodeToUnicode(Keys key)
@@ -200,7 +201,7 @@ namespace TransliteratorWPF_Version
             IntPtr inputLocaleIdentifier = GetKeyboardLayout(0);
 
             StringBuilder result = new StringBuilder();
-            ToUnicodeEx(virtualKeyCode, scanCode, keyboardState, result, (int)5, (uint)0, inputLocaleIdentifier);
+            ToUnicodeEx(virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
 
             return result.ToString();
         }
@@ -251,7 +252,7 @@ namespace TransliteratorWPF_Version
 
             registeredKeyStrokesAsHash.Add(key);
 
-            if (registeredKeyStrokesAsHash.SetEquals(ToggleTranslitShortcut))   
+            if (registeredKeyStrokesAsHash.SetEquals(ToggleTranslitShortcut))
             {
                 mainWindow.toggleTranslit_Click();
                 e.Handled = true;
@@ -318,7 +319,7 @@ namespace TransliteratorWPF_Version
             if (memory.Count > 20) memory.Clear();
 
             bool isLowerCase = keyStateChecker.isLowerCase();
-            string caseSensitiveCharacter = isLowerCase ? UnicodeChar.ToLower() : UnicodeChar.ToUpper();       
+            string caseSensitiveCharacter = isLowerCase ? UnicodeChar.ToLower() : UnicodeChar.ToUpper();
             debugWindow?.ConsoleLog($"Keycode: {caseSensitiveCharacter}. KeyData: {e.KeyData} DOWN.");
 
             if (isWordender(lowerCaseKeyCode, UnicodeChar))
@@ -390,7 +391,7 @@ namespace TransliteratorWPF_Version
                 {
                     e.Handled = false;
                 }
-                else if (translit.isCombo(upcomingText))   
+                else if (translit.isCombo(upcomingText))
                 {
                     e.Handled = true;
                     debugWindow?.ConsoleLog($"{caseSensitiveCharacter} – is full combo finisher");

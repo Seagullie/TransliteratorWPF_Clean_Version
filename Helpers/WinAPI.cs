@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using static TransliteratorWPF_Version.WindowsVirtualKey;
+using static TransliteratorWPF_Version.Helpers.WindowsVirtualKey;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Helpers
 {
-    internal class WinAPI
+    public class WinAPI
     {
         [StructLayout(LayoutKind.Sequential)]
         public struct KeyboardInput
@@ -100,7 +100,7 @@ namespace TransliteratorWPF_Version
 
         public static INPUT CreateKeyInput(KeyCode keyCode, int state = 0) // 0x0002 for up, 0 for down
         {
-            WinAPI.INPUT keyPress = new WinAPI.INPUT();
+            INPUT keyPress = new INPUT();
             keyPress.type = 1; //Keyboard
             keyPress.union.keyboardInput.wVk = (ushort)keyCode;
             keyPress.union.keyboardInput.dwFlags = (uint)state;
@@ -163,7 +163,7 @@ namespace TransliteratorWPF_Version
                         {
                             bool isAscii = c <= sbyte.MaxValue;
                             if (isAscii) // warning danger. kz table doesn't work so I'm temporarily diabling this branch
-                                // as of now it is reEnabled
+                                         // as of now it is reEnabled
                             {
                                 char cAsChar = (char)c;
                                 Keys cAsWinFormKey = ConvertCharToVirtualKey(cAsChar);
@@ -186,7 +186,7 @@ namespace TransliteratorWPF_Version
                         break;
                 }
             }
-            WinAPI.SendInput((uint)keyList.Count, keyList.ToArray(), Marshal.SizeOf(typeof(WinAPI.INPUT)));
+            SendInput((uint)keyList.Count, keyList.ToArray(), Marshal.SizeOf(typeof(INPUT)));
         }
 
         public static Keys ConvertCharToVirtualKey(char ch)
@@ -202,7 +202,7 @@ namespace TransliteratorWPF_Version
             return retval;
         }
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [DllImport("user32.dll")]
         private static extern short VkKeyScan(char ch);
     }
 }

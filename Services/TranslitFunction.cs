@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
+using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
@@ -15,7 +16,7 @@ using Application = System.Windows.Application;
 // And, apparently, the json files that I include as resources are embedded into exe?
 // Or into some other file. Or perhaps I'm not building it right?
 // Perhaps you setup everything with an installer? https://stackoverflow.com/questions/2251062/how-to-make-an-installer-for-my-c-sharp-application
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Services
 {
     public class TranslitFunction
     {
@@ -42,7 +43,7 @@ namespace TransliteratorWPF_Version
             get
             {
                 //ref var currentApp = ref Application.Current;
-                return ((App)Application.Current);
+                return (App)Application.Current;
             }
         }
 
@@ -89,7 +90,7 @@ namespace TransliteratorWPF_Version
                 // the new table is deleted
                 // main table should update to the last available table
 
-                if ((translitTables != null) && value.Count < _translitTables.Count)
+                if (translitTables != null && value.Count < _translitTables.Count)
                 {
                     selectedTranslitTableIndex = _translitTables.Count - 1;
                 }
@@ -102,7 +103,7 @@ namespace TransliteratorWPF_Version
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -156,11 +157,11 @@ namespace TransliteratorWPF_Version
             SetReplacementMapFromJson(translitTables[selectedTranslitTableIndex]);
         }
 
-        public DebugWindow? debugWindow
+        public DebugWindow debugWindow
         {
             get
             {
-                WindowCollection windows = System.Windows.Application.Current.Windows;
+                WindowCollection windows = Application.Current.Windows;
                 foreach (Window window in windows)
                 {
                     // warning: hardcoded
@@ -226,9 +227,9 @@ namespace TransliteratorWPF_Version
         {
             this.replacement_map = replacement_map;
 
-            this.keys = SortReplacementMapKeys(new Dictionary<string, string>(replacement_map));
+            keys = SortReplacementMapKeys(new Dictionary<string, string>(replacement_map));
 
-            this.combos = getReplacementMapCombos(this.replacement_map);
+            combos = getReplacementMapCombos(this.replacement_map);
 
             // generating alphabet:
 
@@ -238,12 +239,12 @@ namespace TransliteratorWPF_Version
                 {
                     foreach (char subkey in key)
                     {
-                        this.alphabet.Add(subkey.ToString());
+                        alphabet.Add(subkey.ToString());
                     }
                 }
                 else
                 {
-                    this.alphabet.Add(key);
+                    alphabet.Add(key);
                 }
             }
 
@@ -303,7 +304,7 @@ namespace TransliteratorWPF_Version
             }
             finally
             {
-                this.replacement_map_filename = pathToJsonFile;
+                replacement_map_filename = pathToJsonFile;
             }
         }
 
@@ -367,9 +368,9 @@ namespace TransliteratorWPF_Version
 
                 // how do I check whether a string is in lowercase... Is there a method for that?
                 if (val.All(char.IsLower)) return replacement.ToLower();
-                if (Char.IsUpper(val[0])) return replacement.ToUpper(); // now what if the replacement consists of several letters?
+                if (char.IsUpper(val[0])) return replacement.ToUpper(); // now what if the replacement consists of several letters?
                 // if last character is uppercase, replacement should be uppercase as well
-                if (Char.IsUpper(val[val.Length - 1])) return replacement.ToUpper();
+                if (char.IsUpper(val[val.Length - 1])) return replacement.ToUpper();
                 // not sure if C# has a method for converting to titlecase
                 if (val.All(char.IsUpper)) return replacement.ToUpper();
 
@@ -486,9 +487,9 @@ namespace TransliteratorWPF_Version
             {
                 return false;
             }
-            int longestComboLen = (textWithoutLastCharacter.Length < combos[0].Length) ? textWithoutLastCharacter.Length : combos[0].Length;
+            int longestComboLen = textWithoutLastCharacter.Length < combos[0].Length ? textWithoutLastCharacter.Length : combos[0].Length;
 
-            for (int i = 1; i < (longestComboLen + 1); i++)
+            for (int i = 1; i < longestComboLen + 1; i++)
             {
                 // now check all the substrings on whether those are combo inits or not by slicing more and more each time
                 string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);

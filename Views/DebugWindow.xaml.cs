@@ -134,7 +134,7 @@ namespace TransliteratorWPF_Version.Views
             app.liveTranslit.keyLogger.Toggle();
             string stateDesc = (app.liveTranslit.keyLogger.State == true ? "On" : "Off");
 
-            if ((TransliteratorWPF_Version.Properties.Settings.Default.playSoundOnTranslitToggle))
+            if ((Settings.Default.playSoundOnTranslitToggle))
             {
                 SoundPlayer soundToPlay = app.liveTranslit.keyLogger.State == true ? soundCont : soundPause;
                 soundToPlay.Play();

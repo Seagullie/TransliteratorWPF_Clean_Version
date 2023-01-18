@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 using Key = System.Windows.Input.Key;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Helpers
 {
     public class KeyStateChecker
     {
@@ -31,7 +26,7 @@ namespace TransliteratorWPF_Version
 
         public bool isLowerCase()
         {
-            return (!isShiftPressedDown() && !isCAPSLOCKon());
+            return !isShiftPressedDown() && !isCAPSLOCKon();
         }
 
         public bool isKeyDown(Key key)

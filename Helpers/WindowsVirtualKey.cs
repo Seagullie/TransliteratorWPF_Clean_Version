@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TransliteratorWPF_Version
+﻿namespace TransliteratorWPF_Version.Helpers
 {
-    internal class WindowsVirtualKey
+    public class WindowsVirtualKey
     {
         // taken from here, apparently: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
         public enum KeyCode : ushort

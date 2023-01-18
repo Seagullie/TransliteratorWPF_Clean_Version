@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 
 using System.Windows.Forms;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Services
 {
     /// <summary>
     /// A class that manages a global low level keyboard hook
     /// </summary>
-    public class globalKeyboardHook
+    public class GlobalKeyboardHook
     {
         #region Constant, Structure and Delegate Definitions
 
@@ -70,9 +70,9 @@ namespace TransliteratorWPF_Version
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="globalKeyboardHook"/> class and installs the keyboard hook.
+        /// Initializes a new instance of the <see cref="GlobalKeyboardHook"/> class and installs the keyboard hook.
         /// </summary>
-        public globalKeyboardHook()
+        public GlobalKeyboardHook()
         {
             hookProcDelegate = hookProc;
 
@@ -81,9 +81,9 @@ namespace TransliteratorWPF_Version
 
         /// <summary>
         /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="globalKeyboardHook"/> is reclaimed by garbage collection and uninstalls the keyboard hook.
+        /// <see cref="GlobalKeyboardHook"/> is reclaimed by garbage collection and uninstalls the keyboard hook.
         /// </summary>
-        ~globalKeyboardHook()
+        ~GlobalKeyboardHook()
         {
             unhook();
         }
@@ -165,11 +165,11 @@ namespace TransliteratorWPF_Version
                 if (true || HookedKeys.Contains(key)) // warning: pointless condition
                 {
                     KeyEventArgs kea = new KeyEventArgs(key);
-                    if ((wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) && (KeyDown != null))
+                    if ((wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) && KeyDown != null)
                     {
                         KeyDown(this, kea);
                     }
-                    else if ((wParam == WM_KEYUP || wParam == WM_SYSKEYUP) && (KeyUp != null))
+                    else if ((wParam == WM_KEYUP || wParam == WM_SYSKEYUP) && KeyUp != null)
                     {
                         KeyUp(this, kea);
                     }

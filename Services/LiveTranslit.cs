@@ -1,30 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Services
 {
     public sealed class LiveTransliterator
-
     {
         public int state = 1;
         public Transliterator ukrTranslit = new Transliterator();
         public KeyLogger keyLogger;
         public int slowDownKBEInjections = 0;
 
-        public DebugWindow? debugWindow
+        public DebugWindow debugWindow
         {
             get
             {
@@ -41,7 +35,7 @@ namespace TransliteratorWPF_Version
             }
         }
 
-        public bool displayCombos = TransliteratorWPF_Version.Properties.Settings.Default.displayCombos;
+        public bool displayCombos = Settings.Default.displayCombos;
 
         public bool useAlternativeWrite = false;
 
@@ -96,8 +90,8 @@ namespace TransliteratorWPF_Version
 
             public int getint()
             {
-                return repeatCount | (scanCode << 16) | (extendedKey << 24) |
-                    (prevKeyState << 30) | (transitionState << 31);
+                return repeatCount | scanCode << 16 | extendedKey << 24 |
+                    prevKeyState << 30 | transitionState << 31;
             }
         };
 
@@ -106,7 +100,7 @@ namespace TransliteratorWPF_Version
 
         public void WriteThroughPostMessage(string text)
         {
-            uint vkCode = (byte)(VkKeyScan('q'));
+            uint vkCode = (byte)VkKeyScan('q');
 
             IntPtr hwnd = GetForegroundWindow();
             debugWindow?.ConsoleLog(hwnd.ToString());
@@ -217,7 +211,7 @@ namespace TransliteratorWPF_Version
 
             var memory_text = keyLogger.GetMemoryAsString().ToLower();
 
-            bool MemoryIsNonComboText = (!ukrTranslit.IsStartOfCombination(memory_text)) && !ukrTranslit.EndsWithComboInit(memory_text);
+            bool MemoryIsNonComboText = !ukrTranslit.IsStartOfCombination(memory_text) && !ukrTranslit.EndsWithComboInit(memory_text);
 
             if (!breakCombo)
             {
