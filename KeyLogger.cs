@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
-
-using Transliterator;
-using TranslitBaseWindow;
-using Utilities;
+using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
-using TransliteratorBackend;
-using App = TransliteratorBackend.App;
-using TransliteratorWPF_Version.Properties;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     public sealed class KeyLogger : INotifyPropertyChanged
     {
@@ -386,7 +380,7 @@ namespace TransliteratorBackend
 
         public bool decideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
-            ref TransliteratorBackend.Transliterator translit = ref liveTranslit.ukrTranslit;
+            ref Transliterator translit = ref liveTranslit.ukrTranslit;
 
             if (translit.IsPartOfCombination(caseSensitiveCharacter))
             {

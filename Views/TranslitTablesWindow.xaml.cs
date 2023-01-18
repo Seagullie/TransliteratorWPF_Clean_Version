@@ -1,29 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using TransliteratorBackend;
 using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using MessageBox = System.Windows.MessageBox;
-using Panel = System.Windows.Controls.Panel;
 using Path = System.IO.Path;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace TranslitBaseWindow
+namespace TransliteratorWPF_Version.Views
 {
     /// <summary>
     /// Interaction logic for TranslitTablesWindow.xaml

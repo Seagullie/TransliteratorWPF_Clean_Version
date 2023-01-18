@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using System.Windows.Media;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     public class Sound
     {

@@ -1,27 +1,25 @@
-﻿using System;
+﻿using ModernWpf;
+using System;
+using System.Media;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Threading;
+using TransliteratorWPF_Version.Helpers;
+using TransliteratorWPF_Version.Properties;
 using WindowsInput;
 using WindowsInput.Native;
-using Transliterator;
-using System.Media;
-using RichTextBox = System.Windows.Controls.RichTextBox;
-using MouseButton = System.Windows.Input.MouseButton;
-using ModernWpf;
 using Application = System.Windows.Application;
-using Label = System.Windows.Controls.Label;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
-using TransliteratorBackend;
-using TransliteratorWPF_Version.Properties;
-using TransliteratorWPF_Version.Helpers;
+using Label = System.Windows.Controls.Label;
+using MouseButton = System.Windows.Input.MouseButton;
+using RichTextBox = System.Windows.Controls.RichTextBox;
 
-namespace TranslitBaseWindow
+namespace TransliteratorWPF_Version.Views
 {
     public partial class DebugWindow : Window
     {
@@ -30,7 +28,7 @@ namespace TranslitBaseWindow
         private SoundPlayer soundPause = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.pause);
         public bool logsEnabled = true;
 
-        public TransliteratorBackend.App app = ((TransliteratorBackend.App)Application.Current);
+        public App app = ((App)Application.Current);
 
         public DebugWindow()
         {
@@ -226,7 +224,7 @@ namespace TranslitBaseWindow
             BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
 
             ConsoleLog("Up And Running");
-            ConsoleLog($"BaseDir is: {TransliteratorBackend.App.BaseDir}");
+            ConsoleLog($"BaseDir is: {App.BaseDir}");
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

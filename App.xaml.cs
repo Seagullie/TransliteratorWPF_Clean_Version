@@ -2,10 +2,9 @@
 using System.IO;
 using System.Security.Principal;
 using System.Windows;
-using Transliterator;
 using TransliteratorWPF_Version.Properties;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     public partial class App : Application
     {

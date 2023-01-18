@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 using System.Windows.Forms;
 
-namespace Utilities
+namespace TransliteratorWPF_Version
 {
     /// <summary>
     /// A class that manages a global low level keyboard hook

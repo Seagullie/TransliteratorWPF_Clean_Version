@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TransliteratorWPF_Version.Properties;
 using Path = System.IO.Path;
 
-namespace TranslitBaseWindow
+namespace TransliteratorWPF_Version.Views
 {
     /// <summary>
     /// Interaction logic for EditToggleSoundsWindow.xaml

@@ -4,12 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using TransliteratorBackend;
-using TransliteratorWPF_Version;
 using TransliteratorWPF_Version.Properties;
 using Application = System.Windows.Application;
 
-namespace TranslitBaseWindow
+namespace TransliteratorWPF_Version.Views
 {
     public partial class SettingsWindow : Window
     {

@@ -6,25 +6,20 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using TransliteratorBackend;
-using TransliteratorWPF_Version;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
-using App = TransliteratorBackend.App;
 using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Label = System.Windows.Controls.Label;
-using Properties = TransliteratorWPF_Version.Properties;
 
-namespace TranslitBaseWindow
+namespace TransliteratorWPF_Version.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        //private App app = ((App)Application.Current);
         private SoundPlayer soundCont = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.cont);
 
         private SoundPlayer soundPause = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.pause);

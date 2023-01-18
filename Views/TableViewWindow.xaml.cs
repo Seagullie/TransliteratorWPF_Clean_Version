@@ -3,19 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using TranslitBaseWindow;
-using TransliteratorBackend;
-using App = TransliteratorBackend.App;
 using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -23,7 +15,7 @@ using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace TransliteratorWPF_Version
+namespace TransliteratorWPF_Version.Views
 {
     public partial class TableViewWindow : Window
     {

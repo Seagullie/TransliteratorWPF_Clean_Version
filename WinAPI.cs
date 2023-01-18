@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
-using static TransliteratorBackend.WindowsVirtualKey;
+using static TransliteratorWPF_Version.WindowsVirtualKey;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     internal class WinAPI
     {

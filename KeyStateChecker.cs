@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 using Key = System.Windows.Input.Key;
 
-namespace Transliterator
+namespace TransliteratorWPF_Version
 {
     public class KeyStateChecker
     {

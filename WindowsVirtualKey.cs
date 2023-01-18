@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     internal class WindowsVirtualKey
     {

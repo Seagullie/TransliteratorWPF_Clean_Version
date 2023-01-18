@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Forms;
-using Transliterator;
-using TranslitBaseWindow;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 
 // I want to write the tables as json files and then import those files here.
@@ -19,7 +15,7 @@ using Application = System.Windows.Application;
 // And, apparently, the json files that I include as resources are embedded into exe?
 // Or into some other file. Or perhaps I'm not building it right?
 // Perhaps you setup everything with an installer? https://stackoverflow.com/questions/2251062/how-to-make-an-installer-for-my-c-sharp-application
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     public class TranslitFunction
     {
