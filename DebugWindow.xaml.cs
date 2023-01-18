@@ -5,7 +5,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-
 using System.Threading;
 using WindowsInput;
 using WindowsInput.Native;
@@ -20,6 +19,7 @@ using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using TransliteratorBackend;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Helpers;
 
 namespace TranslitBaseWindow
 {
@@ -134,23 +134,23 @@ namespace TranslitBaseWindow
         public void toggleTranslit_Click()
         {
             app.liveTranslit.keyLogger.Toggle();
-            string stateDesc = (app.liveTranslit.keyLogger.state == 1 ? "On" : "Off");
+            string stateDesc = (app.liveTranslit.keyLogger.State == true ? "On" : "Off");
 
             if ((TransliteratorWPF_Version.Properties.Settings.Default.playSoundOnTranslitToggle))
             {
-                SoundPlayer soundToPlay = app.liveTranslit.keyLogger.state == 1 ? soundCont : soundPause;
+                SoundPlayer soundToPlay = app.liveTranslit.keyLogger.State == true ? soundCont : soundPause;
                 soundToPlay.Play();
             }
 
             ConsoleLog($"Translit {stateDesc}");
-            stateLabel.Content = stateDesc;
-            if (app.liveTranslit.keyLogger.state == 1)
+            StateLabel.Content = stateDesc;
+            if (app.liveTranslit.keyLogger.State == true)
             {
-                stateLabel.Foreground = new SolidColorBrush(Colors.Green);
+                StateLabel.Foreground = new SolidColorBrush(Colors.Green);
             }
             else
             {
-                stateLabel.Foreground = new SolidColorBrush(Colors.Red);
+                StateLabel.Foreground = new SolidColorBrush(Colors.Red);
             }
         }
 
@@ -196,7 +196,7 @@ namespace TranslitBaseWindow
                 Source = app.liveTranslit.keyLogger
             };
 
-            BindingOperations.SetBinding(stateLabel, Label.ContentProperty, stateBindingObject);
+            BindingOperations.SetBinding(StateLabel, Label.ContentProperty, stateBindingObject);
 
             var stateColorBindingObject = new Binding("stateDesc")
             {
@@ -207,7 +207,7 @@ namespace TranslitBaseWindow
             IValueConverter converterFunc = new StateToColorConverter();
             stateColorBindingObject.Converter = converterFunc;
 
-            BindingOperations.SetBinding(stateLabel, Label.ForegroundProperty, stateColorBindingObject);
+            BindingOperations.SetBinding(StateLabel, Label.ForegroundProperty, stateColorBindingObject);
 
             var tablesComboBoxItemsBindingObject = new Binding("translitTables")
             {

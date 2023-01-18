@@ -1,24 +1,13 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Transliterator;
-using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 using TransliteratorBackend;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version;
+using TransliteratorWPF_Version.Properties;
+using Application = System.Windows.Application;
 
 namespace TranslitBaseWindow
 {
@@ -149,7 +138,7 @@ namespace TranslitBaseWindow
             app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{accentsTable}");
 
             // gotta make sure transliterator is enabled. Should reference .keyLogger.state, not liveTranslit.state
-            if (app.liveTranslit.keyLogger.state == 0)
+            if (app.liveTranslit.keyLogger.State == false)
             {
                 mainWindow.toggleTranslit_Click();
             }

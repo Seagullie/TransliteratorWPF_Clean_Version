@@ -1,15 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
 using Transliterator;
 using TransliteratorWPF_Version.Properties;
 

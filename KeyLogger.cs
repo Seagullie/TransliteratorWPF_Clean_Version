@@ -22,6 +22,8 @@ namespace TransliteratorBackend
 {
     public sealed class KeyLogger : INotifyPropertyChanged
     {
+        public bool State { get; set; } = true;
+
         private string lang = "EN";
 
         private App app = ((App)Application.Current);
@@ -85,7 +87,7 @@ namespace TransliteratorBackend
         }
 
         private KeyEventHandler gkh_KeyDownHandler;
-        public int state = 1;
+        
 
         public List<string> memory = new List<string>();
 
@@ -277,7 +279,7 @@ namespace TransliteratorBackend
 
             if (HandleShortcuts(e)) return;
 
-            if (state != 1)
+            if (State == false)
             {
                 debugWindow?.ConsoleLog("Translit off. Key skipped");
                 return;
@@ -490,7 +492,7 @@ namespace TransliteratorBackend
 
         public void Pause()
         {
-            state = 0;
+            State = false;
             stateDesc = "Off";
 
             memory.Clear();
@@ -498,13 +500,13 @@ namespace TransliteratorBackend
 
         public void Cont()
         {
-            state = 1;
+            State = true;
             stateDesc = "On";
         }
 
         public void Toggle()
         {
-            if (state == 1)
+            if (State == true)
             {
                 Pause();
             }

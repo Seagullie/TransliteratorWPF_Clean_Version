@@ -1,32 +1,21 @@
 ﻿using ModernWpf;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Media;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Transliterator;
+using TransliteratorBackend;
 using TransliteratorWPF_Version;
-using System.Windows.Forms;
-using Label = System.Windows.Controls.Label;
+using TransliteratorWPF_Version.Helpers;
+using TransliteratorWPF_Version.Properties;
+using App = TransliteratorBackend.App;
+using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
-using Application = System.Windows.Application;
-using App = TransliteratorBackend.App;
-using TransliteratorBackend;
+using Label = System.Windows.Controls.Label;
 using Properties = TransliteratorWPF_Version.Properties;
-
-using TransliteratorWPF_Version.Properties;
-
-//using Properties = TransliteratorWPF_Version.Properties;
 
 namespace TranslitBaseWindow
 {
@@ -180,10 +169,9 @@ namespace TranslitBaseWindow
             {
                 // Configure the binding
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.keyLogger
+                Source = app.liveTranslit.keyLogger,
+                Converter = new ShortuctHashSetToStringConverter()
             };
-
-            shortcutDescBindingObject.Converter = new ShortuctHashSetToHashString();
 
             BindingOperations.SetBinding(translitToggleShortcutLabel, Label.ContentProperty, shortcutDescBindingObject);
 
@@ -228,7 +216,7 @@ namespace TranslitBaseWindow
         public void toggleTranslit_Click()
         {
             app.liveTranslit.keyLogger.Toggle();
-            string stateDesc = (app.liveTranslit.keyLogger.state == 1 ? "On" : "Off");
+            string stateDesc = (app.liveTranslit.keyLogger.State == true ? "On" : "Off");
 
             if (Settings.Default.playSoundOnTranslitToggle)
             {
@@ -236,7 +224,7 @@ namespace TranslitBaseWindow
 
                 string pathToSoundToPlay;
 
-                if (app.liveTranslit.keyLogger.state == 1)
+                if (app.liveTranslit.keyLogger.State == true)
                 {
                     if (Settings.Default.pathToCustomToggleOnSound != "")
                     {
@@ -245,7 +233,7 @@ namespace TranslitBaseWindow
                     else
                     {
                         // warning: hardcoded
-                        pathToSoundToPlay = System.IO.Path.Combine(App.BaseDir, $"Resources/{(app.liveTranslit.keyLogger.state == 1 ? "cont" : "pause")}.wav");
+                        pathToSoundToPlay = System.IO.Path.Combine(App.BaseDir, $"Resources/{(app.liveTranslit.keyLogger.State == true ? "cont" : "pause")}.wav");
                     }
                 }
                 else
@@ -257,7 +245,7 @@ namespace TranslitBaseWindow
                     else
                     {
                         // warning: hardcoded
-                        pathToSoundToPlay = System.IO.Path.Combine(App.BaseDir, $"Resources/{(app.liveTranslit.keyLogger.state == 1 ? "cont" : "pause")}.wav");
+                        pathToSoundToPlay = System.IO.Path.Combine(App.BaseDir, $"Resources/{(app.liveTranslit.keyLogger.State == true ? "cont" : "pause")}.wav");
                     }
                 }
 
@@ -358,23 +346,6 @@ namespace TranslitBaseWindow
             }
         }
 
-        private class ShortuctHashSetToHashString : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                HashSet<string> val = (HashSet<string>)value;
-                var valAsArray = val.ToArray<string>();
-                var valAsString = String.Join(" + ", valAsArray);
-
-                return $"Toggle Shortcut: {valAsString}";
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-            {
-                return false;
-            }
-        }
-
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -389,43 +360,6 @@ namespace TranslitBaseWindow
         {
             TableViewWindow tableViewWindow = new TableViewWindow();
             tableViewWindow.Show();
-        }
-    }
-
-    internal class IntToBoolConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            string val = (string)value;
-
-            if (val == "On") return "true";
-            return "false";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return false;
-        }
-    }
-
-    public class StateToColorConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            string val = value.ToString();
-            if (val == "On")
-            {
-                return "Green";
-            }
-            else
-            {
-                return "Red";
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return "no";
         }
     }
 }

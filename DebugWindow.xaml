@@ -41,7 +41,7 @@
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label
-                x:Name="stateLabel"
+                x:Name="StateLabel"
                 Grid.Column="1"
                 Margin="3,11,0,0"
                 HorizontalAlignment="Left"
