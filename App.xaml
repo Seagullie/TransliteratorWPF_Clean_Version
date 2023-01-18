@@ -1,10 +1,10 @@
 ﻿<Application
-    x:Class="TransliteratorBackend.App"
+    x:Class="TransliteratorWPF_Version.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.modernwpf.com/2019"
     ShutdownMode="OnMainWindowClose"
-    StartupUri="MainWindow.xaml">
+    StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,7 +35,7 @@
                                 <!--
                                     Gotta figure out which property is used for dropdown list color
                                     BaseMediumLow is for disabled elements
-
+                                    
                                     ChromeMediumLow is for dropdown backgrounds
                                     AltLow/ListLow/BaseMedium is for context's highlighted item color
                                 -->

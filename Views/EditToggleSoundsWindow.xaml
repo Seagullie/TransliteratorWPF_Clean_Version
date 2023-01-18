@@ -1,0 +1,61 @@
+﻿<Window
+    x:Class="TransliteratorWPF_Version.Views.EditToggleSoundsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="Edit Toggle Sounds"
+    Width="Auto"
+    Height="Auto"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Activated="Window_Activated"
+    Loaded="Window_Loaded"
+    MouseDown="Window_MouseDown"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <ui:SimpleStackPanel Margin="50" Spacing="25">
+
+        <ui:SimpleStackPanel Spacing="10">
+            <Label HorizontalAlignment="Center" Content="Sound on toggle on:" />
+
+            <ui:SimpleStackPanel
+                Height="Auto"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="20">
+                <TextBox
+                    x:Name="changeSoundOnToggleOnTxtBox"
+                    Width="200"
+                    IsEnabled="false"
+                    ToolTipService.ShowOnDisabled="true" />
+                <Button
+                    x:Name="changeSoundOnToggleOnBtn"
+                    Click="changeSoundOnToggleOnBtn_Click"
+                    Content="Change..." />
+            </ui:SimpleStackPanel>
+        </ui:SimpleStackPanel>
+        <ui:SimpleStackPanel Grid.Row="1" Spacing="10">
+            <Label HorizontalAlignment="Center" Content="Sound on toggle off:" />
+
+            <ui:SimpleStackPanel
+                Height="Auto"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="20">
+                <TextBox
+                    x:Name="changeSoundOnToggleOffTxtBox"
+                    Width="200"
+                    IsEnabled="false"
+                    ToolTipService.ShowOnDisabled="true" />
+                <Button
+                    x:Name="changeSoundOnToggleOffBtn"
+                    Click="changeSoundOnToggleOffBtn_Click"
+                    Content="Change..." />
+            </ui:SimpleStackPanel>
+        </ui:SimpleStackPanel>
+    </ui:SimpleStackPanel>
+</Window>

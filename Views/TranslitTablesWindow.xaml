@@ -1,0 +1,137 @@
+﻿<Window
+    x:Class="TransliteratorWPF_Version.Views.TranslitTablesWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="Translit Tables"
+    d:DesignHeight="1203.96"
+    d:DesignWidth="700"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Activated="Window_Activated"
+    Loaded="Window_Loaded"
+    MouseDown="Window_MouseDown"
+    ResizeMode="CanMinimize"
+    SizeChanged="Window_SizeChanged"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Grid HorizontalAlignment="center" ScrollViewer.CanContentScroll="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition ScrollViewer.CanContentScroll="True" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="15"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <ui:SimpleStackPanel Orientation="Horizontal" Spacing="15">
+                <Button
+                    x:Name="newTableBtn"
+                    HorizontalAlignment="stretch"
+                    Click="newTableBtn_Click"
+                    Content="New Table" />
+
+                <Button
+                    x:Name="newTableFromJsonBtn"
+                    Click="newTableFromJsonBtn_Click"
+                    Content="New Table From JSON" />
+
+                <Button
+                    x:Name="openTablesFolderBtn"
+                    Click="openTablesFolderBtn_Click"
+                    Content="Tables Folder"
+                    ToolTip="Opens tables folder in File Explorer" />
+            </ui:SimpleStackPanel>
+        </StackPanel>
+
+        <ui:SimpleStackPanel
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="100">
+
+            <ui:SimpleStackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="10">
+                <Label
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Content="Choose table to edit:" />
+                <ComboBox
+                    x:Name="comboBox1"
+                    Width="120"
+                    HorizontalAlignment="Center"
+                    SelectionChanged="comboBox1_SelectionChanged" />
+            </ui:SimpleStackPanel>
+        </ui:SimpleStackPanel>
+        <ScrollViewer
+            Grid.Row="2"
+            Width="Auto"
+            MinHeight="500"
+            Margin="0,20,0,0"
+            Padding="0,20,0,0"
+            HorizontalContentAlignment="Center"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel
+                x:Name="panel1"
+                Margin="0"
+                HorizontalAlignment="Center"
+                CanVerticallyScroll="True"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <StackPanel
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal"
+                    Visibility="Collapsed">
+                    <TextBox Margin="0,0,30,0">Key</TextBox>
+                    <TextBox HorizontalAlignment="Right">Value</TextBox>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ui:SimpleStackPanel
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="20"
+            Spacing="10">
+            <ui:SimpleStackPanel
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="10">
+
+                <Button
+                    x:Name="addRowBtn"
+                    Click="addRowBtn_Click"
+                    Content="Add Row" />
+
+                <Button
+                    x:Name="saveTableBtn"
+                    Click="saveTableBtn_Click"
+                    Content="Save Table" />
+
+                <Button
+                    x:Name="deleteCurrentBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="deleteCurrentBtn_Click"
+                    Content="Delete Current" />
+            </ui:SimpleStackPanel>
+            <Label HorizontalAlignment="Center" Content="Rows with empty elements won't be saved." />
+        </ui:SimpleStackPanel>
+    </Grid>
+</Window>

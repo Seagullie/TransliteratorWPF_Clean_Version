@@ -1,0 +1,203 @@
+﻿<Window
+    x:Class="TransliteratorWPF_Version.Views.DebugWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    x:Name="DebugWindow1"
+    Title="Debug"
+    Width="910"
+    Height="Auto"
+    d:DesignHeight="618.058"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Activated="MainWindow1_Activated"
+    Closing="MainWindow_Closing"
+    Foreground="#FF9E2626"
+    IsVisibleChanged="MainWindow1_IsVisibleChanged"
+    Loaded="MainWindow_Loaded"
+    MouseDown="MainWindow1_MouseDown"
+    ResizeMode="CanMinimize"
+    StateChanged="MainWindow1_StateChanged"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources />
+    <Border x:Name="WindowBorder">
+
+        <Grid Margin="15" HorizontalAlignment="Stretch">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="27*" />
+                <ColumnDefinition Width="589*" />
+                <ColumnDefinition Width="264*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Label
+                x:Name="StateLabel"
+                Grid.Column="1"
+                Margin="3,11,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Content="On"
+                Foreground="#FF2FB32F" />
+            <ComboBox
+                x:Name="translitTablesBox"
+                Grid.Column="1"
+                Margin="0,14,0,0"
+                HorizontalAlignment="Right"
+                BorderBrush="#0F000000"
+                SelectionChanged="translitTablesBox_SelectionChanged" />
+
+            <DockPanel Grid.Row="1" Grid.Column="1">
+
+                <TextBox
+                    x:Name="textBox1"
+                    Margin="0,30,0,0"
+                    DockPanel.Dock="Bottom"
+                    TextChanged="testTextBox1_TextChanged"
+                    TextWrapping="Wrap" />
+                <RichTextBox
+                    x:Name="outputTextBox"
+                    DockPanel.Dock="Bottom"
+                    IsEnabled="False"
+                    TextChanged="outputTextBox_TextChanged"
+                    VerticalScrollBarVisibility="Auto" />
+            </DockPanel>
+
+            <UniformGrid
+                Grid.Row="1"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Columns="1"
+                Rows="11">
+
+                <!--<StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}" BasedOn="{ButtonStyle}">
+                        <Setter Property="Margin" Value="0,10,0,0" />
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                    </Style>
+                </StackPanel.Resources>-->
+
+                <!-- <UniformGrid.Resources>
+                    <Style BasedOn="{x:Type ButtonStyle}" TargetType="{x:Type Button}">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </UniformGrid.Resources>-->
+
+                <Button
+                    x:Name="toggleTranslitBtn"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Click="toggleTranslitBtn_Click"
+                    Content="Toggle" />
+                <Button
+                    x:Name="settingsBtn"
+                    HorizontalAlignment="Stretch"
+                    AutomationProperties.AutomationId="settingsBtn"
+                    Click="settingsBtn_Click"
+                    Content="Settings" />
+                <Button
+                    x:Name="toggleLogsBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="toggleLogsBtn_Click"
+                    Content="Toggle Logs"
+                    Foreground="#FFA41E9E" />
+                <Button
+                    x:Name="showTranslitTableBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="showTranslitTableBtn_Click"
+                    Content="Show Translit Table" />
+                <Button
+                    x:Name="checkCaseButtonsBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="checkCaseButtonsBtn_Click"
+                    Content="Check Case Buttons" />
+                <Button
+                    x:Name="simulateKeyboardInputBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="simulateKeyboardInputBtn_Click"
+                    Content="Simulate Keyboard Input" />
+                <Button
+                    x:Name="getKeyLoggerMemoryBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="getKeyLoggerMemoryBtn_Click"
+                    Content="Get Key Logger Memory" />
+                <Button
+                    x:Name="allowInjectedKeysBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="allowInjectedKeysBtn_Click"
+                    Content="Allow Injected Keys" />
+                <Button
+                    x:Name="slowDownKBEInjectionsBtn"
+                    HorizontalAlignment="Stretch"
+                    Click="slowDownKBEInjectionsBtn_Click"
+                    Content="Slow Down KBE Injections" />
+                <Button
+                    x:Name="getLayoutBtn"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Click="getLayoutBtn_Click"
+                    Content="Get Layout" />
+            </UniformGrid>
+
+            <StackPanel
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="0,15,0,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Orientation="Horizontal"
+                Visibility="Hidden">
+
+                <Button
+                    x:Name="closeBtn"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Click="closeBtn_Click"
+                    Content="Close" />
+                <Button
+                    x:Name="minimizeBtn"
+                    Margin="15,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Click="minimizeBtn_Click"
+                    Content="Minimize" />
+            </StackPanel>
+
+            <CheckBox
+                x:Name="underTestByWinDriverCheckBox"
+                Grid.Row="2"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                AutomationProperties.AutomationId="underTestByWinDriverCheckBox"
+                Background="#FF882727"
+                BorderBrush="#FF962828"
+                BorderThickness="1,1,1,1"
+                Checked="underTestByWinDriverCheckBox_Checked"
+                Content="Under Test By WinDriver"
+                Foreground="#FFA43636" />
+            <Button
+                x:Name="changeThemeBtn"
+                Grid.Row="2"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Click="changeThemeBtn_Click"
+                Content="Change Theme" />
+            <Button
+                x:Name="launchMainWindowBtn"
+                Grid.Column="2"
+                Margin="109,0,0,0"
+                Click="launchMainWindowBtn_Click"
+                Content="To Main Window"
+                Visibility="Hidden" />
+        </Grid>
+    </Border>
+</Window>

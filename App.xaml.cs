@@ -1,19 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
-using Transliterator;
+using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Services;
 
-namespace TransliteratorBackend
+namespace TransliteratorWPF_Version
 {
     public partial class App : Application
     {

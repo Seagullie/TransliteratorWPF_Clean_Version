@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
 	<ApplicationIcon>Resources\keyboardIconMarginless.ico</ApplicationIcon>
@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="bin\Debug\netcoreapp3.1\Resources\keyboardIcon.png" />
-    <None Include="bin\Debug\netcoreapp3.1\Resources\keyboardIconMarginless.ico" />
     <Content Include="Resources\keyboardIconMarginless.ico" />
   </ItemGroup>
 

@@ -1,0 +1,139 @@
+﻿<Window
+    x:Class="TransliteratorWPF_Version.Views.SettingsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="Settings"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    Activated="Window_Activated"
+    Closed="Window_Closed"
+    Closing="Window_Closing"
+    Loaded="Window_Loaded"
+    MouseDown="Window_MouseDown"
+    ResizeMode="CanMinimize"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <ui:SimpleStackPanel Margin="30" Spacing="20">
+
+        <Label HorizontalAlignment="Center" Content="General:" />
+
+        <ui:SimpleStackPanel HorizontalAlignment="Center">
+            <Grid Width="Auto" HorizontalAlignment="Stretch">
+                <CheckBox
+                    x:Name="playSoundOnTranslitToggleCheckBox"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Checked="playSoundOnTranslitToggleCheckBox_Checked"
+                    Content="Play sound on toggle"
+                    Unchecked="playSoundOnTranslitToggleCheckBox_Unchecked" />
+
+                <Button
+                    x:Name="editToggleSoundsBtn"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Click="editToggleSoundsBtn_Click"
+                    Content="⚙️"
+                    FontSize="8" />
+
+                <!--<Button Content="{fa:Icon InfoCircle}" />-->
+
+                <!--  Getting "Could not load file or assembly FontAwesome.Sharp"  -->
+                <!--<Button>
+                    <Button.Content>
+                        <fa:IconBlock Foreground="Chocolate" Icon="Info" />
+                    </Button.Content>
+                </Button>-->
+            </Grid>
+
+            <CheckBox
+                x:Name="startMinimizedCheckBox"
+                HorizontalAlignment="Left"
+                Content="Start in minimized state" />
+            <CheckBox
+                x:Name="turnOnTranslitAtStartCheckBox"
+                HorizontalAlignment="Left"
+                Content="Turn on at start" />
+            <CheckBox
+                x:Name="enableStateOverlayWindowCheckBox"
+                Checked="enableStateOverlayWindowCheckBox_Checked"
+                Content="Show State Overlay window"
+                Unchecked="enableStateOverlayWindowCheckBox_Unchecked" />
+            <CheckBox
+                x:Name="launchProgramOnSystemStartupCheckBox"
+                HorizontalAlignment="Left"
+                Checked="launchProgramOnSystemStartupCheckBox_Checked"
+                Content="Launch program on system startup"
+                ToolTip="Run the program as Administrator to toggle this feature."
+                ToolTipService.ShowOnDisabled="True"
+                Unchecked="launchProgramOnSystemStartupCheckBox_Unchecked" />
+            <CheckBox
+                x:Name="suppressAltShiftCheckBox"
+                HorizontalAlignment="Left"
+                Checked="suppressAltShiftCheckBox_Checked"
+                Content="Suppress Alt + Shift Shortcut"
+                ToolTip="Close Settings Window for the change to take effect."
+                ToolTipService.ShowOnDisabled="True"
+                Unchecked="suppressAltShiftCheckBox_Unchecked" />
+        </ui:SimpleStackPanel>
+
+        <Label
+            Width="62"
+            Height="27"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Content="Shortcuts:&#xD;&#xA;" />
+
+        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="100">
+            <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
+            <TextBox
+                x:Name="shortcutInputBox"
+                Width="120"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                KeyDown="shortcutInputBox_KeyDown"
+                TextWrapping="Wrap" />
+        </ui:SimpleStackPanel>
+
+        <Label
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="Display original combinations while typing:" />
+        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="50">
+            <ui:SimpleStackPanel>
+                <RadioButton
+                    x:Name="displayRadioBtn"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    AutomationProperties.AutomationId="displayRadioBtn"
+                    Checked="displayRadioBtn_Checked_1"
+                    Content="Display"
+                    IsEnabled="False" />
+                <RadioButton
+                    x:Name="waitForComboRadioBtn"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    AutomationProperties.AutomationId="waitForComboRadioBtn"
+                    Checked="waitForComboRadioBtn_Checked"
+                    Content="Wait for full combination"
+                    IsEnabled="False" />
+            </ui:SimpleStackPanel>
+            <TextBox
+                x:Name="DOCshowcaseTxtBox"
+                Width="120"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                IsEnabled="False"
+                TextWrapping="Wrap" />
+        </ui:SimpleStackPanel>
+        <Button
+            x:Name="editTranslitTablesBtn"
+            HorizontalAlignment="Center"
+            Click="editTranslitTablesBtn_Click"
+            Content="Edit Translit Tables" />
+    </ui:SimpleStackPanel>
+</Window>
