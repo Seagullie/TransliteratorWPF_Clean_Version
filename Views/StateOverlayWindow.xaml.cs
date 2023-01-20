@@ -47,6 +47,7 @@ namespace TransliteratorWPF_Version.Views
 
             this.Left = (int)(screenWidth - windowWidth - desiredMargin);
             //string pathToImage = @"C:\Users\main\source\repos\TransliteratorWPF_Version\bin\Debug\netcoreapp3.1\Resources\keyboardIcon.png";
+            //TODO: Transfer to XAML
             string pathToImage = @"Resources\keyboardIconMarginless.png";
 
             // this doesn't work. You better convert it to absolute path
