@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TransliteratorWPF_Version.Helpers
 {
-    internal class GlobalUtilities
+    internal class Utilities
     {
         [DllImport("user32.dll")]
         private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);

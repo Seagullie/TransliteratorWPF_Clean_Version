@@ -222,8 +222,8 @@ namespace TransliteratorWPF_Version.Services
         {
             string key = e.KeyCode.ToString();
 
-            bool altDown = keyStateChecker.isKeyDown(Key.LeftAlt);
-            bool leftShiftDown = keyStateChecker.isKeyDown(Key.LeftShift);
+            bool altDown = keyStateChecker.IsKeyDown(Key.LeftAlt);
+            bool leftShiftDown = keyStateChecker.IsKeyDown(Key.LeftShift);
 
             if (key != ToggleTranslitShortcutMainKey && !altDown && !leftShiftDown)
             {
@@ -232,7 +232,7 @@ namespace TransliteratorWPF_Version.Services
 
             string keyString = e.KeyData.ToString().ToLower();
 
-            bool ctrlDown = keyStateChecker.isKeyDown(Key.LeftCtrl);
+            bool ctrlDown = keyStateChecker.IsKeyDown(Key.LeftCtrl);
 
             debugWindow?.ConsoleLog($"ALT down: {altDown}. KeyString: {keyString}");
 
@@ -318,7 +318,7 @@ namespace TransliteratorWPF_Version.Services
 
             if (memory.Count > 20) memory.Clear();
 
-            bool isLowerCase = keyStateChecker.isLowerCase();
+            bool isLowerCase = keyStateChecker.IsLowerCase();
             string caseSensitiveCharacter = isLowerCase ? UnicodeChar.ToLower() : UnicodeChar.ToUpper();
             debugWindow?.ConsoleLog($"Keycode: {caseSensitiveCharacter}. KeyData: {e.KeyData} DOWN.");
 
@@ -445,9 +445,9 @@ namespace TransliteratorWPF_Version.Services
                 return true;
             }
 
-            if (!keyStateChecker.isShiftPressedDown())
+            if (!keyStateChecker.IsShiftPressedDown())
             {
-                if (keyStateChecker.isModifierPressedDown())
+                if (keyStateChecker.IsModifierPressedDown())
                 {
                     return true;
                 }
@@ -458,7 +458,7 @@ namespace TransliteratorWPF_Version.Services
 
         public bool ShouldClearMemory()
         {
-            if (keyStateChecker.isKeyDown(Key.Tab) && (keyStateChecker.isKeyDown(Key.LeftAlt) || keyStateChecker.isKeyDown(Key.RightAlt)))
+            if (keyStateChecker.IsKeyDown(Key.Tab) && (keyStateChecker.IsKeyDown(Key.LeftAlt) || keyStateChecker.IsKeyDown(Key.RightAlt)))
             {
                 return true;
             }
@@ -472,7 +472,7 @@ namespace TransliteratorWPF_Version.Services
             {
                 return;
             }
-            if (keyStateChecker.isKeyDown(Key.LeftCtrl) || keyStateChecker.isKeyDown(Key.RightCtrl))
+            if (keyStateChecker.IsKeyDown(Key.LeftCtrl) || keyStateChecker.IsKeyDown(Key.RightCtrl))
             {
                 while (memory.Count > 0 && memory.Last() != "'")
                 {

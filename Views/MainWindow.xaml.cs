@@ -166,7 +166,7 @@ namespace TransliteratorWPF_Version.Views
                 // Configure the binding
                 Mode = BindingMode.OneWay,
                 Source = app.liveTranslit.keyLogger,
-                Converter = new ShortuctHashSetToStringConverter()
+                Converter = new ShortcutHashSetToStringConverter()
             };
 
             BindingOperations.SetBinding(translitToggleShortcutLabel, Label.ContentProperty, shortcutDescBindingObject);

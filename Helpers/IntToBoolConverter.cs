@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace TransliteratorWPF_Version.Helpers
 {
-    // TODO: Delete this class, create BoolToStateStingConverter
+    // TODO: Delete this class, create BoolToStateStringConverter
     internal class IntToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

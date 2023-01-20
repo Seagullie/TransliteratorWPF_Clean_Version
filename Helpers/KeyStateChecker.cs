@@ -8,33 +8,33 @@ namespace TransliteratorWPF_Version.Helpers
     {
         private Key[] modifiers = { Key.LeftCtrl, Key.LeftAlt, Key.LWin, Key.RightCtrl, Key.RightAlt, Key.RWin };
 
-        public bool isCAPSLOCKon()
+        public bool IsCAPSLOCKon()
         {
             var isCapsLockToggled = Keyboard.IsKeyToggled(Key.CapsLock);
             return isCapsLockToggled;
         }
 
-        public bool isShiftPressedDown()
+        public bool IsShiftPressedDown()
         {
             return Keyboard.IsKeyDown(Key.LeftShift);
         }
 
-        public bool isUpperCase()
+        public bool IsUpperCase()
         {
-            return isShiftPressedDown() || isCAPSLOCKon();
+            return IsShiftPressedDown() || IsCAPSLOCKon();
         }
 
-        public bool isLowerCase()
+        public bool IsLowerCase()
         {
-            return !isShiftPressedDown() && !isCAPSLOCKon();
+            return !IsShiftPressedDown() && !IsCAPSLOCKon();
         }
 
-        public bool isKeyDown(Key key)
+        public bool IsKeyDown(Key key)
         {
             return Keyboard.IsKeyDown(key);
         }
 
-        public bool isModifierPressedDown()
+        public bool IsModifierPressedDown()
         {
             foreach (Key modifier in modifiers)
             {

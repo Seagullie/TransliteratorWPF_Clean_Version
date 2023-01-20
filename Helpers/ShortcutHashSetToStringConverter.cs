@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace TransliteratorWPF_Version.Helpers
 {
-    public class ShortuctHashSetToStringConverter : IValueConverter
+    public class ShortcutHashSetToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

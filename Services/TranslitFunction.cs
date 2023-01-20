@@ -362,7 +362,7 @@ namespace TransliteratorWPF_Version.Services
                 {
                     // we can optimize this part by making a dictionary for such characters when replacement map is installed
 
-                    if (keyStateChecker.isLowerCase()) return replacement.ToLower();
+                    if (keyStateChecker.IsLowerCase()) return replacement.ToLower();
                     return replacement.ToUpper();
                 }
 

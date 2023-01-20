@@ -109,8 +109,8 @@ namespace TransliteratorWPF_Version.Views
             Keys formsKey;
             formsKey = (Keys)KeyInterop.VirtualKeyFromKey(wpfKey);
 
-            bool altDown = app.liveTranslit.keyLogger.keyStateChecker.isKeyDown(Key.LeftAlt);
-            bool ctrlDown = app.liveTranslit.keyLogger.keyStateChecker.isKeyDown(Key.LeftCtrl);
+            bool altDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftAlt);
+            bool ctrlDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftCtrl);
             string[] modifiersDown = { altDown ? "Alt" : "", ctrlDown ? "Control" : "" };
             modifiersDown = modifiersDown.Where(modifier => modifier != "").ToArray<string>();
 

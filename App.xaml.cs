@@ -31,7 +31,6 @@ namespace TransliteratorWPF_Version
             }
 
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
-
         }
 
         public static string GetFullPath(string RelativePath)
@@ -48,7 +47,7 @@ namespace TransliteratorWPF_Version
 
         public string[] getAllTranslitTableNames()
         {
-            string[] tables = GlobalUtilities.getAllFilesInFolder(@"Resources/translitTables");
+            string[] tables = Utilities.getAllFilesInFolder(@"Resources/translitTables");
 
             return tables;
         }

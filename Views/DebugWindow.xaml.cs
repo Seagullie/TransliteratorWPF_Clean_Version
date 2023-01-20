@@ -33,7 +33,6 @@ namespace TransliteratorWPF_Version.Views
         public DebugWindow()
         {
             InitializeComponent();
-
         }
 
         public static void Send(Key key)
@@ -47,7 +46,6 @@ namespace TransliteratorWPF_Version.Views
                         RoutedEvent = Keyboard.KeyDownEvent
                     };
                     InputManager.Current.ProcessInput(e);
-
                 }
             }
         }
@@ -90,12 +88,12 @@ namespace TransliteratorWPF_Version.Views
 
         public string[] getAllTranslitTableNames()
         {
-            string[] tables = GlobalUtilities.getAllFilesInFolder(@"Resources/translitTables");
+            string[] tables = Utilities.getAllFilesInFolder(@"Resources/translitTables");
 
             return tables;
         }
 
-        public void ConsoleLog(string text, string? color = null)    
+        public void ConsoleLog(string text, string? color = null)
         {
             if (!logsEnabled)
             {
@@ -254,8 +252,8 @@ namespace TransliteratorWPF_Version.Views
 
         private void checkCaseButtonsBtn_Click(object sender, RoutedEventArgs e)
         {
-            bool isCAPSLOCKon = app.liveTranslit.keyLogger.keyStateChecker.isCAPSLOCKon();
-            bool isShiftPressedDown = app.liveTranslit.keyLogger.keyStateChecker.isShiftPressedDown();
+            bool isCAPSLOCKon = app.liveTranslit.keyLogger.keyStateChecker.IsCAPSLOCKon();
+            bool isShiftPressedDown = app.liveTranslit.keyLogger.keyStateChecker.IsShiftPressedDown();
 
             ConsoleLog($"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
         }
@@ -284,7 +282,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void getLayoutBtn_Click(object sender, RoutedEventArgs e)
         {
-            string layout = GlobalUtilities.GetCurrentKbLayout();
+            string layout = Utilities.GetCurrentKbLayout();
             ConsoleLog(layout);
         }
 
@@ -328,7 +326,6 @@ namespace TransliteratorWPF_Version.Views
         {
             void action() => this.InvalidateMeasure();
             this.Dispatcher.BeginInvoke((Action)action);
-
         }
 
         private void launchMainWindowBtn_Click(object sender, RoutedEventArgs e)
