@@ -75,19 +75,10 @@ namespace TransliteratorWPF_Version.Views
             launchProgramOnSystemStartupCheckBox.IsChecked = Settings.Default.launchProgramOnSystemStartup;
             suppressAltShiftCheckBox.IsChecked = Settings.Default.suppressAltShift;
 
-            if (!App.IsAdministrator())
-            {
-                launchProgramOnSystemStartupCheckBox.IsEnabled = false;
-            }
+            launchProgramOnSystemStartupCheckBox.IsEnabled = App.IsAdministrator();
 
-            if (Settings.Default.displayCombos)
-            {
-                displayRadioBtn.IsChecked = true;
-            }
-            else
-            {
-                waitForComboRadioBtn.IsChecked = true;
-            }
+            displayRadioBtn.IsChecked = Settings.Default.displayCombos;
+            waitForComboRadioBtn.IsChecked = !Settings.Default.displayCombos;
 
             displayRadioBtn.IsEnabled = true;
             waitForComboRadioBtn.IsEnabled = true;
