@@ -99,7 +99,7 @@ namespace TransliteratorWPF_Version.Views
 
         public string[] getAllTranslitTableNames()
         {
-            string[] tables = Utilities.getAllFilesInFolder(@"Resources/translitTables");
+            string[] tables = Utilities.getAllFilesInFolder(@"Resources/TranslitTables");
 
             return tables;
         }
@@ -143,7 +143,7 @@ namespace TransliteratorWPF_Version.Views
             app.liveTranslit.keyLogger.Toggle();
             string stateDesc = (app.liveTranslit.keyLogger.State == true ? "On" : "Off");
 
-            if ((Settings.Default.playSoundOnTranslitToggle))
+            if ((Settings.Default.PlaySoundOnTranslitToggle))
             {
                 SoundPlayer soundToPlay = app.liveTranslit.keyLogger.State == true ? soundCont : soundPause;
                 soundToPlay.Play();
@@ -197,7 +197,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var stateBindingObject = new Binding("stateDesc")
+            var stateBindingObject = new Binding("StateDesc")
             {
                 Mode = BindingMode.OneWay,
                 Source = app.liveTranslit.keyLogger
@@ -205,7 +205,7 @@ namespace TransliteratorWPF_Version.Views
 
             BindingOperations.SetBinding(StateLabel, Label.ContentProperty, stateBindingObject);
 
-            var stateColorBindingObject = new Binding("stateDesc")
+            var stateColorBindingObject = new Binding("StateDesc")
             {
                 Mode = BindingMode.OneWay,
                 Source = app.liveTranslit.keyLogger
@@ -216,7 +216,7 @@ namespace TransliteratorWPF_Version.Views
 
             BindingOperations.SetBinding(StateLabel, Label.ForegroundProperty, stateColorBindingObject);
 
-            var tablesComboBoxItemsBindingObject = new Binding("translitTables")
+            var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
                 Source = app.liveTranslit.ukrTranslit

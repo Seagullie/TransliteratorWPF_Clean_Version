@@ -68,12 +68,12 @@ namespace TransliteratorWPF_Version.Views
                 // Read the contents of testDialog's TextBox.
                 string tableName = dialog.textBox1.Text;
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\translitTables\{tableName}.json"), "{}");
+                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
                 //initializeTablesComboBox(true);
-                app.liveTranslit.ukrTranslit.translitTables.Add($"{tableName}.json");
+                app.liveTranslit.ukrTranslit.TranslitTables.Add($"{tableName}.json");
                 // it's sort of like in react. You gotta create a new list, cause the property setter is where update event gets created
-                app.liveTranslit.ukrTranslit.translitTables = app.liveTranslit.ukrTranslit.translitTables.ToArray().ToList();
+                app.liveTranslit.ukrTranslit.TranslitTables = app.liveTranslit.ukrTranslit.TranslitTables.ToArray().ToList();
             }
             else
             {
@@ -110,14 +110,14 @@ namespace TransliteratorWPF_Version.Views
 
             string tableName = comboBox1.SelectedItem.ToString();
 
-            File.Delete(Path.Combine(App.BaseDir, $@"Resources\translitTables\{tableName}"));
+            File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
 
             // a notification would be nice here
             debugWindow?.ConsoleLog($"{tableName} has been deleted");
 
-            app.liveTranslit.ukrTranslit.translitTables.Remove(tableName);
+            app.liveTranslit.ukrTranslit.TranslitTables.Remove(tableName);
             // creating a copy to trigger event
-            app.liveTranslit.ukrTranslit.translitTables = app.liveTranslit.ukrTranslit.translitTables.ToArray().ToList();
+            app.liveTranslit.ukrTranslit.TranslitTables = app.liveTranslit.ukrTranslit.TranslitTables.ToArray().ToList();
 
             //initializeTablesComboBox(true);
             //debugWindow?.initializeTablesComboBox(true);
@@ -319,11 +319,11 @@ namespace TransliteratorWPF_Version.Views
 
             string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(replacementMap, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(Path.Combine(App.BaseDir, $"Resources\\translitTables\\{comboBox1.SelectedItem}"), serializedTable);
+            File.WriteAllText(Path.Combine(App.BaseDir, $"Resources\\TranslitTables\\{comboBox1.SelectedItem}"), serializedTable);
             // make translit redownload the current table just in case it was updated. Too lazy to check in a more detailed way.
 
-            string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
-            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
+            //string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
+            //app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
         }
 
         //private bool checkForDuplicates(Dictionary<string, string> replacementMap)
@@ -400,7 +400,7 @@ namespace TransliteratorWPF_Version.Views
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //initializeTablesComboBox();
-            var tablesComboBoxItemsBindingObject = new Binding("translitTables")
+            var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
                 Source = app.liveTranslit.ukrTranslit
@@ -433,8 +433,8 @@ namespace TransliteratorWPF_Version.Views
                 string pathToFile = dialog.FileName;
                 string fileName = Path.GetFileName(pathToFile);
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\translitTables\{fileName}"), File.ReadAllText(pathToFile));
-                app.liveTranslit.ukrTranslit.translitTables.Add(fileName);
+                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
+                app.liveTranslit.ukrTranslit.TranslitTables.Add(fileName);
                 //initializeTablesComboBox(true);
             }
         }
@@ -467,7 +467,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void openTablesFolderBtn_Click(object sender, RoutedEventArgs e)
         {
-            string pathToTablesFolder = App.GetFullPath("Resources\\translitTables");
+            string pathToTablesFolder = App.GetFullPath("Resources\\TranslitTables");
 
             string processArgsAsString = $"{pathToTablesFolder}";
 

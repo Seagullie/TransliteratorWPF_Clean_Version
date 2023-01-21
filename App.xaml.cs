@@ -15,7 +15,9 @@ namespace TransliteratorWPF_Version
         public string appName = "Transliterator";
         public LiveTransliterator liveTranslit;
 
-        public App() : base()
+        public new static App Current => (App)Application.Current;
+
+        public App()
         {
             string PathToTransliteratorAsSettingVar = Settings.Default.ProgramFolder;
 
@@ -47,7 +49,7 @@ namespace TransliteratorWPF_Version
 
         public string[] getAllTranslitTableNames()
         {
-            string[] tables = Utilities.getAllFilesInFolder(@"Resources/translitTables");
+            string[] tables = Utilities.getAllFilesInFolder(@"Resources/TranslitTables");
 
             return tables;
         }

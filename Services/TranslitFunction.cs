@@ -69,13 +69,13 @@ namespace TransliteratorWPF_Version.Services
             }
             set
             {
-                _selectedTranslitTableIndex = value >= 0 && value < translitTables.Count ? value : 0;
-                ReadReplacementMapFromJson(translitTables[_selectedTranslitTableIndex]);
+                _selectedTranslitTableIndex = value >= 0 && value < TranslitTables.Count ? value : 0;
+                ReadReplacementMapFromJson(TranslitTables[_selectedTranslitTableIndex]);
                 NotifyPropertyChanged();
             }
         }
 
-        public List<string> translitTables
+        public List<string> TranslitTables
         {
             get
             {
@@ -90,7 +90,7 @@ namespace TransliteratorWPF_Version.Services
                 // the new table is deleted
                 // main table should update to the last available table
 
-                if (translitTables != null && value.Count < _translitTables.Count)
+                if (TranslitTables != null && value.Count < _translitTables.Count)
                 {
                     selectedTranslitTableIndex = _translitTables.Count - 1;
                 }
@@ -142,9 +142,9 @@ namespace TransliteratorWPF_Version.Services
             // .toList() returns a copy of existing array
             wordendersVanilla = wordenders.ToList();
 
-            translitTables = app.getAllTranslitTableNames().ToList();
-            string lastTranslitTable = Settings.Default.lastTranslitTable;
-            int lastTranslitTableIndex = translitTables.FindIndex((tableString) => tableString == lastTranslitTable);
+            TranslitTables = app.getAllTranslitTableNames().ToList();
+            string lastTranslitTable = Settings.Default.LastTranslitTable;
+            int lastTranslitTableIndex = TranslitTables.FindIndex((tableString) => tableString == lastTranslitTable);
             if (lastTranslitTableIndex != -1)
             {
                 selectedTranslitTableIndex = lastTranslitTableIndex;
@@ -154,7 +154,7 @@ namespace TransliteratorWPF_Version.Services
                 selectedTranslitTableIndex = 0;
             }
 
-            SetReplacementMapFromJson(translitTables[selectedTranslitTableIndex]);
+            SetReplacementMapFromJson(TranslitTables[selectedTranslitTableIndex]);
         }
 
         public DebugWindow debugWindow
@@ -310,7 +310,7 @@ namespace TransliteratorWPF_Version.Services
 
         public Dictionary<string, string> ReadReplacementMapFromJson(string pathToJsonFile)
         {
-            string TableAsString = File.ReadAllText(Path.Combine(App.BaseDir, $"Resources\\translitTables\\{pathToJsonFile}"));
+            string TableAsString = File.ReadAllText(Path.Combine(App.BaseDir, $"Resources\\TranslitTables\\{pathToJsonFile}"));
             dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
             Dictionary<string, string> TableAsDictionary = deserializedTableObj;
 

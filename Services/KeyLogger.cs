@@ -1,8 +1,8 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
@@ -15,9 +15,10 @@ using Key = System.Windows.Input.Key;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public sealed class KeyLogger : INotifyPropertyChanged
+    public sealed partial class KeyLogger : ObservableObject
     {
-        public bool State { get; set; } = true;
+        [ObservableProperty]
+        public bool state = true;
 
         private string lang = "EN";
 
@@ -26,21 +27,9 @@ namespace TransliteratorWPF_Version.Services
         public string alphabet;
 
         private string keys_to_include;
-        public string _stateDesc = "On";
 
-        public string stateDesc
-        {
-            get
-            {
-                return _stateDesc;
-            }
-
-            set
-            {
-                _stateDesc = value;
-                NotifyPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public string stateDesc = "On";
 
         public LiveTransliterator liveTranslit
         {
@@ -50,20 +39,8 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public MainWindow mainWindow
-        {
-            get
-            {
-                return (MainWindow)Application.Current.MainWindow;
-            }
-        }
+        public event EventHandler StateChanged;
+        public event EventHandler ToggleTranslitShortcutChanged;
 
         public DebugWindow debugWindow
         {
@@ -92,21 +69,8 @@ namespace TransliteratorWPF_Version.Services
 
         public GlobalKeyboardHook gkh;
 
-        public HashSet<string> _ToggleTranslitShortcut = new HashSet<string>();
-
-        public HashSet<string> ToggleTranslitShortcut
-        {
-            get
-            {
-                return _ToggleTranslitShortcut;
-            }
-
-            set
-            {
-                _ToggleTranslitShortcut = value;
-                NotifyPropertyChanged();
-            }
-        }
+        [ObservableProperty]
+        public HashSet<string> toggleTranslitShortcut = new HashSet<string>();
 
         public HashSet<string> ChangeLanguageShortcut = new HashSet<string> { "Alt", "LShiftKey" };
 
@@ -149,6 +113,7 @@ namespace TransliteratorWPF_Version.Services
 
             ToggleTranslitShortcutMainKey = SettingStringAsArray[SettingStringAsArray.Length - 1];
             ToggleTranslitShortcut = SettingStringAsArray.ToHashSet();
+            ToggleTranslitShortcutChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public string GetMemoryAsString()
@@ -254,10 +219,10 @@ namespace TransliteratorWPF_Version.Services
 
             if (registeredKeyStrokesAsHash.SetEquals(ToggleTranslitShortcut))
             {
-                mainWindow.toggleTranslit_Click();
-                e.Handled = true;
-                return true;
+                // TODO: Try udnerstand this logic
+                app.liveTranslit.keyLogger.State = !app.liveTranslit.keyLogger.State;
             }
+
             // I don't udnerstand why it even works if shift isn't pressed simultaneously with alt, but rather a moment later, which makes catching shift as main key more favourable
             else if (Settings.Default.suppressAltShift && (registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut) || registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut3)))
             {
@@ -488,15 +453,15 @@ namespace TransliteratorWPF_Version.Services
         public void Pause()
         {
             State = false;
-            stateDesc = "Off";
+            StateDesc = "Off";
 
             memory.Clear();
         }
 
         public void Cont()
         {
-            State = true;
-            stateDesc = "On";
+            State = true;        
+            StateDesc = "On";
         }
 
         public void Toggle()
@@ -509,6 +474,11 @@ namespace TransliteratorWPF_Version.Services
             {
                 Cont();
             }
+        }
+
+        partial void OnStateChanged(bool value)
+        {
+            StateChanged.Invoke(this, EventArgs.Empty);
         }
     }
 }

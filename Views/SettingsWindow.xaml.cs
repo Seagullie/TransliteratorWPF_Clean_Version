@@ -17,7 +17,7 @@ namespace TransliteratorWPF_Version.Views
         {
             get
             {
-                WindowCollection windows = System.Windows.Application.Current.Windows;
+                WindowCollection windows = Application.Current.Windows;
                 foreach (Window window in windows)
                 {
                     // warning: hardcoded
@@ -55,20 +55,20 @@ namespace TransliteratorWPF_Version.Views
 
         private void playSoundOnTranslitToggleCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.Default.playSoundOnTranslitToggle = true;
+            Settings.Default.PlaySoundOnTranslitToggle = true;
         }
 
         private void playSoundOnTranslitToggleCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            Settings.Default.playSoundOnTranslitToggle = false;
+            Settings.Default.PlaySoundOnTranslitToggle = false;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            playSoundOnTranslitToggleCheckBox.IsChecked = Settings.Default.playSoundOnTranslitToggle;
+            playSoundOnTranslitToggleCheckBox.IsChecked = Settings.Default.PlaySoundOnTranslitToggle;
 
             shortcutInputBox.Text = Settings.Default.toggleTranslitShortcut;
-            startMinimizedCheckBox.IsChecked = Settings.Default.startMinimized;
+            startMinimizedCheckBox.IsChecked = Settings.Default.StartMinimized;
             turnOnTranslitAtStartCheckBox.IsChecked = Settings.Default.turnOnTranslitAtStart;
             enableStateOverlayWindowCheckBox.IsChecked = Settings.Default.enableStateOverlayWindow;
 
@@ -126,8 +126,6 @@ namespace TransliteratorWPF_Version.Views
 
         public async void ShowcaseComboMode()
         {
-            MainWindow mainWindow = (MainWindow)app.MainWindow;
-
             // switch translit table to accentsTable
             // warning: hardcoded
             const string accentsTable = "tableAccents.json";
@@ -136,10 +134,7 @@ namespace TransliteratorWPF_Version.Views
             app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{accentsTable}");
 
             // gotta make sure transliterator is enabled. Should reference .keyLogger.state, not liveTranslit.state
-            if (app.liveTranslit.keyLogger.State == false)
-            {
-                mainWindow.toggleTranslit_Click();
-            }
+            app.liveTranslit.keyLogger.State = true;
 
             DOCshowcaseTxtBox.IsEnabled = true;
             DOCshowcaseTxtBox.Focus();
@@ -227,7 +222,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Settings.Default.startMinimized = startMinimizedCheckBox.IsChecked == true;
+            Settings.Default.StartMinimized = startMinimizedCheckBox.IsChecked == true;
             Settings.Default.turnOnTranslitAtStart = turnOnTranslitAtStartCheckBox.IsChecked == true;
 
             Settings.Default.launchProgramOnSystemStartup = launchProgramOnSystemStartupCheckBox.IsChecked == true;

@@ -3,9 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:TransliteratorWPF_Version.Helpers"
     xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:v="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:vm="clr-namespace:TransliteratorWPF_Version.ViewModels"
     Title="Transliterator"
     Width="700"
     Height="400"
@@ -13,12 +16,11 @@
     Activated="Window_Activated"
     Closing="Window_Closing"
     Icon="{DynamicResource KeyboardIconMarginless}"
-    Initialized="Window_Initialized"
-    Loaded="Window_Loaded"
     MouseDown="Window_MouseDown"
     ResizeMode="CanMinimize"
-    StateChanged="Window_StateChanged"
+    ShowInTaskbar="{Binding IsVisibleInTaskbar}"
     WindowStartupLocation="CenterScreen"
+    WindowState="{Binding WindowState}"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -26,6 +28,7 @@
             <Setter Property="CornerRadius" Value="15" />
             <Setter Property="Background" Value="#FF36393F" />
         </Style>
+        <helpers:ShortcutHashSetToStringConverter x:Key="ShortcutHashSetToStringConverter" />
     </Window.Resources>
 
     <Grid Margin="30">
@@ -42,15 +45,13 @@
         </Grid.RowDefinitions>
 
         <Button
-            x:Name="launchDebugWindowBtn"
             Grid.Row="2"
             Grid.Column="2"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             HorizontalContentAlignment="Right"
             VerticalContentAlignment="Center"
-            AutomationProperties.AccessKey="launchDebugWindowBtn"
-            Click="launchDebugWindowBtn_Click"
+            Command="{Binding OpenDebugWindowCommand}"
             Content="To Debug Panel" />
         <ui:SimpleStackPanel
             Grid.Row="0"
@@ -59,24 +60,22 @@
             VerticalAlignment="Center"
             Spacing="10">
             <ComboBox
-                x:Name="translitTablesComboBox"
                 HorizontalAlignment="Right"
-                SelectionChanged="translitTablesComboBox_SelectionChanged" />
+                ItemsSource="{Binding TranslitTables}"
+                SelectedItem="{Binding SelectedTranslitTable}" />
             <Button
-                x:Name="showTableBtn"
                 HorizontalAlignment="Right"
                 HorizontalContentAlignment="Right"
-                Click="showTableBtn_Click"
+                Command="{Binding OpenTableViewWindowCommand}"
                 Content="Show Table" />
         </ui:SimpleStackPanel>
 
         <Button
-            x:Name="settingsBtn"
             Grid.Row="0"
             Grid.Column="0"
             VerticalAlignment="Center"
             HorizontalContentAlignment="Left"
-            Click="settingsBtn_Click"
+            Command="{Binding OpenSettingsWindowCommand}"
             Content="Settings" />
         <ui:SimpleStackPanel
             Grid.Row="1"
@@ -85,10 +84,9 @@
             VerticalAlignment="Center"
             Spacing="10">
             <Button
-                x:Name="toggleBtb"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Click="toggleBtb_Click"
+                Command="{Binding ToggleAppStateCommand}"
                 Content="Toggle" />
 
             <Grid>
@@ -121,34 +119,29 @@
         </ui:SimpleStackPanel>
 
         <Button
-            x:Name="changeThemeBtn"
             Grid.Row="2"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             HorizontalContentAlignment="Left"
-            Click="changeThemeBtn_Click"
+            Command="{Binding ToggleThemeCommand}"
             Content="Change Theme" />
         <Label
-            x:Name="stateLabel"
             Grid.Column="1"
             Margin="0"
             Padding="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Stretch"
             VerticalContentAlignment="Center"
-            Content="On or Off"
+            Content="{Binding AppState}"
             FontSize="18"
-            FontWeight="DemiBold"
-            SourceUpdated="stateLabel_SourceUpdated"
-            TargetUpdated="stateLabel_TargetUpdated" />
+            FontWeight="DemiBold" />
         <Label
-            x:Name="translitToggleShortcutLabel"
             Grid.Row="2"
             Grid.Column="1"
             Margin="0,0,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="Key1 + Key2"
+            Content="{Binding ToggleAppStateShortcut, Converter={StaticResource ShortcutHashSetToStringConverter}}"
             IsEnabled="False" />
     </Grid>
 </Window>

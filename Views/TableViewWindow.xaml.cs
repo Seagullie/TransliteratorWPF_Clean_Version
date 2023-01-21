@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using TransliteratorWPF_Version.Services;
 using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -19,6 +20,8 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class TableViewWindow : Window
     {
+        private readonly LiveTransliterator liveTransliterator;
+
         private App app = ((App)Application.Current);
 
         public MainWindow mainWindow
@@ -47,6 +50,9 @@ namespace TransliteratorWPF_Version.Views
 
         public TableViewWindow()
         {
+            // TODO: Dependency injection 
+            liveTransliterator = LiveTransliterator.GetInstance();
+
             InitializeComponent();
         }
 
@@ -58,10 +64,10 @@ namespace TransliteratorWPF_Version.Views
             {
                 string tableName = dialog.textBox1.Text;
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\translitTables\{tableName}.json"), "{}");
+                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
-                app.liveTranslit.ukrTranslit.translitTables.Add($"{tableName}.json");
-                app.liveTranslit.ukrTranslit.translitTables = app.liveTranslit.ukrTranslit.translitTables.ToArray().ToList();
+                liveTransliterator.ukrTranslit.TranslitTables.Add($"{tableName}.json");
+                liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
             }
             else
             {
@@ -93,12 +99,12 @@ namespace TransliteratorWPF_Version.Views
 
             string tableName = comboBox1.SelectedItem.ToString();
 
-            File.Delete(Path.Combine(App.BaseDir, $@"Resources\translitTables\{tableName}"));
+            File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
 
             debugWindow?.ConsoleLog($"{tableName} has been deleted");
 
-            app.liveTranslit.ukrTranslit.translitTables.Remove(tableName);
-            app.liveTranslit.ukrTranslit.translitTables = app.liveTranslit.ukrTranslit.translitTables.ToArray().ToList();
+            liveTransliterator.ukrTranslit.TranslitTables.Remove(tableName);
+            liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
         }
 
         private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -111,12 +117,12 @@ namespace TransliteratorWPF_Version.Views
             string selectedTranslitTable = comboBox1.SelectedItem.ToString();
             panel1.Children.Clear();
 
-            generateEditBoxesForTranslitTable(app.liveTranslit.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
+            generateEditBoxesForTranslitTable(liveTransliterator.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
         }
 
         public void generateEditBoxesForTranslitTable(Dictionary<string, string> replacement_map)
         {
-            foreach (string key in app.liveTranslit.ukrTranslit.SortReplacementMapKeys(replacement_map))
+            foreach (string key in liveTransliterator.ukrTranslit.SortReplacementMapKeys(replacement_map))
             {
                 generatePanelWithEditBoxes(key, replacement_map[key]);
             }
@@ -250,9 +256,9 @@ namespace TransliteratorWPF_Version.Views
 
             string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(replacementMap, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(Path.Combine(App.BaseDir, $"Resources\\translitTables\\{comboBox1.SelectedItem}"), serializedTable);
-            string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
-            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
+            //File.WriteAllText(Path.Combine(App.BaseDir, $"Resources\\TranslitTables\\{comboBox1.SelectedItem}"), serializedTable);
+            //string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
+            //app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
         }
 
         private MessageBoxResult CreateModal(string text, string caption, MessageBoxButton button, MessageBoxImage icon)
@@ -266,7 +272,7 @@ namespace TransliteratorWPF_Version.Views
 
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
-            string[] combos = app.liveTranslit.ukrTranslit.getReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.ukrTranslit.getReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = checkForCompositeCombos(combos);
 
@@ -309,15 +315,15 @@ namespace TransliteratorWPF_Version.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var tablesComboBoxItemsBindingObject = new Binding("translitTables")
+            var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.ukrTranslit
+                Source = liveTransliterator.ukrTranslit
             };
 
             BindingOperations.SetBinding(comboBox1, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
 
-            int currentlySelectedTableIndex = app.liveTranslit.ukrTranslit.selectedTranslitTableIndex;
+            int currentlySelectedTableIndex = liveTransliterator.ukrTranslit.selectedTranslitTableIndex;
             comboBox1.SelectedIndex = currentlySelectedTableIndex;
         }
 
@@ -341,8 +347,8 @@ namespace TransliteratorWPF_Version.Views
                 string pathToFile = dialog.FileName;
                 string fileName = Path.GetFileName(pathToFile);
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\translitTables\{fileName}"), File.ReadAllText(pathToFile));
-                app.liveTranslit.ukrTranslit.translitTables.Add(fileName);
+                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
+                liveTransliterator.ukrTranslit.TranslitTables.Add(fileName);
             }
         }
 
@@ -374,7 +380,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void openTablesFolderBtn_Click(object sender, RoutedEventArgs e)
         {
-            string pathToTablesFolder = App.GetFullPath("Resources\\translitTables");
+            string pathToTablesFolder = App.GetFullPath("Resources\\TranslitTables");
 
             string processArgsAsString = $"{pathToTablesFolder}";
 
