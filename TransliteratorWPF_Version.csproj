@@ -13,6 +13,11 @@
 	  <Resource Include="Resources\Images\keyboardIcon.ico" />
 	  <Resource Include="Resources\Images\keyboardIconMarginless.png" />
   </ItemGroup>
+	
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\Audio\cont.wav" />
+		<EmbeddedResource Include="Resources\Audio\pause.wav" />
+	</ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Properties\Settings.settings">

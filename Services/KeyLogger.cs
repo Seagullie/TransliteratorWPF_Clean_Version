@@ -20,10 +20,6 @@ namespace TransliteratorWPF_Version.Services
         [ObservableProperty]
         public bool state = true;
 
-        private string lang = "EN";
-
-        private App app = (App)Application.Current;
-
         public string alphabet;
 
         private string keys_to_include;
@@ -59,7 +55,6 @@ namespace TransliteratorWPF_Version.Services
         }
 
         private KeyEventHandler gkh_KeyDownHandler;
-
 
         public List<string> memory = new List<string>();
 
@@ -320,7 +315,6 @@ namespace TransliteratorWPF_Version.Services
                     memory.Add(caseSensitiveCharacter);
                     liveTranslit.Transliterate(caseSensitiveCharacter);
                 }
-
             }
         }
 
@@ -365,7 +359,6 @@ namespace TransliteratorWPF_Version.Services
                 {
                     e.Handled = true;
                 }
-
                 else if (!translit.IsStartOfCombination(caseSensitiveCharacter))
                 {
                     if (upcomingText.Length > 1 && translit.IsPartOfCombination(upcomingText))

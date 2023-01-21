@@ -124,7 +124,7 @@ namespace TransliteratorWPF_Version.Views
         {
             foreach (string key in liveTransliterator.ukrTranslit.SortReplacementMapKeys(replacement_map))
             {
-                generatePanelWithEditBoxes(key, replacement_map[key]);
+                GeneratePanelWithEditBoxes(key, replacement_map[key]);
             }
         }
 
@@ -183,7 +183,7 @@ namespace TransliteratorWPF_Version.Views
             Application.Current.MainWindow.Top = (((workAreaHeight - (this.ActualHeight * dpiScaling)) / 2) + (workArea.Top * dpiScaling));
         }
 
-        public void generatePanelWithEditBoxes(string key, string value)
+        public void GeneratePanelWithEditBoxes(string key, string value)
         {
             int verticalOffset;
 
@@ -261,7 +261,7 @@ namespace TransliteratorWPF_Version.Views
             //app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
         }
 
-        private MessageBoxResult CreateModal(string text, string caption, MessageBoxButton button, MessageBoxImage icon)
+        private static MessageBoxResult CreateModal(string text, string caption, MessageBoxButton button, MessageBoxImage icon)
         {
             string messageBoxText = text;
             MessageBoxResult messageBoxResult;
@@ -274,7 +274,7 @@ namespace TransliteratorWPF_Version.Views
         {
             string[] combos = liveTransliterator.ukrTranslit.getReplacementMapCombos(replacementMap);
 
-            List<string> compositeCombos = checkForCompositeCombos(combos);
+            List<string> compositeCombos = CheckForCompositeCombos(combos);
 
             if (compositeCombos.Count > 0)
             {
@@ -291,7 +291,7 @@ namespace TransliteratorWPF_Version.Views
             return true;
         }
 
-        public List<string> checkForCompositeCombos(string[] combos)
+        public List<string> CheckForCompositeCombos(string[] combos)
         {
             foreach (string combo in combos)
             {
@@ -307,9 +307,9 @@ namespace TransliteratorWPF_Version.Views
             return new List<string>();
         }
 
-        private void addRowBtn_Click(object sender, RoutedEventArgs e)
+        private void AddRowBtn_Click(object sender, RoutedEventArgs e)
         {
-            generatePanelWithEditBoxes("", "");
+            GeneratePanelWithEditBoxes("", "");
             panel1.SetVerticalOffset(panel1.VerticalOffset);
         }
 
