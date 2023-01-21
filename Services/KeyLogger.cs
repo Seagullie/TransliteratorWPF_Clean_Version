@@ -19,16 +19,10 @@ namespace TransliteratorWPF_Version.Services
     {
         public bool State { get; set; } = true;
 
-        private string lang = "EN";
-
-        private App app = (App)Application.Current;
-
         public string alphabet;
-
-        private string keys_to_include;
         public string _stateDesc = "On";
 
-        public string stateDesc
+        public string StateDesc
         {
             get
             {
@@ -82,7 +76,6 @@ namespace TransliteratorWPF_Version.Services
         }
 
         private KeyEventHandler gkh_KeyDownHandler;
-
 
         public List<string> memory = new List<string>();
 
@@ -355,7 +348,6 @@ namespace TransliteratorWPF_Version.Services
                     memory.Add(caseSensitiveCharacter);
                     liveTranslit.Transliterate(caseSensitiveCharacter);
                 }
-
             }
         }
 
@@ -400,7 +392,6 @@ namespace TransliteratorWPF_Version.Services
                 {
                     e.Handled = true;
                 }
-
                 else if (!translit.IsStartOfCombination(caseSensitiveCharacter))
                 {
                     if (upcomingText.Length > 1 && translit.IsPartOfCombination(upcomingText))
@@ -488,7 +479,7 @@ namespace TransliteratorWPF_Version.Services
         public void Pause()
         {
             State = false;
-            stateDesc = "Off";
+            StateDesc = "Off";
 
             memory.Clear();
         }
@@ -496,7 +487,7 @@ namespace TransliteratorWPF_Version.Services
         public void Cont()
         {
             State = true;
-            stateDesc = "On";
+            StateDesc = "On";
         }
 
         public void Toggle()
