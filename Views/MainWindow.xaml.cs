@@ -21,7 +21,6 @@ namespace TransliteratorWPF_Version.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        
         public System.Windows.Forms.NotifyIcon ni;
 
         public App app
@@ -125,7 +124,7 @@ namespace TransliteratorWPF_Version.Views
 
             // -- state desc binding--
             // warning: hardcoded
-            var stateBindingObject = new Binding("stateDesc")
+            var stateBindingObject = new Binding("StateDesc")
             {
                 // Configure the binding
                 Mode = BindingMode.OneWay,
@@ -150,7 +149,7 @@ namespace TransliteratorWPF_Version.Views
             // -- state enabled color binding--
 
             // warning: hardcoded
-            var stateEnabledBindingObject = new Binding("stateDesc")
+            var stateEnabledBindingObject = new Binding("StateDesc")
             {
                 // Configure the binding
                 Mode = BindingMode.OneWay,
