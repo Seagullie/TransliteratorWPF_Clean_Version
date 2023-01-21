@@ -24,8 +24,7 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class DebugWindow : Window
     {
-          
-        private SoundPlayer soundCont;    
+        private SoundPlayer soundCont;
 
         private SoundPlayer soundPause;
 
@@ -35,12 +34,11 @@ namespace TransliteratorWPF_Version.Views
 
         public DebugWindow()
         {
-            // TODO: Rewrite  
-            string str = "TransliteratorWPF_Version.Resources.cont.waw";
+            string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";
             Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
             soundCont = new(s);
 
-            str = "TransliteratorWPF_Version.Resources.pause.waw";
+            str = "TransliteratorWPF_Version.Resources.Audio.pause.wav";
             s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
             soundPause = new(s);
             InitializeComponent();
@@ -111,7 +109,7 @@ namespace TransliteratorWPF_Version.Views
                 return;
             }
 
-            text = text + "\n";
+            text += "\n";
 
             if (color != null)
             {
