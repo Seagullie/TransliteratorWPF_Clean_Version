@@ -1,5 +1,6 @@
 ﻿using ModernWpf;
 using System;
+using System.IO;
 using System.Media;
 using System.Threading;
 using System.Windows;
@@ -23,15 +24,25 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class DebugWindow : Window
     {
-        private SoundPlayer soundCont = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.cont);
+          
+        private SoundPlayer soundCont;    
 
-        private SoundPlayer soundPause = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.pause);
+        private SoundPlayer soundPause;
+
         public bool logsEnabled = true;
 
         public App app = ((App)Application.Current);
 
         public DebugWindow()
         {
+            // TODO: Rewrite  
+            string str = "TransliteratorWPF_Version.Resources.cont.waw";
+            Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
+            soundCont = new(s);
+
+            str = "TransliteratorWPF_Version.Resources.pause.waw";
+            s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
+            soundPause = new(s);
             InitializeComponent();
         }
 

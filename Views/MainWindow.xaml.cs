@@ -1,6 +1,6 @@
 ﻿using ModernWpf;
 using System;
-using System.Media;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,9 +21,7 @@ namespace TransliteratorWPF_Version.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SoundPlayer soundCont = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.cont);
-
-        private SoundPlayer soundPause = new SoundPlayer(TransliteratorWPF_Version.Properties.Resources.pause);
+        
         public System.Windows.Forms.NotifyIcon ni;
 
         public App app
@@ -56,9 +54,15 @@ namespace TransliteratorWPF_Version.Views
         {
             InitializeComponent();
 
-            ni = new System.Windows.Forms.NotifyIcon();
-            ni.Icon = TransliteratorWPF_Version.Properties.Resources.keyboardIconMarginless;
-            ni.Visible = true;
+            string str = "TransliteratorWPF_Version.Resources.Images.keyboardIconMarginless.ico";
+            Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
+            System.Drawing.Icon icon = new(s);
+
+            ni = new System.Windows.Forms.NotifyIcon
+            {
+                Icon = icon,
+                Visible = true
+            };
             ni.Click +=
                 delegate (object sender, EventArgs args)
                 {
@@ -209,6 +213,7 @@ namespace TransliteratorWPF_Version.Views
             app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{selectedTable}");
         }
 
+        //TODO: Rewrite
         public void toggleTranslit_Click()
         {
             app.liveTranslit.keyLogger.Toggle();

@@ -12,7 +12,7 @@
     ui:WindowHelper.UseModernWindowStyle="True"
     Activated="Window_Activated"
     Closing="Window_Closing"
-    Icon="/keyboardIconMarginless.png"
+    Icon="{DynamicResource KeyboardIconMarginless}"
     Initialized="Window_Initialized"
     Loaded="Window_Loaded"
     MouseDown="Window_MouseDown"

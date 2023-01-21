@@ -59,6 +59,8 @@
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="WindowStyle" Value="None" />
             </Style>
+
+            <BitmapImage x:Key="KeyboardIconMarginless" UriSource="/TransliteratorWPF_Version;component/Resources/Images/keyboardIconMarginless.png" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
