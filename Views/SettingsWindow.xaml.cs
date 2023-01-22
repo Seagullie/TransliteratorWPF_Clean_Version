@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.ViewModels;
 using Application = System.Windows.Application;
 
 namespace TransliteratorWPF_Version.Views
@@ -48,26 +49,20 @@ namespace TransliteratorWPF_Version.Views
             }
         }
 
+        public SettingsViewModel ViewModel { get; private set; }
+
+
         public SettingsWindow()
         {
             InitializeComponent();
-        }
-
-        private void playSoundOnTranslitToggleCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.PlaySoundOnTranslitToggle = true;
-        }
-
-        private void playSoundOnTranslitToggleCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.PlaySoundOnTranslitToggle = false;
+            ViewModel = new ();
+            DataContext = ViewModel;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            playSoundOnTranslitToggleCheckBox.IsChecked = Settings.Default.PlaySoundOnTranslitToggle;
 
-            shortcutInputBox.Text = Settings.Default.toggleTranslitShortcut;
+            shortcutInputBox.Text = Settings.Default.ToggleTranslitShortcut;
             startMinimizedCheckBox.IsChecked = Settings.Default.StartMinimized;
             turnOnTranslitAtStartCheckBox.IsChecked = Settings.Default.turnOnTranslitAtStart;
             enableStateOverlayWindowCheckBox.IsChecked = Settings.Default.enableStateOverlayWindow;
@@ -107,7 +102,7 @@ namespace TransliteratorWPF_Version.Views
 
             string settingsString = $"{String.Join(" + ", modifiersDown)} + {formsKey}";
 
-            Settings.Default.toggleTranslitShortcut = settingsString;
+            Settings.Default.ToggleTranslitShortcut = settingsString;
             app.liveTranslit.keyLogger.fetchToggleTranslitShortcutFromSettings();
 
             shortcutInputBox.Text = settingsString;

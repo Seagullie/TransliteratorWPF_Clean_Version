@@ -5,7 +5,7 @@
     <Setting Name="PlaySoundOnTranslitToggle" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="toggleTranslitShortcut" Type="System.String" Scope="User">
+    <Setting Name="ToggleTranslitShortcut" Type="System.String" Scope="User">
       <Value Profile="(Default)">Alt, T</Value>
     </Setting>
     <Setting Name="displayCombos" Type="System.Boolean" Scope="User">
