@@ -55,19 +55,20 @@ namespace TransliteratorWPF_Version.Views
             Uri uriToImage = new Uri(Path.Combine(App.BaseDir, pathToImage), UriKind.Absolute);
             iconImg.Source = new BitmapImage(uriToImage);
 
+            //TODO: Fix state overlay color
             // -- state enabled color binding--
 
-            var stateEnabledBindingObject = new Binding("stateDesc")
-            {
-                // Configure the binding
-                Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.keyLogger
-            };
+            //var stateEnabledBindingObject = new Binding("StateDesc")
+            //{
+            //    // Configure the binding
+            //    Mode = BindingMode.OneWay,
+            //    Source = app.liveTranslit.keyLogger
+            //};
 
-            //stateEnabledBindingObject.Converter =
-            stateEnabledBindingObject.Converter = new StateToColorConverter();
+            ////stateEnabledBindingObject.Converter =
+            //stateEnabledBindingObject.Converter = new StateToColorConverter();
 
-            BindingOperations.SetBinding(stateRect, Rectangle.FillProperty, stateEnabledBindingObject);
+            //BindingOperations.SetBinding(stateRect, Rectangle.FillProperty, stateEnabledBindingObject);
         }
 
         private void StateOverlayWindow1_ContentRendered(object sender, EventArgs e)

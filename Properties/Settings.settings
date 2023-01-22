@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TransliteratorWPF_Version.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="playSoundOnTranslitToggle" Type="System.Boolean" Scope="User">
+    <Setting Name="PlaySoundOnTranslitToggle" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="toggleTranslitShortcut" Type="System.String" Scope="User">
@@ -11,7 +11,7 @@
     <Setting Name="displayCombos" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="startMinimized" Type="System.Boolean" Scope="User">
+    <Setting Name="StartMinimized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="turnOnTranslitAtStart" Type="System.Boolean" Scope="User">
@@ -23,7 +23,7 @@
     <Setting Name="ProgramFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="lastTranslitTable" Type="System.String" Scope="User">
+    <Setting Name="LastTranslitTable" Type="System.String" Scope="User">
       <Value Profile="(Default)">tableENG-UA.json</Value>
     </Setting>
     <Setting Name="pathToCustomToggleOnSound" Type="System.String" Scope="User">
@@ -32,7 +32,7 @@
     <Setting Name="pathToCustomToggleOffSound" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="selectedTheme" Type="System.String" Scope="User">
+    <Setting Name="SelectedTheme" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="enableStateOverlayWindow" Type="System.Boolean" Scope="User">

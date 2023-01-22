@@ -12,7 +12,7 @@ namespace TransliteratorWPF_Version.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.5.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,12 +26,12 @@ namespace TransliteratorWPF_Version.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool playSoundOnTranslitToggle {
+        public bool PlaySoundOnTranslitToggle {
             get {
-                return ((bool)(this["playSoundOnTranslitToggle"]));
+                return ((bool)(this["PlaySoundOnTranslitToggle"]));
             }
             set {
-                this["playSoundOnTranslitToggle"] = value;
+                this["PlaySoundOnTranslitToggle"] = value;
             }
         }
         
@@ -62,12 +62,12 @@ namespace TransliteratorWPF_Version.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool startMinimized {
+        public bool StartMinimized {
             get {
-                return ((bool)(this["startMinimized"]));
+                return ((bool)(this["StartMinimized"]));
             }
             set {
-                this["startMinimized"] = value;
+                this["StartMinimized"] = value;
             }
         }
         
@@ -110,12 +110,12 @@ namespace TransliteratorWPF_Version.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("tableENG-UA.json")]
-        public string lastTranslitTable {
+        public string LastTranslitTable {
             get {
-                return ((string)(this["lastTranslitTable"]));
+                return ((string)(this["LastTranslitTable"]));
             }
             set {
-                this["lastTranslitTable"] = value;
+                this["LastTranslitTable"] = value;
             }
         }
         
@@ -146,12 +146,12 @@ namespace TransliteratorWPF_Version.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string selectedTheme {
+        public string SelectedTheme {
             get {
-                return ((string)(this["selectedTheme"]));
+                return ((string)(this["SelectedTheme"]));
             }
             set {
-                this["selectedTheme"] = value;
+                this["SelectedTheme"] = value;
             }
         }
         
