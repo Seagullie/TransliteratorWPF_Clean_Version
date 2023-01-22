@@ -23,10 +23,10 @@
 
     <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
         <Image
-            x:Name="iconImg"
             Width="40"
             Height="40"
-            Margin="0,0,0,0" />
+            Margin="0,0,0,0"
+            Source="{DynamicResource KeyboardIconMarginless}" />
         <Rectangle
             x:Name="stateRect"
             Width="20"

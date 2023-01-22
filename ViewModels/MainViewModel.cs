@@ -202,7 +202,7 @@ namespace TransliteratorWPF_Version.ViewModels
         {
             Sound sound = new Sound();
 
-            string pathToSoundToPlay = Path.Combine(App.BaseDir, $"Resources/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
+            string pathToSoundToPlay = Path.Combine(App.BaseDir, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
 
             if (liveTransliterator.keyLogger.State == true && Settings.Default.pathToCustomToggleOnSound != "")
                 pathToSoundToPlay = Settings.Default.pathToCustomToggleOnSound;

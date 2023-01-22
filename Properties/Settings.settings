@@ -24,7 +24,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LastTranslitTable" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tableENG-UA.json</Value>
+      <Value Profile="(Default)">tableLAT-UKR.json</Value>
     </Setting>
     <Setting Name="pathToCustomToggleOnSound" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

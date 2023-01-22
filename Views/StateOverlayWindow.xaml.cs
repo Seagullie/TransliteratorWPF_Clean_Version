@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Path = System.IO.Path;
 
 namespace TransliteratorWPF_Version.Views
@@ -52,8 +51,8 @@ namespace TransliteratorWPF_Version.Views
 
             // this doesn't work. You better convert it to absolute path
 
-            Uri uriToImage = new Uri(Path.Combine(App.BaseDir, pathToImage), UriKind.Absolute);
-            iconImg.Source = new BitmapImage(uriToImage);
+            //Uri uriToImage = new Uri(Path.Combine(App.BaseDir, pathToImage), UriKind.Absolute);
+            //iconImg.Source = new BitmapImage(uriToImage);
 
             //TODO: Fix state overlay color
             // -- state enabled color binding--

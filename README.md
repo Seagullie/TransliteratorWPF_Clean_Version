@@ -22,5 +22,4 @@
 
 ## Getting Started
 1. Clone the repo.
-2. Copy `Resources` folder to `bin\Debug\netcoreapp3.1` before building the project.
-3. Once the program boots up, select your language pair by clicking the dropdown in the top right corner and then clicking on item of your interest.
+2. Once the program boots up, select your language pair by clicking the dropdown in the top right corner and then clicking on item of your interest.

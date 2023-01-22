@@ -109,7 +109,7 @@ namespace TransliteratorWPF_Version.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("tableENG-UA.json")]
+        [global::System.Configuration.DefaultSettingValueAttribute("tableLAT-UKR.json")]
         public string LastTranslitTable {
             get {
                 return ((string)(this["LastTranslitTable"]));
