@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
+using static TransliteratorWPF_Version.Services.LoggerService;
 using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
 
@@ -28,6 +29,7 @@ namespace TransliteratorWPF_Version.Services
         public LiveTransliterator liveTransliterator;
 
         public event EventHandler StateChanged;
+
         public event EventHandler ToggleTranslitShortcutChanged;
 
         public DebugWindow debugWindow
@@ -186,7 +188,7 @@ namespace TransliteratorWPF_Version.Services
 
             bool ctrlDown = keyStateChecker.IsKeyDown(Key.LeftCtrl);
 
-            debugWindow?.ConsoleLog($"ALT down: {altDown}. KeyString: {keyString}");
+            LogMessage($"ALT down: {altDown}. KeyString: {keyString}");
 
             HashSet<string> registeredKeyStrokesAsHash = new HashSet<string>();
             if (altDown)
@@ -224,13 +226,13 @@ namespace TransliteratorWPF_Version.Services
 
         private void gkh_KeyDown(object sender, KeyEventArgs e)
         {
-            debugWindow?.ConsoleLog("key pressed");
+            LogMessage("key pressed");
 
             if (HandleShortcuts(e)) return;
 
             if (State == false)
             {
-                debugWindow?.ConsoleLog("Translit off. Key skipped");
+                LogMessage("Translit off. Key skipped");
                 return;
             }
 
@@ -243,11 +245,11 @@ namespace TransliteratorWPF_Version.Services
             if (shouldIgnoreKey)
             {
                 keysToIgnore.RemoveAt(0);
-                debugWindow?.ConsoleLog($"ignoring this key: {UnicodeChar}");
+                LogMessage($"ignoring this key: {UnicodeChar}");
                 return;
             }
 
-            debugWindow?.ConsoleLog($"{e.KeyCode} (Unicode: {UnicodeChar}) DOWN");
+            LogMessage($"{e.KeyCode} (Unicode: {UnicodeChar}) DOWN");
 
             if (ShouldClearMemory())
             {
@@ -258,7 +260,7 @@ namespace TransliteratorWPF_Version.Services
             if (e.KeyCode.ToString() == "Back")
             {
                 HandleBackspace();
-                debugWindow?.ConsoleLog($"Handling {e.KeyCode}");
+                LogMessage($"Handling {e.KeyCode}");
                 return;
             }
 
@@ -266,7 +268,7 @@ namespace TransliteratorWPF_Version.Services
 
             if (ShouldSkipKey(UnicodeChar) && !isWordender(lowerCaseKeyCode, UnicodeChar))
             {
-                debugWindow?.ConsoleLog($"Skipping {e.KeyCode}");
+                LogMessage($"Skipping {e.KeyCode}");
                 return;
             }
 
@@ -274,7 +276,7 @@ namespace TransliteratorWPF_Version.Services
 
             bool isLowerCase = keyStateChecker.IsLowerCase();
             string caseSensitiveCharacter = isLowerCase ? UnicodeChar.ToLower() : UnicodeChar.ToUpper();
-            debugWindow?.ConsoleLog($"Keycode: {caseSensitiveCharacter}. KeyData: {e.KeyData} DOWN.");
+            LogMessage($"Keycode: {caseSensitiveCharacter}. KeyData: {e.KeyData} DOWN.");
 
             if (isWordender(lowerCaseKeyCode, UnicodeChar))
             {
@@ -286,7 +288,7 @@ namespace TransliteratorWPF_Version.Services
                 {
                     decideOnKeySuppression(caseSensitiveCharacter.ToLower(), ref e);
 
-                    ref var translit = ref (liveTransliterator.ukrTranslit);
+                    Transliterator translit = liveTransliterator.ukrTranslit;
                     string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
 
                     if (translit.EndsWithBrokenCombo(upcomingText) && translit.EndsWithComboInit(upcomingText) && !translit.IsPartOfCombination(upcomingText))
@@ -347,7 +349,7 @@ namespace TransliteratorWPF_Version.Services
                 else if (translit.isCombo(upcomingText))
                 {
                     e.Handled = true;
-                    debugWindow?.ConsoleLog($"{caseSensitiveCharacter} – is full combo finisher");
+                    LogMessage($"{caseSensitiveCharacter} – is full combo finisher");
                 }
                 else if (translit.EndsWithBrokenCombo(upcomingText) && !translit.IsPartOfCombination(upcomingText))
                 {
@@ -376,9 +378,9 @@ namespace TransliteratorWPF_Version.Services
 
             if (e.Handled)
             {
-                debugWindow?.ConsoleLog($"key {caseSensitiveCharacter} suppressed", "Purple");
+                LogMessage($"key {caseSensitiveCharacter} suppressed", "Purple");
             }
-            else debugWindow?.ConsoleLog($"key {caseSensitiveCharacter} passed through", "Green");
+            else LogMessage($"key {caseSensitiveCharacter} passed through", "Green");
 
             return e.Handled;
         }
@@ -447,7 +449,7 @@ namespace TransliteratorWPF_Version.Services
 
         public void Cont()
         {
-            State = true;        
+            State = true;
             StateDesc = "On";
         }
 

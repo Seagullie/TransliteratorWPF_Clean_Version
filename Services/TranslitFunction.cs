@@ -10,6 +10,7 @@ using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
+using static TransliteratorWPF_Version.Services.LoggerService;
 
 // I want to write the tables as json files and then import those files here.
 // But it is important to have them easily accessible and editable.
@@ -18,18 +19,6 @@ using Application = System.Windows.Application;
 // Perhaps you setup everything with an installer? https://stackoverflow.com/questions/2251062/how-to-make-an-installer-for-my-c-sharp-application
 namespace TransliteratorWPF_Version.Services
 {
-    public class TranslitFunction
-    {
-        private TranslitFunction(string[] args)
-        {
-            var translit = new Transliterator();
-            var translitResult = translit.transliterate("schuka");
-
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine(translitResult);
-        }
-    }
-
     // trying to find a way to surround text with braces by selecting it and pressing the key for opening brace
     // reading this SO thread and trying things out, but to no avail
     // trying out AutoSurround plugin. It works.
@@ -495,7 +484,7 @@ namespace TransliteratorWPF_Version.Services
                 string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
                 if (EndsWithComboInit(substr))
                 {
-                    debugWindow?.ConsoleLog($"broken combo detected: {text}");
+                    LogMessage($"broken combo detected: {text}");
                     return true;
                 }
             }
