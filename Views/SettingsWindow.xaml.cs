@@ -100,6 +100,7 @@ namespace TransliteratorWPF_Version.Views
             Keys formsKey;
             formsKey = (Keys)KeyInterop.VirtualKeyFromKey(wpfKey);
 
+            // TODO: Rewrite this part. KeyLogger can't be accessed this way anymore due to recent refactoring changes
             bool altDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftAlt);
             bool ctrlDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftCtrl);
             string[] modifiersDown = { altDown ? "Alt" : "", ctrlDown ? "Control" : "" };
@@ -119,6 +120,8 @@ namespace TransliteratorWPF_Version.Views
         {
             // switch translit table to accentsTable
             // warning: hardcoded
+
+            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
             const string accentsTable = "tableAccents.json";
             string previousTable = app.liveTranslit.ukrTranslit.replacement_map_filename;
 
@@ -148,6 +151,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             Settings.Default.displayCombos = true;
+            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
             app.liveTranslit.displayCombos = true;
 
             if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
@@ -168,6 +172,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             Settings.Default.displayCombos = false;
+            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
             app.liveTranslit.displayCombos = false;
 
             if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
