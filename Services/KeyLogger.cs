@@ -25,9 +25,10 @@ namespace TransliteratorWPF_Version.Services
         [ObservableProperty]
         public string stateDesc = "On";
 
-        private LiveTransliterator liveTransliterator;
+        public LiveTransliterator liveTransliterator;
 
         public event EventHandler StateChanged;
+
         public event EventHandler ToggleTranslitShortcutChanged;
 
         public DebugWindow debugWindow
@@ -286,7 +287,7 @@ namespace TransliteratorWPF_Version.Services
                 {
                     decideOnKeySuppression(caseSensitiveCharacter.ToLower(), ref e);
 
-                    ref var translit = ref ((App)Application.Current).liveTranslit.ukrTranslit;
+                    Transliterator translit = liveTransliterator.ukrTranslit;
                     string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
 
                     if (translit.EndsWithBrokenCombo(upcomingText) && translit.EndsWithComboInit(upcomingText) && !translit.IsPartOfCombination(upcomingText))
@@ -447,7 +448,7 @@ namespace TransliteratorWPF_Version.Services
 
         public void Cont()
         {
-            State = true;        
+            State = true;
             StateDesc = "On";
         }
 

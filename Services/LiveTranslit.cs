@@ -42,6 +42,8 @@ namespace TransliteratorWPF_Version.Services
         private LiveTransliterator()
         {
             keyLogger = KeyLogger.GetInstance();
+            keyLogger.liveTransliterator = this;
+
             keyLogger.LogKeys();
 
             if (Settings.Default.turnOnTranslitAtStart == false && state == 1)
