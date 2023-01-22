@@ -27,6 +27,8 @@ namespace TransliteratorWPF_Version.Services
     {
         public HashSet<string> alphabet = new HashSet<string> { };
 
+        private readonly LoggerService loggerService;
+
         public App app
         {
             get
@@ -128,6 +130,8 @@ namespace TransliteratorWPF_Version.Services
 
         public Transliterator()
         {
+            // TODO: Dependency injection 
+            loggerService = LoggerService.GetInstance();
             // .toList() returns a copy of existing array
             wordendersVanilla = wordenders.ToList();
 
@@ -484,7 +488,7 @@ namespace TransliteratorWPF_Version.Services
                 string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
                 if (EndsWithComboInit(substr))
                 {
-                    LogMessage($"broken combo detected: {text}");
+                    loggerService.LogMessage(this, $"broken combo detected: {text}");
                     return true;
                 }
             }

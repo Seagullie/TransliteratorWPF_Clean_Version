@@ -5,15 +5,16 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.ViewModels;
 using Application = System.Windows.Application;
-using static TransliteratorWPF_Version.Services.LoggerService;
 
 namespace TransliteratorWPF_Version.Views
 {
     public partial class SettingsWindow : Window
     {
         private App app = ((App)Application.Current);
+        private readonly LoggerService loggerService;
 
         public DebugWindow? debugWindow
         {
@@ -55,6 +56,7 @@ namespace TransliteratorWPF_Version.Views
 
         public SettingsWindow()
         {
+            loggerService = LoggerService.GetInstance();
             InitializeComponent();
             ViewModel = new ();
             DataContext = ViewModel;
@@ -84,7 +86,7 @@ namespace TransliteratorWPF_Version.Views
         {
             shortcutInputBox.Clear();
 
-            LogMessage($"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
+            loggerService.LogMessage(this, $"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
 
             Key wpfKey = e.Key;
 

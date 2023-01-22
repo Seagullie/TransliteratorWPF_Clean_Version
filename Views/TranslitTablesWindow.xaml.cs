@@ -25,6 +25,7 @@ namespace TransliteratorWPF_Version.Views
     public partial class TranslitTablesWindow : Window
     {
         private App app = ((App)Application.Current);
+        private readonly LoggerService loggerService;
 
         public MainWindow mainWindow
         {
@@ -52,6 +53,8 @@ namespace TransliteratorWPF_Version.Views
 
         public TranslitTablesWindow()
         {
+            // TODO: Dependency injection 
+            loggerService = LoggerService.GetInstance();
             InitializeComponent();
         }
 
@@ -104,7 +107,7 @@ namespace TransliteratorWPF_Version.Views
             {
                 // a notification would be nice here
 
-                LogMessage($"A table needs to be selected.");
+                loggerService.LogMessage(this, $"A table needs to be selected.");
                 return;
             }
 
@@ -113,7 +116,7 @@ namespace TransliteratorWPF_Version.Views
             File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
 
             // a notification would be nice here
-            LoggerService.LogMessage($"{tableName} has been deleted");
+            loggerService.LogMessage(this, $"{tableName} has been deleted");
 
             app.liveTranslit.ukrTranslit.TranslitTables.Remove(tableName);
             // creating a copy to trigger event

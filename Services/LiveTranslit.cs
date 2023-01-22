@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
-using static TransliteratorWPF_Version.Services.LoggerService;
 
 namespace TransliteratorWPF_Version.Services
 {
@@ -18,6 +17,8 @@ namespace TransliteratorWPF_Version.Services
         public Transliterator ukrTranslit = new Transliterator();
         public KeyLogger keyLogger;
         public int slowDownKBEInjections = 0;
+
+        private readonly LoggerService loggerService;
 
         public DebugWindow debugWindow
         {
@@ -42,10 +43,12 @@ namespace TransliteratorWPF_Version.Services
 
         private LiveTransliterator()
         {
+            // TODO: Dependency injection 
             keyLogger = KeyLogger.GetInstance();
             keyLogger.liveTransliterator = this;
-
             keyLogger.LogKeys();
+
+            loggerService = LoggerService.GetInstance();
 
             if (Settings.Default.turnOnTranslitAtStart == false && state == 1)
             {
@@ -106,7 +109,7 @@ namespace TransliteratorWPF_Version.Services
             uint vkCode = (byte)VkKeyScan('q');
 
             IntPtr hwnd = GetForegroundWindow();
-            LogMessage(hwnd.ToString());
+            loggerService.LogMessage(this, hwnd.ToString());
 
             extraKeyInfo lParam = new extraKeyInfo();
 
@@ -124,7 +127,7 @@ namespace TransliteratorWPF_Version.Services
 
         public async void Write(string text, bool isTestInput = false)
         {
-            LogMessage("Writing this: " + text);
+            loggerService.LogMessage(this, "Writing this: " + text);
 
             foreach (char character in text)
             {
@@ -241,7 +244,7 @@ namespace TransliteratorWPF_Version.Services
         public void TransliterateAndEditIn(string last_key)
         {
             var transliterated_text = ukrTranslit.transliterate(keyLogger.GetMemoryAsString());
-            LogMessage($"transliterated version to insert: {transliterated_text}. Original ver.: {keyLogger.GetMemoryAsString()}");
+            loggerService.LogMessage(this, $"transliterated version to insert: {transliterated_text}. Original ver.: {keyLogger.GetMemoryAsString()}");
             EditTextbox(last_key, transliterated_text);
         }
 
@@ -261,7 +264,7 @@ namespace TransliteratorWPF_Version.Services
                 int nOfEraseSignalsToSend = keyLoggerMemoryAsString.Length - (shouldNotEraseLastChar ? 1 : 0) + keyLogger.nOfKeysOmmittedFromMemory;
                 keyLogger.nOfKeysOmmittedFromMemory = 0;
 
-                LogMessage($"Sending {nOfEraseSignalsToSend} erase signals", "Red");
+                loggerService.LogMessage(this, $"Sending {nOfEraseSignalsToSend} erase signals", "Red");
 
                 Write(string.Concat(Enumerable.Repeat("\b", nOfEraseSignalsToSend)) + transliterated_text);
             }

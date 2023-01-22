@@ -32,16 +32,18 @@ namespace TransliteratorWPF_Version.Views
         public bool logsEnabled = true;
 
         private readonly LiveTransliterator liveTransliterator;
-
+        private readonly LoggerService loggerService;
         //public App app = ((App)Application.Current);
 
         public DebugWindow()
         {
-            // what happens when the window is closed and then opened again? Two handlers logging the same message?
-            LoggerService.NewLogMessageEvent += ConsoleLog;
+            
 
             // TODO: Dependency injection
             liveTransliterator = LiveTransliterator.GetInstance();
+            loggerService = LoggerService.GetInstance();
+
+            loggerService.NewLogMessage += ConsoleLog;
 
             string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";
             Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
@@ -111,22 +113,25 @@ namespace TransliteratorWPF_Version.Views
             return tables;
         }
 
-        public void ConsoleLog(string text, string? color = null)
+        public void ConsoleLog(object sender, NewLogMessageEventArg e)
         {
             if (!logsEnabled)
             {
                 return;
             }
 
-            text += "\n";
+            var message = e.Message;
+            message += "\n";
+
+            var color = e.Color;
 
             if (color != null)
             {
-                AppendColoredText(outputTextBox, text, color.ToString());
+                AppendColoredText(outputTextBox, message, color.ToString());
             }
             else
             {
-                outputTextBox.AppendText(text);
+                outputTextBox.AppendText(message);
             }
 
             outputTextBox.ScrollToEnd();
@@ -156,7 +161,7 @@ namespace TransliteratorWPF_Version.Views
                 soundToPlay.Play();
             }
 
-            ConsoleLog($"Translit {stateDesc}");
+            loggerService.LogMessage(this, $"Translit {stateDesc}");
             StateLabel.Content = stateDesc;
             if (liveTransliterator.keyLogger.State == true)
             {
@@ -239,8 +244,8 @@ namespace TransliteratorWPF_Version.Views
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
 
-            ConsoleLog("Up And Running");
-            ConsoleLog($"BaseDir is: {App.BaseDir}");
+            loggerService.LogMessage(this, "Up And Running");
+            loggerService.LogMessage(this, $"BaseDir is: {App.BaseDir}");
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -265,7 +270,7 @@ namespace TransliteratorWPF_Version.Views
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
         {
             string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.replacement_map, Newtonsoft.Json.Formatting.Indented);
-            ConsoleLog("\n" + serializedTable);
+            loggerService.LogMessage(this, "\n" + serializedTable);
         }
 
         private void checkCaseButtonsBtn_Click(object sender, RoutedEventArgs e)
@@ -273,7 +278,7 @@ namespace TransliteratorWPF_Version.Views
             bool isCAPSLOCKon = liveTransliterator.keyLogger.keyStateChecker.IsCAPSLOCKon();
             bool isShiftPressedDown = liveTransliterator.keyLogger.keyStateChecker.IsShiftPressedDown();
 
-            ConsoleLog($"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
+            loggerService.LogMessage(this, $"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
         }
 
         private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
@@ -285,7 +290,7 @@ namespace TransliteratorWPF_Version.Views
         private void getKeyLoggerMemoryBtn_Click(object sender, RoutedEventArgs e)
         {
             string memory = liveTransliterator.keyLogger.GetMemoryAsString();
-            ConsoleLog($"Key Logger memory: [{memory}]");
+            loggerService.LogMessage(this, $"Key Logger memory: [{memory}]");
         }
 
         private void allowInjectedKeysBtn_Click(object sender, RoutedEventArgs e)
@@ -301,7 +306,7 @@ namespace TransliteratorWPF_Version.Views
         private void getLayoutBtn_Click(object sender, RoutedEventArgs e)
         {
             string layout = Utilities.GetCurrentKbLayout();
-            ConsoleLog(layout);
+            loggerService.LogMessage(this, layout);
         }
 
         private void closeBtn_Click(object sender, RoutedEventArgs e)
