@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using TransliteratorWPF_Version.Services;
+using static TransliteratorWPF_Version.Services.LoggerService;
 using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -22,8 +24,6 @@ namespace TransliteratorWPF_Version.Views
     /// </summary>
     public partial class TranslitTablesWindow : Window
     {
-        //private DebugWindow debugWindow = (DebugWindow)Application.Current.MainWindow;
-
         private App app = ((App)Application.Current);
 
         public MainWindow mainWindow
@@ -104,7 +104,7 @@ namespace TransliteratorWPF_Version.Views
             {
                 // a notification would be nice here
 
-                debugWindow?.ConsoleLog($"A table needs to be selected.");
+                LogMessage($"A table needs to be selected.");
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace TransliteratorWPF_Version.Views
             File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
 
             // a notification would be nice here
-            debugWindow?.ConsoleLog($"{tableName} has been deleted");
+            LoggerService.LogMessage($"{tableName} has been deleted");
 
             app.liveTranslit.ukrTranslit.TranslitTables.Remove(tableName);
             // creating a copy to trigger event

@@ -37,7 +37,10 @@ namespace TransliteratorWPF_Version.Views
 
         public DebugWindow()
         {
-            // TODO: Dependency injection 
+            // what happens when the window is closed and then opened again? Two handlers logging the same message?
+            LoggerService.NewLogMessageEvent += ConsoleLog;
+
+            // TODO: Dependency injection
             liveTransliterator = LiveTransliterator.GetInstance();
 
             string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";

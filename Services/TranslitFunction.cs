@@ -10,6 +10,7 @@ using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
+using static TransliteratorWPF_Version.Services.LoggerService;
 
 // I want to write the tables as json files and then import those files here.
 // But it is important to have them easily accessible and editable.
@@ -483,7 +484,7 @@ namespace TransliteratorWPF_Version.Services
                 string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
                 if (EndsWithComboInit(substr))
                 {
-                    debugWindow?.ConsoleLog($"broken combo detected: {text}");
+                    LogMessage($"broken combo detected: {text}");
                     return true;
                 }
             }

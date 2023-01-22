@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using TransliteratorWPF_Version.Properties;
 using Application = System.Windows.Application;
+using static TransliteratorWPF_Version.Services.LoggerService;
 
 namespace TransliteratorWPF_Version.Views
 {
@@ -88,7 +89,7 @@ namespace TransliteratorWPF_Version.Views
         {
             shortcutInputBox.Clear();
 
-            debugWindow?.ConsoleLog($"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
+            LogMessage($"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
 
             Key wpfKey = e.Key;
 

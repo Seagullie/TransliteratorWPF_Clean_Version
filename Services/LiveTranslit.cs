@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
+using static TransliteratorWPF_Version.Services.LoggerService;
 
 namespace TransliteratorWPF_Version.Services
 {
@@ -105,7 +106,7 @@ namespace TransliteratorWPF_Version.Services
             uint vkCode = (byte)VkKeyScan('q');
 
             IntPtr hwnd = GetForegroundWindow();
-            debugWindow?.ConsoleLog(hwnd.ToString());
+            LogMessage(hwnd.ToString());
 
             extraKeyInfo lParam = new extraKeyInfo();
 
@@ -123,7 +124,7 @@ namespace TransliteratorWPF_Version.Services
 
         public async void Write(string text, bool isTestInput = false)
         {
-            debugWindow?.ConsoleLog("Writing this: " + text);
+            LogMessage("Writing this: " + text);
 
             foreach (char character in text)
             {
@@ -240,7 +241,7 @@ namespace TransliteratorWPF_Version.Services
         public void TransliterateAndEditIn(string last_key)
         {
             var transliterated_text = ukrTranslit.transliterate(keyLogger.GetMemoryAsString());
-            debugWindow?.ConsoleLog($"transliterated version to insert: {transliterated_text}. Original ver.: {keyLogger.GetMemoryAsString()}");
+            LogMessage($"transliterated version to insert: {transliterated_text}. Original ver.: {keyLogger.GetMemoryAsString()}");
             EditTextbox(last_key, transliterated_text);
         }
 
@@ -260,7 +261,7 @@ namespace TransliteratorWPF_Version.Services
                 int nOfEraseSignalsToSend = keyLoggerMemoryAsString.Length - (shouldNotEraseLastChar ? 1 : 0) + keyLogger.nOfKeysOmmittedFromMemory;
                 keyLogger.nOfKeysOmmittedFromMemory = 0;
 
-                debugWindow?.ConsoleLog($"Sending {nOfEraseSignalsToSend} erase signals", "Red");
+                LogMessage($"Sending {nOfEraseSignalsToSend} erase signals", "Red");
 
                 Write(string.Concat(Enumerable.Repeat("\b", nOfEraseSignalsToSend)) + transliterated_text);
             }
