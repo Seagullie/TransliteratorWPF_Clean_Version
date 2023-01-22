@@ -18,18 +18,6 @@ using Application = System.Windows.Application;
 // Perhaps you setup everything with an installer? https://stackoverflow.com/questions/2251062/how-to-make-an-installer-for-my-c-sharp-application
 namespace TransliteratorWPF_Version.Services
 {
-    public class TranslitFunction
-    {
-        private TranslitFunction(string[] args)
-        {
-            var translit = new Transliterator();
-            var translitResult = translit.transliterate("schuka");
-
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine(translitResult);
-        }
-    }
-
     // trying to find a way to surround text with braces by selecting it and pressing the key for opening brace
     // reading this SO thread and trying things out, but to no avail
     // trying out AutoSurround plugin. It works.
