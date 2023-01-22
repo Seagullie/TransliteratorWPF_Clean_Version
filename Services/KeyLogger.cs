@@ -22,18 +22,10 @@ namespace TransliteratorWPF_Version.Services
 
         public string alphabet;
 
-        private string keys_to_include;
-
         [ObservableProperty]
         public string stateDesc = "On";
 
-        public LiveTransliterator liveTranslit
-        {
-            get
-            {
-                return ((App)Application.Current).liveTranslit;
-            }
-        }
+        private LiveTransliterator liveTransliterator;
 
         public event EventHandler StateChanged;
         public event EventHandler ToggleTranslitShortcutChanged;
@@ -214,8 +206,10 @@ namespace TransliteratorWPF_Version.Services
 
             if (registeredKeyStrokesAsHash.SetEquals(ToggleTranslitShortcut))
             {
-                // TODO: Try udnerstand this logic
-                app.liveTranslit.keyLogger.State = !app.liveTranslit.keyLogger.State;
+                // TODO: Try udnerstand this logic and do code refactoring
+                State = !State;
+                e.Handled = true;
+                return true;
             }
 
             // I don't udnerstand why it even works if shift isn't pressed simultaneously with alt, but rather a moment later, which makes catching shift as main key more favourable
@@ -288,7 +282,7 @@ namespace TransliteratorWPF_Version.Services
             }
             else
             {
-                if (liveTranslit.displayCombos)
+                if (liveTransliterator.displayCombos)
                 {
                     decideOnKeySuppression(caseSensitiveCharacter.ToLower(), ref e);
 
@@ -298,14 +292,14 @@ namespace TransliteratorWPF_Version.Services
                     if (translit.EndsWithBrokenCombo(upcomingText) && translit.EndsWithComboInit(upcomingText) && !translit.IsPartOfCombination(upcomingText))
                     {
                         nOfKeysOmmittedFromMemory = 1;
-                        liveTranslit.Transliterate(caseSensitiveCharacter, true);
+                        liveTransliterator.Transliterate(caseSensitiveCharacter, true);
                         memory.Add(caseSensitiveCharacter);
-                        liveTranslit.Write(caseSensitiveCharacter);
+                        liveTransliterator.Write(caseSensitiveCharacter);
                     }
                     else
                     {
                         memory.Add(caseSensitiveCharacter);
-                        liveTranslit.Transliterate(caseSensitiveCharacter);
+                        liveTransliterator.Transliterate(caseSensitiveCharacter);
                     }
                 }
                 else
@@ -313,14 +307,14 @@ namespace TransliteratorWPF_Version.Services
                     e.Handled = true;
 
                     memory.Add(caseSensitiveCharacter);
-                    liveTranslit.Transliterate(caseSensitiveCharacter);
+                    liveTransliterator.Transliterate(caseSensitiveCharacter);
                 }
             }
         }
 
         public bool isWordender(string lowerCaseKeyCode, string UnicodeChar)
         {
-            var wordenders = liveTranslit.ukrTranslit.wordenders;
+            var wordenders = liveTransliterator.ukrTranslit.wordenders;
 
             return wordenders.Contains(lowerCaseKeyCode) || wordenders.Contains(UnicodeChar.ToLower());
         }
@@ -334,13 +328,13 @@ namespace TransliteratorWPF_Version.Services
 
             e.Handled = true;
 
-            liveTranslit.Transliterate(UnicodeChar, true);
-            liveTranslit.Write(UnicodeChar);
+            liveTransliterator.Transliterate(UnicodeChar, true);
+            liveTransliterator.Write(UnicodeChar);
         }
 
         public bool decideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
-            ref Transliterator translit = ref liveTranslit.ukrTranslit;
+            ref Transliterator translit = ref liveTransliterator.ukrTranslit;
 
             if (translit.IsPartOfCombination(caseSensitiveCharacter))
             {
@@ -398,7 +392,7 @@ namespace TransliteratorWPF_Version.Services
         {
             key_name = key_name.ToLower();
 
-            if (!liveTranslit.ukrTranslit.alphabet.Contains(key_name))
+            if (!liveTransliterator.ukrTranslit.alphabet.Contains(key_name))
             {
                 return true;
             }

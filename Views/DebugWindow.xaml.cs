@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Services;
 using WindowsInput;
 using WindowsInput.Native;
 using Application = System.Windows.Application;
@@ -30,10 +31,15 @@ namespace TransliteratorWPF_Version.Views
 
         public bool logsEnabled = true;
 
-        public App app = ((App)Application.Current);
+        private readonly LiveTransliterator liveTransliterator;
+
+        //public App app = ((App)Application.Current);
 
         public DebugWindow()
         {
+            // TODO: Dependency injection 
+            liveTransliterator = LiveTransliterator.GetInstance();
+
             string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";
             Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
             soundCont = new(s);
@@ -138,18 +144,18 @@ namespace TransliteratorWPF_Version.Views
 
         public void toggleTranslit_Click()
         {
-            app.liveTranslit.keyLogger.Toggle();
-            string stateDesc = (app.liveTranslit.keyLogger.State == true ? "On" : "Off");
+            liveTransliterator.keyLogger.Toggle();
+            string stateDesc = (liveTransliterator.keyLogger.State == true ? "On" : "Off");
 
             if ((Settings.Default.PlaySoundOnTranslitToggle))
             {
-                SoundPlayer soundToPlay = app.liveTranslit.keyLogger.State == true ? soundCont : soundPause;
+                SoundPlayer soundToPlay = liveTransliterator.keyLogger.State == true ? soundCont : soundPause;
                 soundToPlay.Play();
             }
 
             ConsoleLog($"Translit {stateDesc}");
             StateLabel.Content = stateDesc;
-            if (app.liveTranslit.keyLogger.State == true)
+            if (liveTransliterator.keyLogger.State == true)
             {
                 StateLabel.Foreground = new SolidColorBrush(Colors.Green);
             }
@@ -180,7 +186,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             string selectedTable = translitTablesBox.SelectedItem.ToString();
-            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{selectedTable}");
+            liveTransliterator.ukrTranslit.SetReplacementMapFromJson($"{selectedTable}");
         }
 
         private void testTextBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -198,7 +204,7 @@ namespace TransliteratorWPF_Version.Views
             var stateBindingObject = new Binding("StateDesc")
             {
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.keyLogger
+                Source = liveTransliterator.keyLogger
             };
 
             BindingOperations.SetBinding(StateLabel, Label.ContentProperty, stateBindingObject);
@@ -206,7 +212,7 @@ namespace TransliteratorWPF_Version.Views
             var stateColorBindingObject = new Binding("StateDesc")
             {
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.keyLogger
+                Source = liveTransliterator.keyLogger
             };
 
             IValueConverter converterFunc = new StateToColorConverter();
@@ -217,7 +223,7 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.ukrTranslit
+                Source = liveTransliterator.ukrTranslit
             };
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
@@ -225,7 +231,7 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxSelectedIndex = new Binding("selectedTranslitTableIndex")
             {
                 Mode = BindingMode.TwoWay,
-                Source = app.liveTranslit.ukrTranslit
+                Source = liveTransliterator.ukrTranslit
             };
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
@@ -245,7 +251,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void allowInjectedKeysButton_Click(object sender, RoutedEventArgs e)
         {
-            app.liveTranslit.keyLogger.gkh.alwaysAllowInjected = true;
+            liveTransliterator.keyLogger.gkh.alwaysAllowInjected = true;
         }
 
         private void toggleLogsBtn_Click(object sender, RoutedEventArgs e)
@@ -255,14 +261,14 @@ namespace TransliteratorWPF_Version.Views
 
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
         {
-            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(app.liveTranslit.ukrTranslit.replacement_map, Newtonsoft.Json.Formatting.Indented);
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.replacement_map, Newtonsoft.Json.Formatting.Indented);
             ConsoleLog("\n" + serializedTable);
         }
 
         private void checkCaseButtonsBtn_Click(object sender, RoutedEventArgs e)
         {
-            bool isCAPSLOCKon = app.liveTranslit.keyLogger.keyStateChecker.IsCAPSLOCKon();
-            bool isShiftPressedDown = app.liveTranslit.keyLogger.keyStateChecker.IsShiftPressedDown();
+            bool isCAPSLOCKon = liveTransliterator.keyLogger.keyStateChecker.IsCAPSLOCKon();
+            bool isShiftPressedDown = liveTransliterator.keyLogger.keyStateChecker.IsShiftPressedDown();
 
             ConsoleLog($"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
         }
@@ -270,23 +276,23 @@ namespace TransliteratorWPF_Version.Views
         private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
         {
             textBox1.Focus();
-            await app.liveTranslit.WriteInjected("simulated");
+            await liveTransliterator.WriteInjected("simulated");
         }
 
         private void getKeyLoggerMemoryBtn_Click(object sender, RoutedEventArgs e)
         {
-            string memory = app.liveTranslit.keyLogger.GetMemoryAsString();
+            string memory = liveTransliterator.keyLogger.GetMemoryAsString();
             ConsoleLog($"Key Logger memory: [{memory}]");
         }
 
         private void allowInjectedKeysBtn_Click(object sender, RoutedEventArgs e)
         {
-            app.liveTranslit.keyLogger.gkh.alwaysAllowInjected = true;
+            liveTransliterator.keyLogger.gkh.alwaysAllowInjected = true;
         }
 
         private void slowDownKBEInjectionsBtn_Click(object sender, RoutedEventArgs e)
         {
-            app.liveTranslit.slowDownKBEInjections = 2000;
+            liveTransliterator.slowDownKBEInjections = 2000;
         }
 
         private void getLayoutBtn_Click(object sender, RoutedEventArgs e)
