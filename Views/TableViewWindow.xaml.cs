@@ -25,6 +25,8 @@ namespace TransliteratorWPF_Version.Views
 
         private App app = ((App)Application.Current);
 
+        private readonly LoggerService loggerService;
+
         public MainWindow mainWindow
         {
             get
@@ -53,6 +55,7 @@ namespace TransliteratorWPF_Version.Views
         {
             // TODO: Dependency injection
             liveTransliterator = LiveTransliterator.GetInstance();
+            loggerService = LoggerService.GetInstance();
 
             InitializeComponent();
         }
@@ -94,7 +97,7 @@ namespace TransliteratorWPF_Version.Views
         {
             if (comboBox1.SelectedItem == null)
             {
-                LogMessage($"A table needs to be selected.");
+                loggerService.LogMessage(this, $"A table needs to be selected.");
                 return;
             }
 
@@ -102,7 +105,7 @@ namespace TransliteratorWPF_Version.Views
 
             File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
 
-            LogMessage($"{tableName} has been deleted");
+            loggerService.LogMessage(this, $"{tableName} has been deleted");
 
             liveTransliterator.ukrTranslit.TranslitTables.Remove(tableName);
             liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();

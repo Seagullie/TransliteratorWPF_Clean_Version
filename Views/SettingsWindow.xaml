@@ -25,12 +25,10 @@
         <ui:SimpleStackPanel HorizontalAlignment="Center">
             <Grid Width="Auto" HorizontalAlignment="Stretch">
                 <CheckBox
-                    x:Name="playSoundOnTranslitToggleCheckBox"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Checked="playSoundOnTranslitToggleCheckBox_Checked"
                     Content="Play sound on toggle"
-                    Unchecked="playSoundOnTranslitToggleCheckBox_Unchecked" />
+                    IsChecked="{Binding ToggleSoundIsOn}" />
 
                 <Button
                     x:Name="editToggleSoundsBtn"
@@ -96,6 +94,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 KeyDown="shortcutInputBox_KeyDown"
+                Text="{Binding ToggleTranslitShortcut}"
                 TextWrapping="Wrap" />
         </ui:SimpleStackPanel>
 

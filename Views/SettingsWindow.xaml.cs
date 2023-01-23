@@ -5,14 +5,16 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Services;
+using TransliteratorWPF_Version.ViewModels;
 using Application = System.Windows.Application;
-using static TransliteratorWPF_Version.Services.LoggerService;
 
 namespace TransliteratorWPF_Version.Views
 {
     public partial class SettingsWindow : Window
     {
         private App app = ((App)Application.Current);
+        private readonly LoggerService loggerService;
 
         public DebugWindow? debugWindow
         {
@@ -49,26 +51,21 @@ namespace TransliteratorWPF_Version.Views
             }
         }
 
+        public SettingsViewModel ViewModel { get; private set; }
+
+
         public SettingsWindow()
         {
+            loggerService = LoggerService.GetInstance();
             InitializeComponent();
-        }
-
-        private void playSoundOnTranslitToggleCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.PlaySoundOnTranslitToggle = true;
-        }
-
-        private void playSoundOnTranslitToggleCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            Settings.Default.PlaySoundOnTranslitToggle = false;
+            ViewModel = new ();
+            DataContext = ViewModel;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            playSoundOnTranslitToggleCheckBox.IsChecked = Settings.Default.PlaySoundOnTranslitToggle;
 
-            shortcutInputBox.Text = Settings.Default.toggleTranslitShortcut;
+            shortcutInputBox.Text = Settings.Default.ToggleTranslitShortcut;
             startMinimizedCheckBox.IsChecked = Settings.Default.StartMinimized;
             turnOnTranslitAtStartCheckBox.IsChecked = Settings.Default.turnOnTranslitAtStart;
             enableStateOverlayWindowCheckBox.IsChecked = Settings.Default.enableStateOverlayWindow;
@@ -89,7 +86,7 @@ namespace TransliteratorWPF_Version.Views
         {
             shortcutInputBox.Clear();
 
-            LogMessage($"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
+            loggerService.LogMessage(this, $"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
 
             Key wpfKey = e.Key;
 
@@ -109,7 +106,7 @@ namespace TransliteratorWPF_Version.Views
 
             string settingsString = $"{String.Join(" + ", modifiersDown)} + {formsKey}";
 
-            Settings.Default.toggleTranslitShortcut = settingsString;
+            Settings.Default.ToggleTranslitShortcut = settingsString;
             app.liveTranslit.keyLogger.fetchToggleTranslitShortcutFromSettings();
 
             shortcutInputBox.Text = settingsString;

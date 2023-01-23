@@ -38,12 +38,12 @@ namespace TransliteratorWPF_Version.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Alt, T")]
-        public string toggleTranslitShortcut {
+        public string ToggleTranslitShortcut {
             get {
-                return ((string)(this["toggleTranslitShortcut"]));
+                return ((string)(this["ToggleTranslitShortcut"]));
             }
             set {
-                this["toggleTranslitShortcut"] = value;
+                this["ToggleTranslitShortcut"] = value;
             }
         }
         

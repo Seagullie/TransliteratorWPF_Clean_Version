@@ -1,20 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public static class LoggerService
+    public class LoggerService
     {
-        public delegate void LogMessageDelegate(string message, string? color = "Black");
+        private static LoggerService _instance;
 
-        public static event LogMessageDelegate NewLogMessageEvent;
+        public event EventHandler<NewLogMessageEventArg> NewLogMessage;
 
-        public static void LogMessage(string message, string? color = null)
+        private LoggerService()
         {
-            NewLogMessageEvent?.Invoke(message, color);
+
+        }
+
+        public static LoggerService GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new LoggerService();
+            }
+            return _instance;
+        } 
+
+        public void LogMessage(object sender, string message, string color = null)
+        {
+            NewLogMessage?.Invoke(sender, new NewLogMessageEventArg(message, color));
         }
     }
 }
