@@ -22,4 +22,5 @@
 
 ## Getting Started
 1. Clone the repo.
+2. Compile and run the project.
 2. Once the program boots up, select your language pair by clicking the dropdown in the top right corner and then clicking on item of your interest.
