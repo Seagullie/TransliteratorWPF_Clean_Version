@@ -26,6 +26,7 @@ namespace TransliteratorWPF_Version.Views
     {
         private App app = ((App)Application.Current);
         private readonly LoggerService loggerService;
+        private readonly LiveTransliterator liveTransliterator;
 
         public MainWindow mainWindow
         {
@@ -55,6 +56,7 @@ namespace TransliteratorWPF_Version.Views
         {
             // TODO: Dependency injection 
             loggerService = LoggerService.GetInstance();
+            liveTransliterator = LiveTransliterator.GetInstance();
             InitializeComponent();
         }
 
@@ -74,9 +76,9 @@ namespace TransliteratorWPF_Version.Views
                 File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
                 //initializeTablesComboBox(true);
-                app.liveTranslit.ukrTranslit.TranslitTables.Add($"{tableName}.json");
+                liveTransliterator.ukrTranslit.TranslitTables.Add($"{tableName}.json");
                 // it's sort of like in react. You gotta create a new list, cause the property setter is where update event gets created
-                app.liveTranslit.ukrTranslit.TranslitTables = app.liveTranslit.ukrTranslit.TranslitTables.ToArray().ToList();
+                liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
             }
             else
             {
@@ -118,9 +120,9 @@ namespace TransliteratorWPF_Version.Views
             // a notification would be nice here
             loggerService.LogMessage(this, $"{tableName} has been deleted");
 
-            app.liveTranslit.ukrTranslit.TranslitTables.Remove(tableName);
+            liveTransliterator.ukrTranslit.TranslitTables.Remove(tableName);
             // creating a copy to trigger event
-            app.liveTranslit.ukrTranslit.TranslitTables = app.liveTranslit.ukrTranslit.TranslitTables.ToArray().ToList();
+            liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
 
             //initializeTablesComboBox(true);
             //debugWindow?.initializeTablesComboBox(true);
@@ -141,14 +143,14 @@ namespace TransliteratorWPF_Version.Views
 
             panel1.Children.Clear();
 
-            generateEditBoxesForTranslitTable(app.liveTranslit.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
+            generateEditBoxesForTranslitTable(liveTransliterator.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
         }
 
         // can't see the textboxes at all. Is there a way to inspect all controls available?
         // the same way it is done with browser devtools
         public void generateEditBoxesForTranslitTable(Dictionary<string, string> replacement_map)
         {
-            foreach (string key in app.liveTranslit.ukrTranslit.SortReplacementMapKeys(replacement_map))
+            foreach (string key in liveTransliterator.ukrTranslit.SortReplacementMapKeys(replacement_map))
             {
                 generatePanelWithEditBoxes(key, replacement_map[key]);
             }
@@ -326,7 +328,7 @@ namespace TransliteratorWPF_Version.Views
             // make translit redownload the current table just in case it was updated. Too lazy to check in a more detailed way.
 
             //string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
-            //app.liveTranslit.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
+            //liveTransliterator.ukrTranslit.SetReplacementMapFromJson(nameOfCurrentlyUsedReplacementMap);
         }
 
         //private bool checkForDuplicates(Dictionary<string, string> replacementMap)
@@ -349,7 +351,7 @@ namespace TransliteratorWPF_Version.Views
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
             // first gotta figure out the combos. then gotta check whether some of them don't contain another ones
-            string[] combos = app.liveTranslit.ukrTranslit.getReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.ukrTranslit.getReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = checkForCompositeCombos(combos);
 
@@ -406,7 +408,7 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
-                Source = app.liveTranslit.ukrTranslit
+                Source = liveTransliterator.ukrTranslit
             };
 
             BindingOperations.SetBinding(comboBox1, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
@@ -437,7 +439,7 @@ namespace TransliteratorWPF_Version.Views
                 string fileName = Path.GetFileName(pathToFile);
 
                 File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
-                app.liveTranslit.ukrTranslit.TranslitTables.Add(fileName);
+                liveTransliterator.ukrTranslit.TranslitTables.Add(fileName);
                 //initializeTablesComboBox(true);
             }
         }

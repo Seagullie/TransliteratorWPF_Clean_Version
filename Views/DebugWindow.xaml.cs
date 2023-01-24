@@ -14,7 +14,6 @@ using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Services;
 using WindowsInput;
 using WindowsInput.Native;
-using Application = System.Windows.Application;
 using Binding = System.Windows.Data.Binding;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Label = System.Windows.Controls.Label;
