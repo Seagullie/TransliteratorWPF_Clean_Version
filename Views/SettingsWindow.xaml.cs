@@ -1,292 +1,37 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Linq;
+﻿using System;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
-using TransliteratorWPF_Version.Properties;
-using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.ViewModels;
-using Application = System.Windows.Application;
 
 namespace TransliteratorWPF_Version.Views
 {
     public partial class SettingsWindow : Window
     {
-        private App app = ((App)Application.Current);
-        private readonly LoggerService loggerService;
-
-        public DebugWindow? debugWindow
-        {
-            get
-            {
-                WindowCollection windows = Application.Current.Windows;
-                foreach (Window window in windows)
-                {
-                    // warning: hardcoded
-                    if (window.Name == "DebugWindow1")
-                    {
-                        return (DebugWindow)window;
-                    }
-                }
-                return null;
-            }
-        }
-
-        public StateOverlayWindow? stateOverlayWindow
-        {
-            get
-            {
-                WindowCollection windows = System.Windows.Application.Current.Windows;
-                foreach (Window window in windows)
-                {
-                    // warning: hardcoded
-                    if (window.Name == "StateOverlayWindow1")
-                    {
-                        return (StateOverlayWindow)window;
-                    }
-                }
-
-                return null;
-            }
-        }
-
         public SettingsViewModel ViewModel { get; private set; }
-
 
         public SettingsWindow()
         {
-            loggerService = LoggerService.GetInstance();
             InitializeComponent();
             ViewModel = new ();
             DataContext = ViewModel;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-            shortcutInputBox.Text = Settings.Default.ToggleTranslitShortcut;
-            startMinimizedCheckBox.IsChecked = Settings.Default.StartMinimized;
-            turnOnTranslitAtStartCheckBox.IsChecked = Settings.Default.turnOnTranslitAtStart;
-            enableStateOverlayWindowCheckBox.IsChecked = Settings.Default.enableStateOverlayWindow;
-
-            launchProgramOnSystemStartupCheckBox.IsChecked = Settings.Default.launchProgramOnSystemStartup;
-            suppressAltShiftCheckBox.IsChecked = Settings.Default.suppressAltShift;
-
-            launchProgramOnSystemStartupCheckBox.IsEnabled = App.IsAdministrator();
-
-            displayRadioBtn.IsChecked = Settings.Default.displayCombos;
-            waitForComboRadioBtn.IsChecked = !Settings.Default.displayCombos;
-
-            displayRadioBtn.IsEnabled = true;
-            waitForComboRadioBtn.IsEnabled = true;
-        }
-
-        private void shortcutInputBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            shortcutInputBox.Clear();
-
-            loggerService.LogMessage(this, $"e.Key: {e.Key} and e.Systemkey {e.SystemKey}");
-
-            Key wpfKey = e.Key;
-
-            if (wpfKey == Key.System)
-            {
-                wpfKey = e.SystemKey;
-            }
-
-            Keys formsKey;
-            formsKey = (Keys)KeyInterop.VirtualKeyFromKey(wpfKey);
-
-            // TODO: Rewrite this part. KeyLogger can't be accessed this way anymore due to recent refactoring changes
-            bool altDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftAlt);
-            bool ctrlDown = app.liveTranslit.keyLogger.keyStateChecker.IsKeyDown(Key.LeftCtrl);
-            string[] modifiersDown = { altDown ? "Alt" : "", ctrlDown ? "Control" : "" };
-            modifiersDown = modifiersDown.Where(modifier => modifier != "").ToArray<string>();
-
-            string settingsString = $"{String.Join(" + ", modifiersDown)} + {formsKey}";
-
-            Settings.Default.ToggleTranslitShortcut = settingsString;
-            app.liveTranslit.keyLogger.fetchToggleTranslitShortcutFromSettings();
-
-            shortcutInputBox.Text = settingsString;
-
-            e.Handled = true;
-        }
-
-        public async void ShowcaseComboMode()
-        {
-            // switch translit table to accentsTable
-            // warning: hardcoded
-
-            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
-            const string accentsTable = "tableAccents.json";
-            string previousTable = app.liveTranslit.ukrTranslit.replacement_map_filename;
-
-            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{accentsTable}");
-
-            // gotta make sure transliterator is enabled. Should reference .keyLogger.state, not liveTranslit.state
-            app.liveTranslit.keyLogger.State = true;
-
-            DOCshowcaseTxtBox.IsEnabled = true;
-            DOCshowcaseTxtBox.Focus();
-            DOCshowcaseTxtBox.Clear();
-
-            // warning: hardcoded
-            string testString = "`a`o`i`u";
-
-            await app.liveTranslit.WriteInjected(testString);
-            DOCshowcaseTxtBox.IsEnabled = false;
-
-            app.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"{previousTable}");
-        }
-
-        private void displayRadioBtn_Checked_1(object sender, RoutedEventArgs e)
-        {
-            if (displayRadioBtn.IsEnabled != true)
-            {
-                return;
-            }
-
-            Settings.Default.displayCombos = true;
-            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
-            app.liveTranslit.displayCombos = true;
-
-            if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
-            {
-                return;
-            }
-            else
-            {
-                ShowcaseComboMode();
-            }
-        }
-
-        private void waitForComboRadioBtn_Checked(object sender, RoutedEventArgs e)
-        {
-            if (waitForComboRadioBtn.IsEnabled != true)
-            {
-                return;
-            }
-
-            Settings.Default.displayCombos = false;
-            // TODO: Rewrite this part. liveTranslit can't be accessed this way anymore due to recent refactoring changes
-            app.liveTranslit.displayCombos = false;
-
-            if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
-            {
-                return;
-            }
-            else
-            {
-                ShowcaseComboMode();
-            }
-        }
-
-        private void editTranslitTablesBtn_Click(object sender, RoutedEventArgs e)
-        {
-            TranslitTablesWindow translitTables = new TranslitTablesWindow();
-            translitTables.Show();
-        }
-
-        public void FixSizeToContent()
-        {
-            var window = this;
-
-            window.Activated += (s, e) => OnActivated();
-
-            void OnActivated()
-            {
-                window.Activated -= (s, e) => OnActivated();
-
-                void action() => window.InvalidateMeasure();
-                window.Dispatcher.BeginInvoke((Action)action);
-            }
-        }
-
         private void Window_Activated(object sender, EventArgs e)
         {
-            void action() => this.InvalidateMeasure();
-            this.Dispatcher.BeginInvoke((Action)action);
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Settings.Default.StartMinimized = startMinimizedCheckBox.IsChecked == true;
-            Settings.Default.turnOnTranslitAtStart = turnOnTranslitAtStartCheckBox.IsChecked == true;
-
-            Settings.Default.launchProgramOnSystemStartup = launchProgramOnSystemStartupCheckBox.IsChecked == true;
-
-            Settings.Default.enableStateOverlayWindow = enableStateOverlayWindowCheckBox.IsChecked == true;
-            Settings.Default.suppressAltShift = suppressAltShiftCheckBox.IsChecked == true;
-
-            Settings.Default.Save();
-        }
-
-        private void launchProgramOnSystemStartupCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!App.IsAdministrator())
-            {
-                return;
-            }
-
-            var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(path, true);
-
-            string pathToExecutable = System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe");
-            key.SetValue(app.appName, pathToExecutable);
-        }
-
-        private void launchProgramOnSystemStartupCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (!App.IsAdministrator())
-            {
-                return;
-            }
-
-            var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(path, true);
-            key.DeleteValue(app.appName, false);
+            // TODO: Delete this?
+            void action() => InvalidateMeasure();
+            Dispatcher.BeginInvoke((Action)action);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
+                DragMove();
         }
 
-        private void editToggleSoundsBtn_Click(object sender, RoutedEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var editToggleSoundsWindow = new EditToggleSoundsWindow();
-            editToggleSoundsWindow.ShowDialog();
-        }
-
-        private void enableStateOverlayWindowCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!stateOverlayWindow.IsVisible)
-            {
-                stateOverlayWindow.Show();
-            }
-        }
-
-        private void enableStateOverlayWindowCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            if (stateOverlayWindow.IsVisible)
-            {
-                stateOverlayWindow.Hide();
-            }
-        }
-
-        private void suppressAltShiftCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void suppressAltShiftCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
+            ViewModel.SaveAllProp();
         }
     }
 }
