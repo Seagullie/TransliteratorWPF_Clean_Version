@@ -37,8 +37,6 @@ namespace TransliteratorWPF_Version.Views
 
         public DebugWindow()
         {
-            
-
             // TODO: Dependency injection
             liveTransliterator = LiveTransliterator.GetInstance();
             loggerService = LoggerService.GetInstance();
@@ -355,6 +353,16 @@ namespace TransliteratorWPF_Version.Views
         {
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+        }
+
+        private void DebugWindow1_Closed(object sender, EventArgs e)
+        {
+            // unregister log event handler to avoid duplication once the window is opened again & disable logging when DebugWindow is not open
+            loggerService.NewLogMessage -= ConsoleLog;
+        }
+
+        private void DebugWindow1_Closed_1(object sender, EventArgs e)
+        {
         }
     }
 }
