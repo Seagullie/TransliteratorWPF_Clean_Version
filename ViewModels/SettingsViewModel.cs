@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TransliteratorWPF_Version.Models;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.Views;
 
@@ -14,16 +13,16 @@ namespace TransliteratorWPF_Version.ViewModels
         private readonly SettingsService settingsService;
 
         [ObservableProperty]
-        private bool shouldPlayToggleSound;
+        private bool isToggleSoundOn;
 
         [ObservableProperty]
-        private bool shouldStartMinimized;
+        private bool isMinimizedStartEnabled;
 
         [ObservableProperty]
-        private bool shouldRunAtStartup;
+        private bool isAutoStartEnabled;
 
         [ObservableProperty]
-        private bool isShouldRunAtStartupCheckBoxEnabled;
+        private bool isAdministrator;
 
         [ObservableProperty]
         private string toggleTranslitShortcut;
@@ -35,10 +34,10 @@ namespace TransliteratorWPF_Version.ViewModels
         private bool isStateOverlayEnabled;
 
         [ObservableProperty]
-        private bool isTranslitEnabledOnStartup;
+        private bool isTranslitEnabledAtStartup;
 
         [ObservableProperty]
-        private bool isAltShiftGlobalShortcutDisabled;
+        private bool isAltShiftGlobalShortcutEnabled;
 
         [ObservableProperty]
         private bool isDisplayOfBufferCharactersEnabled;
@@ -48,39 +47,36 @@ namespace TransliteratorWPF_Version.ViewModels
 
         public SettingsViewModel()
         {
+            // TODO: Dependency injection 
             loggerService = LoggerService.GetInstance();
             liveTransliterator = LiveTransliterator.GetInstance();
-            settingsService = new();       
+            settingsService = SettingsService.GetInstance();       
+
             InitializePropertiesFromSettings();
-            IsShouldRunAtStartupCheckBoxEnabled = App.IsAdministrator();
+            IsAdministrator = App.IsAdministrator();
         }
 
         private void InitializePropertiesFromSettings()
         {
             settingsService.Load();
-            ShouldPlayToggleSound = settingsService.ShouldPlayToggleSound;
-            ShouldStartMinimized = settingsService.ShouldStartMinimized;
-            ShouldRunAtStartup = settingsService.ShouldRunAtStartup;        
+            IsToggleSoundOn = settingsService.IsToggleSoundOn;
+            IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
+            IsAutoStartEnabled = settingsService.IsAutoStartEnabled;        
             IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
-            IsTranslitEnabledOnStartup = settingsService.IsTranslitEnabledOnStartup;
-            IsAltShiftGlobalShortcutDisabled = settingsService.IsAltShiftGlobalShortcutDisabled;
+            IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
+            IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
             IsDisplayOfBufferCharactersEnabled = settingsService.IsDisplayOfBufferCharactersEnabled;
             ToggleHotKey = settingsService.ToggleHotKey;
         }
 
-        partial void OnShouldPlayToggleSoundChanged(bool value)
-        {
-            Settings.Default.PlaySoundOnTranslitToggle = value;
-        }
-
         public void SaveAllProp()
         {
-            settingsService.ShouldPlayToggleSound = ShouldPlayToggleSound;
-            settingsService.ShouldStartMinimized = ShouldStartMinimized;
-            settingsService.ShouldRunAtStartup = ShouldRunAtStartup;
+            settingsService.IsToggleSoundOn = IsToggleSoundOn;
+            settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
+            settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
             settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-            settingsService.IsTranslitEnabledOnStartup = IsTranslitEnabledOnStartup;
-            settingsService.IsAltShiftGlobalShortcutDisabled = IsAltShiftGlobalShortcutDisabled;
+            settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
+            settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
             settingsService.IsDisplayOfBufferCharactersEnabled = IsDisplayOfBufferCharactersEnabled;
             settingsService.ToggleHotKey = ToggleHotKey;
             settingsService.Save();
@@ -155,7 +151,7 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         // TODO: Write the implementation
-        partial void OnIsShouldRunAtStartupCheckBoxEnabledChanged(bool value)
+        partial void OnIsAutoStartEnabledChanged(bool value)
         {
             //private void launchProgramOnSystemStartupCheckBox_Checked(object sender, RoutedEventArgs e)
             //{

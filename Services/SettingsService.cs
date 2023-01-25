@@ -3,11 +3,11 @@ using System;
 using System.IO;
 using TransliteratorWPF_Version.Models;
 
-
 namespace TransliteratorWPF_Version.Services
 {
     public partial class SettingsService
     {
+        private static SettingsService _instance;
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
@@ -15,19 +15,27 @@ namespace TransliteratorWPF_Version.Services
             ObjectCreationHandling = ObjectCreationHandling.Replace
         };
 
-        public bool ShouldPlayToggleSound { get; set; }
+        public bool IsToggleSoundOn { get; set; } = true;
 
-        public bool ShouldStartMinimized { get; set; }
+        public bool IsMinimizedStartEnabled { get; set; }
 
-        public bool ShouldRunAtStartup { get; set; }
+        public bool IsAutoStartEnabled { get; set; }
 
-        public bool IsStateOverlayEnabled { get; set; }
+        public bool IsStateOverlayEnabled { get; set; } = true;
 
-        public bool IsTranslitEnabledOnStartup { get; set; }
+        public bool IsTranslitEnabledAtStartup { get; set; }
 
-        public bool IsAltShiftGlobalShortcutDisabled { get; set; }
+        public bool IsAltShiftGlobalShortcutEnabled { get; set; } = true;
 
         public bool IsDisplayOfBufferCharactersEnabled { get; set; }
+
+        public ModernWpf.ApplicationTheme ApplicationTheme { get; set; } = ModernWpf.ApplicationTheme.Light;
+
+        public string LastSelectedTranslitTable { get; set; }
+
+        public string PathToCustomToggleOnSound { get; set; }
+
+        public string PathToCustomToggleOffSound { get; set; }
 
         // HotKeys
         public HotKey ToggleHotKey { get; set; }
@@ -39,8 +47,16 @@ namespace TransliteratorWPF_Version.Services
 
         public event EventHandler SettingsSaved;
 
-        public SettingsService()
+        private SettingsService()
         {
+        }
+        public static SettingsService GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new SettingsService();
+            }
+            return _instance;
         }
 
         // TODO: Write the implementation

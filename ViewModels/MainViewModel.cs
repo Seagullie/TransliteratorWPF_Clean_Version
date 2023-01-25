@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.Views;
 
@@ -14,6 +13,11 @@ namespace TransliteratorWPF_Version.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
+        private readonly LiveTransliterator liveTransliterator;
+        private readonly SettingsService settingsService;
+
+        private NotifyIcon notifyIcon;
+
         [ObservableProperty]
         private string appState;
 
@@ -32,13 +36,12 @@ namespace TransliteratorWPF_Version.ViewModels
         [ObservableProperty]
         private HashSet<string> toggleAppStateShortcut;
 
-        private NotifyIcon notifyIcon;
-        private readonly LiveTransliterator liveTransliterator;
-
         public MainViewModel()
         {
             // TODO: Dependency injection 
             liveTransliterator = LiveTransliterator.GetInstance();
+            settingsService = SettingsService.GetInstance();
+            settingsService.Load();
 
             InitializeWindow();
             InitializeNotifyIcon();  
@@ -50,13 +53,10 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void InitializeWindow()
         {
-            if (Settings.Default.StartMinimized)
+            if (settingsService.IsMinimizedStartEnabled)
                 WindowState = WindowState.Minimized;
 
-            if (Settings.Default.SelectedTheme == "Dark")
-                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
-            else
-                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
+            ThemeManager.Current.ApplicationTheme = settingsService.ApplicationTheme;
         }
         
         private void InitializeNotifyIcon()
@@ -81,7 +81,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void InitializeStateOverlayWindow()
         {
-            if (Settings.Default.enableStateOverlayWindow)
+            if (settingsService.IsStateOverlayEnabled)
             {
                 StateOverlayWindow stateOveralyWindow = new StateOverlayWindow();
                 stateOveralyWindow.Show();
@@ -118,7 +118,7 @@ namespace TransliteratorWPF_Version.ViewModels
         private void LoadTranslitTables()
         {
             TranslitTables = liveTransliterator.ukrTranslit.TranslitTables;
-            SelectedTranslitTable = Settings.Default.LastTranslitTable;
+            SelectedTranslitTable = settingsService.LastSelectedTranslitTable;
         }
 
         private void UpdateChangeAppStateShortcut(object sender, EventArgs e)
@@ -141,12 +141,12 @@ namespace TransliteratorWPF_Version.ViewModels
             if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
-                Settings.Default.SelectedTheme = "Light";
+                settingsService.ApplicationTheme = ApplicationTheme.Light;
             }
             else
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
-                Settings.Default.SelectedTheme = "Dark";
+                settingsService.ApplicationTheme = ApplicationTheme.Dark;
             }
         }
 
@@ -192,7 +192,7 @@ namespace TransliteratorWPF_Version.ViewModels
         partial void OnAppStateChanged(string value)
         {
             // TODO: Dont play sound when initialize?
-            if (Settings.Default.PlaySoundOnTranslitToggle)
+            if (settingsService.IsToggleSoundOn)
                 PlayToggleSound();
 
             // TODO: Change state label foreground 
@@ -204,11 +204,11 @@ namespace TransliteratorWPF_Version.ViewModels
 
             string pathToSoundToPlay = Path.Combine(App.BaseDir, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
 
-            if (liveTransliterator.keyLogger.State == true && Settings.Default.pathToCustomToggleOnSound != "")
-                pathToSoundToPlay = Settings.Default.pathToCustomToggleOnSound;
+            if (liveTransliterator.keyLogger.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
+                pathToSoundToPlay = settingsService.PathToCustomToggleOnSound;
 
-            if (liveTransliterator.keyLogger.State == false && Settings.Default.pathToCustomToggleOffSound != "")
-                pathToSoundToPlay = Settings.Default.pathToCustomToggleOffSound;
+            if (liveTransliterator.keyLogger.State == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
+                pathToSoundToPlay = settingsService.PathToCustomToggleOffSound;
 
             sound.Play(pathToSoundToPlay);
         }
@@ -216,8 +216,8 @@ namespace TransliteratorWPF_Version.ViewModels
         // TODO: Find better name for method
         public void SaveSettingsAndDispose()
         {
-            Settings.Default.LastTranslitTable = SelectedTranslitTable;
-            Settings.Default.Save();
+            settingsService.LastSelectedTranslitTable = SelectedTranslitTable;
+            settingsService.Save();
 
             notifyIcon.Dispose();
         }
