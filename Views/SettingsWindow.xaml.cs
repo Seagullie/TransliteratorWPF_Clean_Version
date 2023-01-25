@@ -12,7 +12,7 @@ namespace TransliteratorWPF_Version.Views
         public SettingsWindow()
         {
             InitializeComponent();
-            ViewModel = new ();
+            ViewModel = new();
             DataContext = ViewModel;
         }
 
@@ -31,7 +31,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.SaveAllProp();
+            ViewModel.SaveAllProps();
         }
     }
 }

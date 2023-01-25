@@ -69,7 +69,7 @@ namespace TransliteratorWPF_Version.ViewModels
             ToggleHotKey = settingsService.ToggleHotKey;
         }
 
-        public void SaveAllProp()
+        public void SaveAllProps()
         {
             settingsService.IsToggleSoundOn = IsToggleSoundOn;
             settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
@@ -135,6 +135,12 @@ namespace TransliteratorWPF_Version.ViewModels
             // TODO: Rewrite to NavigateToTranslitTablesPage or prevent the creation of multiple windows
             TranslitTablesWindow translitTables = new TranslitTablesWindow();
             translitTables.Show();
+        }
+
+        [RelayCommand]
+        private void ApplyChanges()
+        {
+            SaveAllProps();
         }
 
         [RelayCommand]

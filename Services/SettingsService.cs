@@ -8,6 +8,7 @@ namespace TransliteratorWPF_Version.Services
     public partial class SettingsService
     {
         private static SettingsService _instance;
+
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             Formatting = Formatting.Indented,
@@ -50,6 +51,7 @@ namespace TransliteratorWPF_Version.Services
         private SettingsService()
         {
         }
+
         public static SettingsService GetInstance()
         {
             if (_instance == null)
@@ -63,6 +65,12 @@ namespace TransliteratorWPF_Version.Services
         public void Reset()
         {
             SettingsReset?.Invoke(this, EventArgs.Empty);
+        }
+
+        // should simply save the settings, just like it is done when settings window is closed
+        public void Apply()
+        {
+            Save();
         }
 
         // TODO: Improve, catch exceptions
