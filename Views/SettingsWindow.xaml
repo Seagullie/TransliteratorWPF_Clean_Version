@@ -97,20 +97,21 @@
                     VerticalAlignment="Top"
                     AutomationProperties.AutomationId="displayRadioBtn"
                     Content="Display"
-                    IsChecked="{Binding IsDisplayOfBufferCharactersEnabled}" />
+                    IsChecked="{Binding IsBufferInputEnabled}" />
                 <RadioButton
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     AutomationProperties.AutomationId="waitForComboRadioBtn"
                     Content="Buffer"
-                    IsChecked="{Binding IsDisplayOfBufferCharactersEnabled, Converter={StaticResource InvertBoolConverter}}" />
+                    IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
             </ui:SimpleStackPanel>
-            <Label
+            <TextBox
                 Width="120"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Content="{Binding ShowcaseText}"
-                IsEnabled="False" />
+                BorderThickness="1"
+                IsReadOnly="True"
+                Text="{Binding ShowcaseText}" />
         </ui:SimpleStackPanel>
         <ui:SimpleStackPanel Orientation="Horizontal" Spacing="150">
             <Button

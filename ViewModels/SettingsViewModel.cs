@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
 using TransliteratorWPF_Version.Models;
 using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.Views;
@@ -41,7 +42,7 @@ namespace TransliteratorWPF_Version.ViewModels
         private bool isAltShiftGlobalShortcutEnabled;
 
         [ObservableProperty]
-        private bool isDisplayOfBufferCharactersEnabled;
+        private bool isBufferInputEnabled;
 
         [ObservableProperty]
         private string showcaseText;
@@ -67,7 +68,7 @@ namespace TransliteratorWPF_Version.ViewModels
             IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
             IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
             IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
-            IsDisplayOfBufferCharactersEnabled = settingsService.IsDisplayOfBufferCharactersEnabled;
+            IsBufferInputEnabled = settingsService.IsBufferInputEnabled;
             ToggleHotKey = settingsService.ToggleHotKey;
         }
 
@@ -79,7 +80,7 @@ namespace TransliteratorWPF_Version.ViewModels
             settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
             settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
             settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
-            settingsService.IsDisplayOfBufferCharactersEnabled = IsDisplayOfBufferCharactersEnabled;
+            settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
             settingsService.ToggleHotKey = ToggleHotKey;
             settingsService.Save();
         }
@@ -89,46 +90,56 @@ namespace TransliteratorWPF_Version.ViewModels
             // TODO: Set ToggleTranslitShortcut in LiveTransliterator
         }
 
-        partial void OnIsDisplayOfBufferCharactersEnabledChanged(bool value)
+        partial void OnIsBufferInputEnabledChanged(bool value)
         {
             liveTransliterator.displayCombos = value;
 
-            // TODO: Do we need this?
+            // TODO: Add DebugService
             //if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
             //{
             //    return;
             //}
             //else
             //{
-            ShowBufferCharacterMode();
+            if (value)
+                ShowBufferInputIsEnabled(value);
+            else
+                ShowBufferInputIsDisabled(value);
             //}
         }
 
-        // TODO: Rewrite this method
-        private void ShowBufferCharacterMode()
+        private async void ShowBufferInputIsEnabled(bool isBufferInputEnabled)
         {
-            //// switch translit table to accentsTable
-            //// warning: hardcoded
+            ShowcaseText = "";
 
-            //const string accentsTable = "tableAccents.json";
-            //string previousTable = liveTransliterator.ukrTranslit.replacement_map_filename;
+            const string showcaseString = "áóíú";
+            
+            foreach (char charter in showcaseString)
+            {
+                ShowcaseText += charter;
+                await Task.Delay(300);
+            }
+        }
 
-            //liveTransliterator.ukrTranslit.SetReplacementMapFromJson($"{accentsTable}");
+        private async void ShowBufferInputIsDisabled(bool isBufferInputEnabled)
+        {
+            ShowcaseText = "";
 
-            //// gotta make sure transliterator is enabled. Should reference .keyLogger.state, not liveTranslit.state
-            //liveTransliterator.keyLogger.State = true;
+            const string showcaseString = "`a`o`i`u";
+            const string showcaseString2 = "áóíú";
 
-            //DOCshowcaseTxtBox.IsEnabled = true;
-            //DOCshowcaseTxtBox.Focus();
-            //DOCshowcaseTxtBox.Clear();
-
-            //// warning: hardcoded
-            //string testString = "`a`o`i`u";
-
-            //await liveTransliterator.WriteInjected(testString);
-            //DOCshowcaseTxtBox.IsEnabled = false;
-
-            //liveTransliterator.ukrTranslit.SetReplacementMapFromJson($"{previousTable}");
+            for (int i = 0; i < showcaseString.Length; i++)
+            {
+                ShowcaseText += showcaseString[i];
+                await Task.Delay(300);
+                if ((i + 1) % 2 == 0)
+                {
+                    await Task.Delay(150);
+                    ShowcaseText = ShowcaseText.Remove(ShowcaseText.Length - 2, 2);
+                    ShowcaseText += showcaseString2[i / 2];
+                    await Task.Delay(300);
+                }                
+            }
         }
 
         [RelayCommand]

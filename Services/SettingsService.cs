@@ -28,7 +28,7 @@ namespace TransliteratorWPF_Version.Services
 
         public bool IsAltShiftGlobalShortcutEnabled { get; set; } = true;
 
-        public bool IsDisplayOfBufferCharactersEnabled { get; set; }
+        public bool IsBufferInputEnabled { get; set; }
 
         public ModernWpf.ApplicationTheme ApplicationTheme { get; set; } = ModernWpf.ApplicationTheme.Light;
 
