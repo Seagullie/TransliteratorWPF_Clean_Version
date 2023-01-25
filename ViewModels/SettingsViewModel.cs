@@ -137,6 +137,7 @@ namespace TransliteratorWPF_Version.ViewModels
             translitTables.Show();
         }
 
+        // should simply save the settings, just like it is done when settings window is closed
         [RelayCommand]
         private void ApplyChanges()
         {

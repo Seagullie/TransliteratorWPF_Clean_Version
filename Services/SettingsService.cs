@@ -67,12 +67,6 @@ namespace TransliteratorWPF_Version.Services
             SettingsReset?.Invoke(this, EventArgs.Empty);
         }
 
-        // should simply save the settings, just like it is done when settings window is closed
-        public void Apply()
-        {
-            Save();
-        }
-
         // TODO: Improve, catch exceptions
         public void Load()
         {
