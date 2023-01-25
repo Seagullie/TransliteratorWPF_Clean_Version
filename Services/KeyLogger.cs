@@ -25,7 +25,7 @@ namespace TransliteratorWPF_Version.Services
         [ObservableProperty]
         public string stateDesc = "On";
 
-        public LiveTransliterator liveTransliterator;
+        public Main liveTransliterator;
 
         private readonly LoggerService loggerService;
 
@@ -71,7 +71,7 @@ namespace TransliteratorWPF_Version.Services
 
         private KeyLogger()
         {
-            // TODO: Dependency injection 
+            // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
 
             gkh = new GlobalKeyboardHook();
@@ -193,7 +193,6 @@ namespace TransliteratorWPF_Version.Services
             bool ctrlDown = keyStateChecker.IsKeyDown(Key.LeftCtrl);
 
             loggerService.LogMessage(this, $"ALT down: {altDown}. KeyString: {keyString}");
-            
 
             HashSet<string> registeredKeyStrokesAsHash = new HashSet<string>();
             if (altDown)

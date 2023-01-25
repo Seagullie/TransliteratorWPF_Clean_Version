@@ -30,14 +30,14 @@ namespace TransliteratorWPF_Version.Views
 
         public bool logsEnabled = true;
 
-        private readonly LiveTransliterator liveTransliterator;
+        private readonly Main liveTransliterator;
         private readonly LoggerService loggerService;
         //public App app = ((App)Application.Current);
 
         public DebugWindow()
         {
             // TODO: Dependency injection
-            liveTransliterator = LiveTransliterator.GetInstance();
+            liveTransliterator = Main.GetInstance();
             loggerService = LoggerService.GetInstance();
 
             loggerService.NewLogMessage += ConsoleLog;

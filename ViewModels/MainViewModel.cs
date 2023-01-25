@@ -13,7 +13,7 @@ namespace TransliteratorWPF_Version.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly LiveTransliterator liveTransliterator;
+        private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
 
         private NotifyIcon notifyIcon;
@@ -38,13 +38,13 @@ namespace TransliteratorWPF_Version.ViewModels
 
         public MainViewModel()
         {
-            // TODO: Dependency injection 
-            liveTransliterator = LiveTransliterator.GetInstance();
+            // TODO: Dependency injection
+            liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
             settingsService.Load();
 
             InitializeWindow();
-            InitializeNotifyIcon();  
+            InitializeNotifyIcon();
             InitializeStateOverlayWindow();
             InitializeAppState();
             InitializeChangeAppStateShortcut();
@@ -58,7 +58,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
             ThemeManager.Current.ApplicationTheme = settingsService.ApplicationTheme;
         }
-        
+
         private void InitializeNotifyIcon()
         {
             // TODO: Rewrite using own FileServise
@@ -109,6 +109,7 @@ namespace TransliteratorWPF_Version.ViewModels
                     AppState = "Off";
             }
         }
+
         private void InitializeChangeAppStateShortcut()
         {
             ToggleAppStateShortcut = liveTransliterator.keyLogger.ToggleTranslitShortcut;
@@ -195,7 +196,7 @@ namespace TransliteratorWPF_Version.ViewModels
             if (settingsService.IsToggleSoundOn)
                 PlayToggleSound();
 
-            // TODO: Change state label foreground 
+            // TODO: Change state label foreground
         }
 
         private void PlayToggleSound()

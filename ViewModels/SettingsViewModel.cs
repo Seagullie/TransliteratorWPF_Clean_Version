@@ -9,7 +9,7 @@ namespace TransliteratorWPF_Version.ViewModels
     public partial class SettingsViewModel : ObservableObject
     {
         private readonly LoggerService loggerService;
-        private readonly LiveTransliterator liveTransliterator;
+        private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
 
         [ObservableProperty]
@@ -47,10 +47,10 @@ namespace TransliteratorWPF_Version.ViewModels
 
         public SettingsViewModel()
         {
-            // TODO: Dependency injection 
+            // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
-            liveTransliterator = LiveTransliterator.GetInstance();
-            settingsService = SettingsService.GetInstance();       
+            liveTransliterator = Main.GetInstance();
+            settingsService = SettingsService.GetInstance();
 
             InitializePropertiesFromSettings();
             IsAdministrator = App.IsAdministrator();
@@ -61,7 +61,7 @@ namespace TransliteratorWPF_Version.ViewModels
             settingsService.Load();
             IsToggleSoundOn = settingsService.IsToggleSoundOn;
             IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
-            IsAutoStartEnabled = settingsService.IsAutoStartEnabled;        
+            IsAutoStartEnabled = settingsService.IsAutoStartEnabled;
             IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
             IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
             IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
