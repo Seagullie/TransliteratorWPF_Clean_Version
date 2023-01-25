@@ -25,13 +25,15 @@ namespace TransliteratorWPF_Version.Services
         [ObservableProperty]
         public string stateDesc = "On";
 
-        public LiveTransliterator liveTransliterator;
+        public Main liveTransliterator;
 
         private readonly LoggerService loggerService;
 
         public event EventHandler StateChanged;
 
         public event EventHandler ToggleTranslitShortcutChanged;
+
+        private readonly SettingsService settingsService;
 
         public DebugWindow debugWindow
         {
@@ -71,8 +73,9 @@ namespace TransliteratorWPF_Version.Services
 
         private KeyLogger()
         {
-            // TODO: Dependency injection 
+            // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
+            settingsService = SettingsService.GetInstance();
 
             gkh = new GlobalKeyboardHook();
 
@@ -193,7 +196,6 @@ namespace TransliteratorWPF_Version.Services
             bool ctrlDown = keyStateChecker.IsKeyDown(Key.LeftCtrl);
 
             loggerService.LogMessage(this, $"ALT down: {altDown}. KeyString: {keyString}");
-            
 
             HashSet<string> registeredKeyStrokesAsHash = new HashSet<string>();
             if (altDown)
@@ -220,7 +222,7 @@ namespace TransliteratorWPF_Version.Services
             }
 
             // I don't udnerstand why it even works if shift isn't pressed simultaneously with alt, but rather a moment later, which makes catching shift as main key more favourable
-            else if (Settings.Default.suppressAltShift && (registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut) || registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut3)))
+            else if (!settingsService.IsAltShiftGlobalShortcutEnabled && (registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut) || registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut3)))
             {
                 e.Handled = true;
                 return true;

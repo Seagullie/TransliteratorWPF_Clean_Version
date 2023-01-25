@@ -21,7 +21,7 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class TableViewWindow : Window
     {
-        private readonly LiveTransliterator liveTransliterator;
+        private readonly Main liveTransliterator;
 
         private App app = ((App)Application.Current);
 
@@ -54,7 +54,7 @@ namespace TransliteratorWPF_Version.Views
         public TableViewWindow()
         {
             // TODO: Dependency injection
-            liveTransliterator = LiveTransliterator.GetInstance();
+            liveTransliterator = Main.GetInstance();
             loggerService = LoggerService.GetInstance();
 
             InitializeComponent();

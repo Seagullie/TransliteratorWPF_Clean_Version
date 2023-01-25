@@ -14,7 +14,7 @@ namespace TransliteratorWPF_Version
 
         public string appName = "Transliterator";
 
-        public LiveTransliterator liveTranslit;
+        public Main liveTranslit;
 
         public new static App Current => (App)Application.Current;
 

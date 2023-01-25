@@ -26,7 +26,7 @@ namespace TransliteratorWPF_Version.Views
     {
         private App app = ((App)Application.Current);
         private readonly LoggerService loggerService;
-        private readonly LiveTransliterator liveTransliterator;
+        private readonly Main liveTransliterator;
 
         public MainWindow mainWindow
         {
@@ -54,9 +54,9 @@ namespace TransliteratorWPF_Version.Views
 
         public TranslitTablesWindow()
         {
-            // TODO: Dependency injection 
+            // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
-            liveTransliterator = LiveTransliterator.GetInstance();
+            liveTransliterator = Main.GetInstance();
             InitializeComponent();
         }
 

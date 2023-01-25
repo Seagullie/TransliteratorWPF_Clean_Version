@@ -11,7 +11,7 @@ using TransliteratorWPF_Version.Views;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public sealed class LiveTransliterator
+    public sealed class Main
     {
         public int state = 1;
         public Transliterator ukrTranslit = new Transliterator();
@@ -41,9 +41,9 @@ namespace TransliteratorWPF_Version.Services
 
         public bool useAlternativeWrite = false;
 
-        private LiveTransliterator()
+        private Main()
         {
-            // TODO: Dependency injection 
+            // TODO: Dependency injection
             keyLogger = KeyLogger.GetInstance();
             keyLogger.liveTransliterator = this;
             keyLogger.LogKeys();
@@ -60,13 +60,13 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        private static LiveTransliterator _instance;
+        private static Main _instance;
 
-        public static LiveTransliterator GetInstance()
+        public static Main GetInstance()
         {
             if (_instance == null)
             {
-                _instance = new LiveTransliterator();
+                _instance = new Main();
             }
             return _instance;
         }

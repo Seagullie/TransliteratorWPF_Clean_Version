@@ -113,9 +113,15 @@
                 IsReadOnly="True"
                 Text="{Binding ShowcaseText}" />
         </ui:SimpleStackPanel>
-        <Button
-            HorizontalAlignment="Center"
-            Command="{Binding OpenTranslitTablesWindowCommand}"
-            Content="Edit Translit Tables" />
+        <ui:SimpleStackPanel Orientation="Horizontal" Spacing="150">
+            <Button
+                HorizontalAlignment="Left"
+                Command="{Binding OpenTranslitTablesWindowCommand}"
+                Content="Edit Translit Tables" />
+            <Button
+                HorizontalAlignment="Right"
+                Command="{Binding ApplyChangesCommand}"
+                Content="Apply" />
+        </ui:SimpleStackPanel>
     </ui:SimpleStackPanel>
 </Window>
