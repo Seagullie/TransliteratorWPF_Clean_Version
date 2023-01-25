@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Security.Principal;
 using System.Windows;
 using TransliteratorWPF_Version.Helpers;
@@ -11,8 +12,7 @@ namespace TransliteratorWPF_Version
     public partial class App : Application
     {
         public static string BaseDir;
-
-        public string appName = "Transliterator";
+        public static string appName = "Transliterator";
 
         public Main liveTranslit;
 

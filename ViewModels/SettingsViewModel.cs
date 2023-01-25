@@ -11,6 +11,7 @@ namespace TransliteratorWPF_Version.ViewModels
         private readonly LoggerService loggerService;
         private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
+        private readonly RegistryService registryService;
 
         [ObservableProperty]
         private bool isToggleSoundOn;
@@ -51,6 +52,7 @@ namespace TransliteratorWPF_Version.ViewModels
             loggerService = LoggerService.GetInstance();
             liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
+            registryService = RegistryService.GetInstance();
 
             InitializePropertiesFromSettings();
             IsAdministrator = App.IsAdministrator();
@@ -157,34 +159,24 @@ namespace TransliteratorWPF_Version.ViewModels
             // TODO: Write StateOverlayService
         }
 
-        // TODO: Write the implementation
         partial void OnIsAutoStartEnabledChanged(bool value)
         {
-            //private void launchProgramOnSystemStartupCheckBox_Checked(object sender, RoutedEventArgs e)
-            //{
-            //    if (!App.IsAdministrator())
-            //    {
-            //        return;
-            //    }
-
-            //    var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            //    RegistryKey key = Registry.LocalMachine.OpenSubKey(path, true);
-
-            //    string pathToExecutable = System.Reflection.Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe");
-            //    key.SetValue(app.appName, pathToExecutable);
-            //}
-
-            //private void launchProgramOnSystemStartupCheckBox_Unchecked(object sender, RoutedEventArgs e)
-            //{
-            //    if (!App.IsAdministrator())
-            //    {
-            //        return;
-            //    }
-
-            //    var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            //    RegistryKey key = Registry.CurrentUser.OpenSubKey(path, true);
-            //    key.DeleteValue(app.appName, false);
-            //}
+            if (value)
+            {
+                bool result = registryService.AddCurrentProgramToAutoStart();
+                if (!result)
+                {
+                    // TODO: create error notification
+                }
+            }
+            else
+            {
+                bool result = registryService.RemoveCurrentProgramFromAutoStart();
+                if (!result)
+                {
+                    // TODO: create error notification
+                }
+            }
         }
     }
 }
