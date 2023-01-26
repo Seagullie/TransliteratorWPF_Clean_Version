@@ -218,6 +218,7 @@ namespace TransliteratorWPF_Version.ViewModels
         public void SaveSettingsAndDispose()
         {
             settingsService.LastSelectedTranslitTable = SelectedTranslitTable;
+            settingsService.ApplicationTheme = (ApplicationTheme)ThemeManager.Current.ApplicationTheme;
             settingsService.Save();
 
             notifyIcon.Dispose();

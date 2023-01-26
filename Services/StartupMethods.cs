@@ -10,7 +10,7 @@ namespace TransliteratorWPF_Version.Services
 {
     public static class StartupMethods
     {
-        public static string lnkPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + $"\\{App.appName}.lnk";
+        private static string lnkPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + $"\\{App.AppName}.lnk";
 
         public static bool HasStartProgEntry()
         {

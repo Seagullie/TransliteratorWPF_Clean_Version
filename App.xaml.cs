@@ -12,9 +12,7 @@ namespace TransliteratorWPF_Version
     public partial class App : Application
     {
         public static string BaseDir;
-        public static string appName = "Transliterator";
-
-        public Main liveTranslit;
+        public static string AppName = "Transliterator";
 
         public new static App Current => (App)Application.Current;
 

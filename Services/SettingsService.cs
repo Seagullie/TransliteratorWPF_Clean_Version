@@ -84,7 +84,7 @@ namespace TransliteratorWPF_Version.Services
             IsAutoStartEnabled = StartupMethods.HasStartProgEntry();
         }
 
-        // TODO: Improve, catch exceptions
+        // TODO: Improve, catch exceptions. Simplify?
         public void Save()
         {
             string contents = JsonConvert.SerializeObject(this, JsonSerializerSettings);
@@ -92,9 +92,11 @@ namespace TransliteratorWPF_Version.Services
 
             SettingsSaved?.Invoke(this, EventArgs.Empty);
 
-            if (IsAutoStartEnabled)
+            bool isHasStartProgEntry = StartupMethods.HasStartProgEntry();
+            
+            if (IsAutoStartEnabled && !isHasStartProgEntry)
                 StartupMethods.WriteStartProgEntry();
-            else
+            if (!IsAutoStartEnabled && isHasStartProgEntry)
                 StartupMethods.DeleteStartProgEntry();
         }
     }
