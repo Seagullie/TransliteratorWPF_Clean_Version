@@ -56,8 +56,6 @@
                 HorizontalAlignment="Left"
                 Content="Run at system startup"
                 IsChecked="{Binding IsAutoStartEnabled}"
-                IsEnabled="{Binding IsAdministrator}"
-                ToolTip="Run the program as Administrator to toggle this feature."
                 ToolTipService.ShowOnDisabled="True" />
             <CheckBox
                 HorizontalAlignment="Left"

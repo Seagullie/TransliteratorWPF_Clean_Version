@@ -12,7 +12,6 @@ namespace TransliteratorWPF_Version.ViewModels
         private readonly LoggerService loggerService;
         private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
-        private readonly RegistryService registryService;
 
         [ObservableProperty]
         private bool isToggleSoundOn;
@@ -22,9 +21,6 @@ namespace TransliteratorWPF_Version.ViewModels
 
         [ObservableProperty]
         private bool isAutoStartEnabled;
-
-        [ObservableProperty]
-        private bool isAdministrator;
 
         [ObservableProperty]
         private string toggleTranslitShortcut;
@@ -53,10 +49,8 @@ namespace TransliteratorWPF_Version.ViewModels
             loggerService = LoggerService.GetInstance();
             liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
-            registryService = RegistryService.GetInstance();
 
             InitializePropertiesFromSettings();
-            IsAdministrator = App.IsAdministrator();
         }
 
         private void InitializePropertiesFromSettings()
@@ -168,26 +162,6 @@ namespace TransliteratorWPF_Version.ViewModels
         partial void OnIsStateOverlayEnabledChanged(bool value)
         {
             // TODO: Write StateOverlayService
-        }
-
-        partial void OnIsAutoStartEnabledChanged(bool value)
-        {
-            if (value)
-            {
-                bool result = registryService.AddCurrentProgramToAutoStart();
-                if (!result)
-                {
-                    // TODO: create error notification
-                }
-            }
-            else
-            {
-                bool result = registryService.RemoveCurrentProgramFromAutoStart();
-                if (!result)
-                {
-                    // TODO: create error notification
-                }
-            }
         }
     }
 }

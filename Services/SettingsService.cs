@@ -20,6 +20,7 @@ namespace TransliteratorWPF_Version.Services
 
         public bool IsMinimizedStartEnabled { get; set; }
 
+        [JsonIgnore]
         public bool IsAutoStartEnabled { get; set; }
 
         public bool IsStateOverlayEnabled { get; set; } = true;
@@ -79,6 +80,8 @@ namespace TransliteratorWPF_Version.Services
 
                 SettingsLoaded?.Invoke(this, EventArgs.Empty);
             }
+
+            IsAutoStartEnabled = StartupMethods.HasStartProgEntry();
         }
 
         // TODO: Improve, catch exceptions
@@ -88,6 +91,11 @@ namespace TransliteratorWPF_Version.Services
             File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Settings.json", contents);
 
             SettingsSaved?.Invoke(this, EventArgs.Empty);
+
+            if (IsAutoStartEnabled)
+                StartupMethods.WriteStartProgEntry();
+            else
+                StartupMethods.DeleteStartProgEntry();
         }
     }
 }
