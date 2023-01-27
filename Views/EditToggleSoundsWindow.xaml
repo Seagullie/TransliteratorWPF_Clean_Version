@@ -11,7 +11,6 @@
     Height="Auto"
     ui:WindowHelper.UseModernWindowStyle="True"
     Activated="Window_Activated"
-    Loaded="Window_Loaded"
     MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
     SizeToContent="WidthAndHeight"
@@ -28,14 +27,14 @@
                 Orientation="Horizontal"
                 Spacing="20">
                 <TextBox
-                    x:Name="changeSoundOnToggleOnTxtBox"
                     Width="200"
-                    IsEnabled="false"
+                    IsEnabled="False"
+                    Text="{Binding ToggleOnSoundFileName, Mode=OneWay}"
+                    TextAlignment="Center"
+                    ToolTip="{Binding ToggleOnSoundFilePath}"
                     ToolTipService.ShowOnDisabled="true" />
-                <Button
-                    x:Name="changeSoundOnToggleOnBtn"
-                    Click="changeSoundOnToggleOnBtn_Click"
-                    Content="Change..." />
+                <Button Command="{Binding ChangeToggleOnSoundCommand}" Content="Change..." />
+                <Button Command="{Binding DeleteToggleOnSoundCommand}" Content="Clear" />
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
         <ui:SimpleStackPanel Grid.Row="1" Spacing="10">
@@ -47,14 +46,14 @@
                 Orientation="Horizontal"
                 Spacing="20">
                 <TextBox
-                    x:Name="changeSoundOnToggleOffTxtBox"
                     Width="200"
-                    IsEnabled="false"
+                    IsEnabled="False"
+                    Text="{Binding ToggleOffSoundFileName, Mode=OneWay}"
+                    TextAlignment="Center"
+                    ToolTip="{Binding ToggleOffSoundFilePath}"
                     ToolTipService.ShowOnDisabled="true" />
-                <Button
-                    x:Name="changeSoundOnToggleOffBtn"
-                    Click="changeSoundOnToggleOffBtn_Click"
-                    Content="Change..." />
+                <Button Command="{Binding ChangeToggleOffSoundCommand}" Content="Change..." />
+                <Button Command="{Binding DeleteToggleOffSoundCommand}" Content="Clear" />
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
     </ui:SimpleStackPanel>

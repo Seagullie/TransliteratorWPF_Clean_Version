@@ -53,7 +53,7 @@ namespace TransliteratorWPF_Version.ViewModels
             InitializePropertiesFromSettings();
         }
 
-        private void InitializePropertiesFromSettings()
+        public void InitializePropertiesFromSettings()
         {
             settingsService.Load();
             IsToggleSoundOn = settingsService.IsToggleSoundOn;

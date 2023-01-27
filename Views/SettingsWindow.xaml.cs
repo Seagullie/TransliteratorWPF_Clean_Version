@@ -16,22 +16,24 @@ namespace TransliteratorWPF_Version.Views
             DataContext = ViewModel;
         }
 
+        // TODO: Remove this duct tape
         private void Window_Activated(object sender, EventArgs e)
         {
-            // TODO: Delete this?
+            // Remove unpainted white area around borders
             void action() => InvalidateMeasure();
             Dispatcher.BeginInvoke((Action)action);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // Make window draggable
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.SaveAllProps();
+            ViewModel.InitializePropertiesFromSettings();
         }
     }
 }

@@ -16,15 +16,17 @@ namespace TransliteratorWPF_Version.Views
             DataContext = ViewModel;        
         }
 
-        // TODO: Try udnerstand this logic
+        // TODO: Remove this duct tape
         private void Window_Activated(object sender, EventArgs e)
         {
+            // Remove unpainted white area around borders
             void action() => InvalidateMeasure();
             Dispatcher.BeginInvoke(action);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            // Make window draggable
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
