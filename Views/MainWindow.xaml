@@ -28,7 +28,6 @@
             <Setter Property="CornerRadius" Value="15" />
             <Setter Property="Background" Value="#FF36393F" />
         </Style>
-        <helpers:ShortcutHashSetToStringConverter x:Key="ShortcutHashSetToStringConverter" />
     </Window.Resources>
 
     <Grid Margin="30">
@@ -141,7 +140,7 @@
             Margin="0,0,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Content="{Binding ToggleAppStateShortcut, Converter={StaticResource ShortcutHashSetToStringConverter}}"
+            Content="{Binding ToggleAppStateShortcut}"
             IsEnabled="False" />
     </Grid>
 </Window>

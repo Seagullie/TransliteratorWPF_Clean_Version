@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 using static TransliteratorWPF_Version.Services.LoggerService;
@@ -28,6 +27,7 @@ namespace TransliteratorWPF_Version.Services
         public HashSet<string> alphabet = new HashSet<string> { };
 
         private readonly LoggerService loggerService;
+        private readonly SettingsService settingsService;
 
         public App app
         {
@@ -134,9 +134,12 @@ namespace TransliteratorWPF_Version.Services
             loggerService = LoggerService.GetInstance();
             // .toList() returns a copy of existing array
             wordendersVanilla = wordenders.ToList();
+            settingsService = SettingsService.GetInstance();
+
+            
 
             TranslitTables = app.getAllTranslitTableNames().ToList();
-            string lastTranslitTable = Settings.Default.LastTranslitTable;
+            string lastTranslitTable = settingsService.LastSelectedTranslitTable;
             int lastTranslitTableIndex = TranslitTables.FindIndex((tableString) => tableString == lastTranslitTable);
             if (lastTranslitTableIndex != -1)
             {
@@ -303,7 +306,7 @@ namespace TransliteratorWPF_Version.Services
 
         public Dictionary<string, string> ReadReplacementMapFromJson(string pathToJsonFile)
         {
-            string TableAsString = File.ReadAllText(Path.Combine(App.BaseDir, $"Resources\\TranslitTables\\{pathToJsonFile}"));
+            string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources\\TranslitTables\\{pathToJsonFile}"));
             dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
             Dictionary<string, string> TableAsDictionary = deserializedTableObj;
 

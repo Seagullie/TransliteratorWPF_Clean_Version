@@ -10,7 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Services;
 using WindowsInput;
 using WindowsInput.Native;
@@ -32,12 +31,13 @@ namespace TransliteratorWPF_Version.Views
 
         private readonly Main liveTransliterator;
         private readonly LoggerService loggerService;
-        //public App app = ((App)Application.Current);
+        private readonly SettingsService settingsService;
 
         public DebugWindow()
         {
             // TODO: Dependency injection
             liveTransliterator = Main.GetInstance();
+            settingsService = SettingsService.GetInstance();
             loggerService = LoggerService.GetInstance();
 
             loggerService.NewLogMessage += ConsoleLog;
@@ -149,10 +149,10 @@ namespace TransliteratorWPF_Version.Views
 
         public void toggleTranslit_Click()
         {
-            liveTransliterator.keyLogger.Toggle();
+            liveTransliterator.keyLogger.State = !liveTransliterator.keyLogger.State;
             string stateDesc = (liveTransliterator.keyLogger.State == true ? "On" : "Off");
 
-            if ((Settings.Default.PlaySoundOnTranslitToggle))
+            if ((settingsService.IsToggleSoundOn))
             {
                 SoundPlayer soundToPlay = liveTransliterator.keyLogger.State == true ? soundCont : soundPause;
                 soundToPlay.Play();
@@ -242,12 +242,7 @@ namespace TransliteratorWPF_Version.Views
             BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
 
             loggerService.LogMessage(this, "Up And Running");
-            loggerService.LogMessage(this, $"BaseDir is: {App.BaseDir}");
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Settings.Default.Save();
+            loggerService.LogMessage(this, $"BaseDir is: {AppDomain.CurrentDomain.BaseDirectory}");
         }
 
         private void outputTextBox_TextChanged(object sender, TextChangedEventArgs e)

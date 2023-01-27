@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -29,7 +30,7 @@ namespace TransliteratorWPF_Version.Helpers
 
         public static string[] getAllFilesInFolder(string pathToFolder)
         {
-            DirectoryInfo d = new DirectoryInfo(Path.Combine(App.BaseDir, pathToFolder));
+            DirectoryInfo d = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathToFolder));
 
             FileInfo[] Files = d.GetFiles("*");
             return Files.Select(file => file.Name).ToArray();

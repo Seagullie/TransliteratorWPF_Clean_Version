@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 
 namespace TransliteratorWPF_Version.Services
@@ -19,6 +18,7 @@ namespace TransliteratorWPF_Version.Services
         public int slowDownKBEInjections = 0;
 
         private readonly LoggerService loggerService;
+        private readonly SettingsService settingsService;
 
         public DebugWindow debugWindow
         {
@@ -37,7 +37,7 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        public bool displayCombos = Settings.Default.displayCombos;
+        public bool displayCombos;
 
         public bool useAlternativeWrite = false;
 
@@ -50,14 +50,11 @@ namespace TransliteratorWPF_Version.Services
 
             loggerService = LoggerService.GetInstance();
 
-            if (Settings.Default.turnOnTranslitAtStart == false && state == 1)
-            {
-                ToggleTranslit();
-            }
-            else if (Settings.Default.turnOnTranslitAtStart == true && state == 0)
-            {
-                ToggleTranslit();
-            }
+            settingsService = SettingsService.GetInstance();
+            settingsService.Load();
+            displayCombos = settingsService.IsBufferInputEnabled;
+
+            keyLogger.State = settingsService.IsTranslitEnabledAtStartup;
         }
 
         private static Main _instance;
@@ -278,7 +275,7 @@ namespace TransliteratorWPF_Version.Services
 
         public void ToggleTranslit()
         {
-            keyLogger.Toggle();
+            keyLogger.State = !keyLogger.State;
         }
     }
 }

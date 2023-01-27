@@ -68,7 +68,7 @@ namespace TransliteratorWPF_Version.Views
             {
                 string tableName = dialog.textBox1.Text;
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}.json"), "{}");
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
                 liveTransliterator.ukrTranslit.TranslitTables.Add($"{tableName}.json");
                 liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
@@ -103,7 +103,7 @@ namespace TransliteratorWPF_Version.Views
 
             string tableName = comboBox1.SelectedItem.ToString();
 
-            File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
+            File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{tableName}"));
 
             loggerService.LogMessage(this, $"{tableName} has been deleted");
 
@@ -351,7 +351,7 @@ namespace TransliteratorWPF_Version.Views
                 string pathToFile = dialog.FileName;
                 string fileName = Path.GetFileName(pathToFile);
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
                 liveTransliterator.ukrTranslit.TranslitTables.Add(fileName);
             }
         }

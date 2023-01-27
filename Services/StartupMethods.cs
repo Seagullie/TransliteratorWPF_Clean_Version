@@ -14,8 +14,7 @@ namespace TransliteratorWPF_Version.Services
 
         public static bool HasStartProgEntry()
         {
-            bool exists = File.Exists(lnkPath);
-            return exists;
+            return File.Exists(lnkPath);
         }
 
         public static void WriteStartProgEntry()

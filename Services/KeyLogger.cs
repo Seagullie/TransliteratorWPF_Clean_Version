@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -8,22 +7,18 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Properties;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public sealed partial class KeyLogger : ObservableObject
+    public sealed partial class KeyLogger
     {
-        [ObservableProperty]
-        public bool state = true;
+        private bool state;
+        public bool State { get => state; set => SetState(value); }
 
         public string alphabet;
-
-        [ObservableProperty]
-        public string stateDesc = "On";
 
         public Main liveTransliterator;
 
@@ -61,8 +56,7 @@ namespace TransliteratorWPF_Version.Services
 
         public GlobalKeyboardHook gkh;
 
-        [ObservableProperty]
-        public HashSet<string> toggleTranslitShortcut = new HashSet<string>();
+        public HashSet<string> ToggleTranslitShortcut = new HashSet<string>();
 
         public HashSet<string> ChangeLanguageShortcut = new HashSet<string> { "Alt", "LShiftKey" };
 
@@ -76,6 +70,8 @@ namespace TransliteratorWPF_Version.Services
             // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
             settingsService = SettingsService.GetInstance();
+            settingsService.Load();
+            settingsService.SettingsSaved += UpdateSettings;
 
             gkh = new GlobalKeyboardHook();
 
@@ -94,9 +90,27 @@ namespace TransliteratorWPF_Version.Services
             return _instance;
         }
 
+        private void SetState(bool value)
+        {
+            if (value == state)
+                return;
+
+            state = value;
+
+            if (!state)
+                memory.Clear();
+
+            StateChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateSettings(object? sender, EventArgs eventArgs)
+        {
+            fetchToggleTranslitShortcutFromSettings();
+        }
+
         public void fetchToggleTranslitShortcutFromSettings()
         {
-            string SettingsString = Settings.Default.ToggleTranslitShortcut;
+            string SettingsString = settingsService.ToggleHotKey.ToString();
             string[] SettingStringAsArray;
             if (SettingsString.Contains("+"))
             {
@@ -444,37 +458,6 @@ namespace TransliteratorWPF_Version.Services
             {
                 memory.RemoveAt(memory.Count - 1);
             }
-        }
-
-        public void Pause()
-        {
-            State = false;
-            StateDesc = "Off";
-
-            memory.Clear();
-        }
-
-        public void Cont()
-        {
-            State = true;
-            StateDesc = "On";
-        }
-
-        public void Toggle()
-        {
-            if (State == true)
-            {
-                Pause();
-            }
-            else
-            {
-                Cont();
-            }
-        }
-
-        partial void OnStateChanged(bool value)
-        {
-            StateChanged.Invoke(this, EventArgs.Empty);
         }
     }
 }

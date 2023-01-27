@@ -34,7 +34,7 @@ namespace TransliteratorWPF_Version.ViewModels
         private string selectedTranslitTable;
 
         [ObservableProperty]
-        private HashSet<string> toggleAppStateShortcut;
+        private string toggleAppStateShortcut;
 
         public MainViewModel()
         {
@@ -42,13 +42,20 @@ namespace TransliteratorWPF_Version.ViewModels
             liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
             settingsService.Load();
+            settingsService.SettingsSaved += UpdateSettings;
 
             InitializeWindow();
             InitializeNotifyIcon();
             InitializeStateOverlayWindow();
             InitializeAppState();
-            InitializeChangeAppStateShortcut();
             LoadTranslitTables();
+
+            ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
+        }
+
+        private void UpdateSettings(object? sender, EventArgs eventArgs)
+        {
+            ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
         }
 
         private void InitializeWindow()
@@ -57,6 +64,7 @@ namespace TransliteratorWPF_Version.ViewModels
                 WindowState = WindowState.Minimized;
 
             ThemeManager.Current.ApplicationTheme = settingsService.ApplicationTheme;
+            ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
         }
 
         private void InitializeNotifyIcon()
@@ -110,30 +118,16 @@ namespace TransliteratorWPF_Version.ViewModels
             }
         }
 
-        private void InitializeChangeAppStateShortcut()
-        {
-            ToggleAppStateShortcut = liveTransliterator.keyLogger.ToggleTranslitShortcut;
-            liveTransliterator.keyLogger.ToggleTranslitShortcutChanged += UpdateChangeAppStateShortcut;
-        }
-
         private void LoadTranslitTables()
         {
             TranslitTables = liveTransliterator.ukrTranslit.TranslitTables;
             SelectedTranslitTable = settingsService.LastSelectedTranslitTable;
         }
 
-        private void UpdateChangeAppStateShortcut(object sender, EventArgs e)
-        {
-            if (sender is KeyLogger keyLogger)
-            {
-                ToggleAppStateShortcut = keyLogger.ToggleTranslitShortcut;
-            }
-        }
-
         [RelayCommand]
         private void ToggleAppState()
         {
-            liveTransliterator.keyLogger.Toggle();
+            liveTransliterator.keyLogger.State = !liveTransliterator.keyLogger.State;
         }
 
         [RelayCommand]
@@ -203,7 +197,7 @@ namespace TransliteratorWPF_Version.ViewModels
         {
             Sound sound = new Sound();
 
-            string pathToSoundToPlay = Path.Combine(App.BaseDir, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
+            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
 
             if (liveTransliterator.keyLogger.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
                 pathToSoundToPlay = settingsService.PathToCustomToggleOnSound;

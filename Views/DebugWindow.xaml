@@ -14,7 +14,6 @@
     ui:WindowHelper.UseModernWindowStyle="True"
     Activated="MainWindow1_Activated"
     Closed="DebugWindow1_Closed"
-    Closing="MainWindow_Closing"
     Foreground="#FF9E2626"
     IsVisibleChanged="MainWindow1_IsVisibleChanged"
     Loaded="MainWindow_Loaded"

@@ -1,42 +1,29 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
 using System.Security.Principal;
 using System.Windows;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Properties;
+
 using TransliteratorWPF_Version.Services;
 
 namespace TransliteratorWPF_Version
 {
     public partial class App : Application
     {
-        public static string BaseDir;
         public static string AppName = "Transliterator";
 
         public new static App Current => (App)Application.Current;
 
         public App()
         {
-            string PathToTransliteratorAsSettingVar = Settings.Default.ProgramFolder;
-
-            if (PathToTransliteratorAsSettingVar == "")
-            {
-                Settings.Default.ProgramFolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                BaseDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-                Settings.Default.Save();
-            }
-            else
-            {
-                BaseDir = PathToTransliteratorAsSettingVar;
-            }
-
-            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
+            Dispatcher.UnhandledException += OnDispatcherUnhandledException;
         }
 
         public static string GetFullPath(string RelativePath)
         {
-            return Path.Combine(BaseDir, RelativePath);
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, RelativePath);
         }
 
         private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

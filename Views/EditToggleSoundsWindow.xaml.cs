@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using TransliteratorWPF_Version.Properties;
+using TransliteratorWPF_Version.Services;
 using Path = System.IO.Path;
 
 namespace TransliteratorWPF_Version.Views
@@ -11,9 +11,12 @@ namespace TransliteratorWPF_Version.Views
     /// </summary>
     public partial class EditToggleSoundsWindow
     {
+        private readonly SettingsService settingsService;
         public EditToggleSoundsWindow()
         {
             InitializeComponent();
+            settingsService = SettingsService.GetInstance();
+            settingsService.Load();
         }
 
         private void changeSoundOnToggleOffBtn_Click(object sender, RoutedEventArgs e)
@@ -33,10 +36,10 @@ namespace TransliteratorWPF_Version.Views
                 // Open document
                 string pathToFile = dialog.FileName;
                 string fileName = Path.GetFileName(pathToFile);
-                Settings.Default.pathToCustomToggleOffSound = pathToFile;
+                settingsService.PathToCustomToggleOffSound = pathToFile;
 
-                changeSoundOnToggleOffTxtBox.Text = Settings.Default.pathToCustomToggleOffSound;
-                changeSoundOnToggleOnTxtBox.Text = Settings.Default.pathToCustomToggleOnSound;
+                changeSoundOnToggleOffTxtBox.Text = settingsService.PathToCustomToggleOffSound;
+                //changeSoundOnToggleOnTxtBox.Text = settingsService.PathToCustomToggleOnSound;
 
                 UpdateTooltips();
             }
@@ -44,8 +47,8 @@ namespace TransliteratorWPF_Version.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            changeSoundOnToggleOffTxtBox.Text = Settings.Default.pathToCustomToggleOffSound;
-            changeSoundOnToggleOnTxtBox.Text = Settings.Default.pathToCustomToggleOnSound;
+            changeSoundOnToggleOffTxtBox.Text = settingsService.PathToCustomToggleOffSound;
+            changeSoundOnToggleOnTxtBox.Text = settingsService.PathToCustomToggleOnSound;
 
             UpdateTooltips();
         }
@@ -73,10 +76,10 @@ namespace TransliteratorWPF_Version.Views
                 // Open document
                 string pathToFile = dialog.FileName; // a bit misleading property name
                 string fileName = Path.GetFileName(pathToFile);
-                Settings.Default.pathToCustomToggleOnSound = pathToFile;
+                settingsService.PathToCustomToggleOnSound = pathToFile;
 
-                changeSoundOnToggleOffTxtBox.Text = Settings.Default.pathToCustomToggleOffSound;
-                changeSoundOnToggleOnTxtBox.Text = Settings.Default.pathToCustomToggleOnSound;
+                //changeSoundOnToggleOffTxtBox.Text = settingsService.PathToCustomToggleOffSound;
+                changeSoundOnToggleOnTxtBox.Text = settingsService.PathToCustomToggleOnSound;
 
                 UpdateTooltips();
             }

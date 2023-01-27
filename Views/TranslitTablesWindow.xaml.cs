@@ -73,7 +73,7 @@ namespace TransliteratorWPF_Version.Views
                 // Read the contents of testDialog's TextBox.
                 string tableName = dialog.textBox1.Text;
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}.json"), "{}");
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
                 //initializeTablesComboBox(true);
                 liveTransliterator.ukrTranslit.TranslitTables.Add($"{tableName}.json");
@@ -115,7 +115,7 @@ namespace TransliteratorWPF_Version.Views
 
             string tableName = comboBox1.SelectedItem.ToString();
 
-            File.Delete(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{tableName}"));
+            File.Delete(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{tableName}"));
 
             // a notification would be nice here
             loggerService.LogMessage(this, $"{tableName} has been deleted");
@@ -324,7 +324,7 @@ namespace TransliteratorWPF_Version.Views
 
             string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(replacementMap, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(Path.Combine(App.BaseDir, $"Resources\\TranslitTables\\{comboBox1.SelectedItem}"), serializedTable);
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources\\TranslitTables\\{comboBox1.SelectedItem}"), serializedTable);
             // make translit redownload the current table just in case it was updated. Too lazy to check in a more detailed way.
 
             //string nameOfCurrentlyUsedReplacementMap = mainWindow.translitTablesComboBox.SelectedItem.ToString();
@@ -438,7 +438,7 @@ namespace TransliteratorWPF_Version.Views
                 string pathToFile = dialog.FileName;
                 string fileName = Path.GetFileName(pathToFile);
 
-                File.WriteAllText(Path.Combine(App.BaseDir, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
                 liveTransliterator.ukrTranslit.TranslitTables.Add(fileName);
                 //initializeTablesComboBox(true);
             }
