@@ -17,6 +17,7 @@
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
     WindowStartupLocation="CenterScreen"
+    WindowStyle="ToolWindow"
     mc:Ignorable="d">
 
     <Window.Resources>

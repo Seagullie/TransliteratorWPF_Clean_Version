@@ -65,19 +65,6 @@ namespace TransliteratorWPF_Version.ViewModels
             ToggleHotKey = settingsService.ToggleHotKey;
         }
 
-        public void SaveAllProps()
-        {
-            settingsService.IsToggleSoundOn = IsToggleSoundOn;
-            settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
-            settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
-            settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-            settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
-            settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
-            settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
-            settingsService.ToggleHotKey = ToggleHotKey;
-            settingsService.Save();
-        }
-
         partial void OnIsBufferInputEnabledChanged(bool value)
         {
             liveTransliterator.displayCombos = value;
@@ -150,11 +137,18 @@ namespace TransliteratorWPF_Version.ViewModels
             translitTables.Show();
         }
 
-        // should simply save the settings, just like it is done when settings window is closed
         [RelayCommand]
         private void ApplyChanges()
         {
-            SaveAllProps();
+            settingsService.IsToggleSoundOn = IsToggleSoundOn;
+            settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
+            settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
+            settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
+            settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
+            settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
+            settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
+            settingsService.ToggleHotKey = ToggleHotKey;
+            settingsService.Save();
         }
 
         [RelayCommand]
