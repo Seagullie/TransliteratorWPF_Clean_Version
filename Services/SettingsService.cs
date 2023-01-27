@@ -7,6 +7,8 @@ namespace TransliteratorWPF_Version.Services
 {
     public partial class SettingsService
     {
+        private const string configurationFilePath = "Settings.json";
+
         private static SettingsService _instance;
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
@@ -20,7 +22,6 @@ namespace TransliteratorWPF_Version.Services
 
         public bool IsMinimizedStartEnabled { get; set; }
 
-        [JsonIgnore]
         public bool IsAutoStartEnabled { get; set; }
 
         public bool IsStateOverlayEnabled { get; set; } = true;
@@ -68,32 +69,33 @@ namespace TransliteratorWPF_Version.Services
             SettingsReset?.Invoke(this, EventArgs.Empty);
         }
 
-        // TODO: Improve, catch exceptions
         public void Load()
         {
-            var configurationFilePath = "Settings.json";
-
             if (File.Exists(configurationFilePath))
             {
-                var jsonFile = File.ReadAllText(configurationFilePath);
-                JsonConvert.PopulateObject(jsonFile, this, JsonSerializerSettings);
-
-                SettingsLoaded?.Invoke(this, EventArgs.Empty);
+                var settings = File.ReadAllText(configurationFilePath);
+                JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);          
             }
 
-            IsAutoStartEnabled = StartupMethods.HasStartProgEntry();
+            SynchronizeJSONAndWindowsStartupSettings();
+
+            SettingsLoaded?.Invoke(this, EventArgs.Empty);
         }
 
-        // TODO: Improve, catch exceptions. Simplify?
         public void Save()
         {
-            string contents = JsonConvert.SerializeObject(this, JsonSerializerSettings);
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Settings.json", contents);
+            string settings = JsonConvert.SerializeObject(this, JsonSerializerSettings);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + configurationFilePath, settings);
+
+            SynchronizeJSONAndWindowsStartupSettings();
 
             SettingsSaved?.Invoke(this, EventArgs.Empty);
+        }
 
+        private void SynchronizeJSONAndWindowsStartupSettings()
+        {
             bool isHasStartProgEntry = StartupMethods.HasStartProgEntry();
-            
+
             if (IsAutoStartEnabled && !isHasStartProgEntry)
                 StartupMethods.WriteStartProgEntry();
             if (!IsAutoStartEnabled && isHasStartProgEntry)
