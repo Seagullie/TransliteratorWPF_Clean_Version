@@ -109,7 +109,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
             Sound.ForceMute = false;
 
-            liveTransliterator.keyLogger.StateChanged += UpdateAppState;
+            liveTransliterator.keyLogger.StateChangedEvent += UpdateAppState;
         }
 
         private void UpdateAppState(object sender, EventArgs e)

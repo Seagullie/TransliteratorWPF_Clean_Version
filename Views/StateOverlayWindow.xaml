@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:TransliteratorWPF_Version.Helpers"
     xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="StateOverlayWindow1"
@@ -21,6 +22,12 @@
     WindowStyle="None"
     mc:Ignorable="d">
 
+    <Window.Resources>
+        <helpers:StateToColorConverter x:Key="StateToColorConverter" />
+        <helpers:StringToBoolConverter x:Key="StringToBoolConverter" />
+        <helpers:BoolToColorConverter x:Key="BoolToColorConverter" />
+    </Window.Resources>
+
     <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
         <Image
             Width="40"
@@ -32,7 +39,7 @@
             Width="20"
             Height="20"
             Margin="10,0,0,0"
-            Fill="#FF52CE30"
+            Fill="{Binding АppStateFuck, Converter={StaticResource BoolToColorConverter}}"
             RadiusX="100"
             RadiusY="100" />
     </StackPanel>

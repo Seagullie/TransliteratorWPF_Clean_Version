@@ -95,7 +95,7 @@ namespace TransliteratorWPF_Version.ViewModels
         private async Task ShowBufferInputIsEnabled(CancellationToken cancellationToken)
         {
             const string showcaseString = "áóíú";
-            
+
             foreach (char charter in showcaseString)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -125,7 +125,7 @@ namespace TransliteratorWPF_Version.ViewModels
                     ShowcaseText = ShowcaseText.Remove(ShowcaseText.Length - 2, 2);
                     ShowcaseText += showcaseString2[i / 2];
                     await Task.Delay(300);
-                }                
+                }
             }
         }
 

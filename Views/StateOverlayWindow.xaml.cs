@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using TransliteratorWPF_Version.ViewModels;
 using Path = System.IO.Path;
 
 namespace TransliteratorWPF_Version.Views
@@ -13,17 +14,13 @@ namespace TransliteratorWPF_Version.Views
 
     public partial class StateOverlayWindow : Window
     {
-        public App app
-        {
-            get
-            {
-                return ((App)Application.Current);
-            }
-        }
+        public StateOverlayViewModel ViewModel { get; private set; }
 
         public StateOverlayWindow()
         {
             InitializeComponent();
+            ViewModel = new();
+            DataContext = ViewModel;
         }
 
         private void StateOverlayWindow1_Loaded(object sender, RoutedEventArgs e)

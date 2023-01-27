@@ -24,7 +24,7 @@ namespace TransliteratorWPF_Version.Services
 
         private readonly LoggerService loggerService;
 
-        public event EventHandler StateChanged;
+        public event EventHandler StateChangedEvent;
 
         public event EventHandler ToggleTranslitShortcutChanged;
 
@@ -100,7 +100,7 @@ namespace TransliteratorWPF_Version.Services
             if (!state)
                 memory.Clear();
 
-            StateChanged?.Invoke(this, EventArgs.Empty);
+            StateChangedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateSettings(object sender, EventArgs eventArgs)
