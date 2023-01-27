@@ -6,12 +6,20 @@ namespace TransliteratorWPF_Version.Services
     public class Sound
     {
         private MediaPlayer m_mediaPlayer;
+        public static bool ForceMute = true;
 
         public void Play(string filename, int volume = 100)
         {
             m_mediaPlayer = new MediaPlayer();
 
-            SetVolume(volume);
+            if (ForceMute)
+            {
+                SetVolume(0);
+            }
+            else
+            {
+                SetVolume(volume);
+            }
 
             m_mediaPlayer.Open(new Uri(filename));
             m_mediaPlayer.Play();

@@ -4,6 +4,7 @@ using ModernWpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Media;
 using System.Windows;
 using System.Windows.Forms;
 using TransliteratorWPF_Version.Services;
@@ -104,6 +105,8 @@ namespace TransliteratorWPF_Version.ViewModels
             else
                 AppState = "Off";
 
+            Sound.ForceMute = false;
+
             liveTransliterator.keyLogger.StateChanged += UpdateAppState;
         }
 
@@ -186,7 +189,6 @@ namespace TransliteratorWPF_Version.ViewModels
 
         partial void OnAppStateChanged(string value)
         {
-            // TODO: Dont play sound when initialize?
             if (settingsService.IsToggleSoundOn)
                 PlayToggleSound();
 
