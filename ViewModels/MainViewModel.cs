@@ -100,6 +100,8 @@ namespace TransliteratorWPF_Version.ViewModels
         // TODO: Improve method logic
         private void InitializeAppState()
         {
+            Sound.ForceMute = true;
+
             if (liveTransliterator.keyLogger.State)
                 AppState = "On";
             else
