@@ -100,7 +100,7 @@ namespace TransliteratorWPF_Version.Services
             if (!state)
                 memory.Clear();
 
-            StateChanged.Invoke(this, EventArgs.Empty);
+            StateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateSettings(object sender, EventArgs eventArgs)
