@@ -210,13 +210,15 @@ namespace TransliteratorWPF_Version.ViewModels
             sound.Play(pathToSoundToPlay);
         }
 
-        // TODO: Find better name for method
-        public void SaveSettingsAndDispose()
+        public void SaveSettings()
         {
             settingsService.LastSelectedTranslitTable = SelectedTranslitTable;
             settingsService.ApplicationTheme = (ApplicationTheme)ThemeManager.Current.ApplicationTheme;
             settingsService.Save();
+        }
 
+        public void DisposeOfNotifyIcon()
+        {
             notifyIcon.Dispose();
         }
     }

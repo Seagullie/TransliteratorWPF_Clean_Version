@@ -7,13 +7,13 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class MainWindow : Window
     {
-        public MainViewModel ViewModel {  get; private set; }
+        public MainViewModel ViewModel { get; private set; }
 
         public MainWindow()
         {
             InitializeComponent();
             ViewModel = new();
-            DataContext = ViewModel;        
+            DataContext = ViewModel;
         }
 
         // TODO: Remove this duct tape
@@ -33,7 +33,8 @@ namespace TransliteratorWPF_Version.Views
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ViewModel.SaveSettingsAndDispose();
+            ViewModel.SaveSettings();
+            ViewModel.DisposeOfNotifyIcon();
         }
     }
 }
