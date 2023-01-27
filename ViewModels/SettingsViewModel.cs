@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Threading;
 using System.Threading.Tasks;
 using TransliteratorWPF_Version.Models;
 using TransliteratorWPF_Version.Services;
@@ -9,7 +10,6 @@ namespace TransliteratorWPF_Version.ViewModels
 {
     public partial class SettingsViewModel : ObservableObject
     {
-        private readonly LoggerService loggerService;
         private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
 
@@ -46,7 +46,6 @@ namespace TransliteratorWPF_Version.ViewModels
         public SettingsViewModel()
         {
             // TODO: Dependency injection
-            loggerService = LoggerService.GetInstance();
             liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
 
@@ -79,11 +78,6 @@ namespace TransliteratorWPF_Version.ViewModels
             settingsService.Save();
         }
 
-        partial void OnToggleHotKeyChanged(HotKey value)
-        {
-            // TODO: Set ToggleTranslitShortcut in LiveTransliterator
-        }
-
         partial void OnIsBufferInputEnabledChanged(bool value)
         {
             liveTransliterator.displayCombos = value;
@@ -95,35 +89,47 @@ namespace TransliteratorWPF_Version.ViewModels
             //}
             //else
             //{
+            if (ShowBufferInputIsEnabledCommand.IsRunning)
+                ShowBufferInputIsEnabledCommand.Cancel();
+
+            if (ShowBufferInputIsDisabledCommand.IsRunning)
+                ShowBufferInputIsDisabledCommand.Cancel();
+
+            ShowcaseText = "";
+
             if (value)
-                ShowBufferInputIsEnabled(value);
+                ShowBufferInputIsEnabledCommand.ExecuteAsync(null);
             else
-                ShowBufferInputIsDisabled(value);
+                ShowBufferInputIsDisabledCommand.ExecuteAsync(null);
             //}
         }
 
-        private async void ShowBufferInputIsEnabled(bool isBufferInputEnabled)
+        [RelayCommand]
+        private async Task ShowBufferInputIsEnabled(CancellationToken cancellationToken)
         {
-            ShowcaseText = "";
-
             const string showcaseString = "áóíú";
             
             foreach (char charter in showcaseString)
             {
+                if (cancellationToken.IsCancellationRequested)
+                    return;
+
                 ShowcaseText += charter;
                 await Task.Delay(300);
             }
         }
 
-        private async void ShowBufferInputIsDisabled(bool isBufferInputEnabled)
+        [RelayCommand]
+        private async Task ShowBufferInputIsDisabled(CancellationToken cancellationToken)
         {
-            ShowcaseText = "";
-
             const string showcaseString = "`a`o`i`u";
             const string showcaseString2 = "áóíú";
 
             for (int i = 0; i < showcaseString.Length; i++)
             {
+                if (cancellationToken.IsCancellationRequested)
+                    return;
+
                 ShowcaseText += showcaseString[i];
                 await Task.Delay(300);
                 if ((i + 1) % 2 == 0)
@@ -137,10 +143,10 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         [RelayCommand]
-        private void OpenTranslitTablesWindow()
+        private static void OpenTranslitTablesWindow()
         {
             // TODO: Rewrite to NavigateToTranslitTablesPage or prevent the creation of multiple windows
-            TranslitTablesWindow translitTables = new TranslitTablesWindow();
+            TranslitTablesWindow translitTables = new();
             translitTables.Show();
         }
 
@@ -152,10 +158,10 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         [RelayCommand]
-        private void OpenEditToggleSoundsWindow()
+        private static void OpenEditToggleSoundsWindow()
         {
             // TODO: Rewrite to prevent the creation of multiple windows
-            EditToggleSoundsWindow editToggleSoundsWindow = new EditToggleSoundsWindow();
+            EditToggleSoundsWindow editToggleSoundsWindow = new();
             editToggleSoundsWindow.ShowDialog();
         }
 

@@ -103,7 +103,7 @@ namespace TransliteratorWPF_Version.Services
             StateChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private void UpdateSettings(object? sender, EventArgs eventArgs)
+        private void UpdateSettings(object sender, EventArgs eventArgs)
         {
             fetchToggleTranslitShortcutFromSettings();
         }

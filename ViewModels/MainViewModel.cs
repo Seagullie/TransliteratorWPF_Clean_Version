@@ -53,7 +53,7 @@ namespace TransliteratorWPF_Version.ViewModels
             ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
         }
 
-        private void UpdateSettings(object? sender, EventArgs eventArgs)
+        private void UpdateSettings(object sender, EventArgs eventArgs)
         {
             ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
         }
@@ -91,7 +91,7 @@ namespace TransliteratorWPF_Version.ViewModels
         {
             if (settingsService.IsStateOverlayEnabled)
             {
-                StateOverlayWindow stateOveralyWindow = new StateOverlayWindow();
+                StateOverlayWindow stateOveralyWindow = new();
                 stateOveralyWindow.Show();
             }
         }
@@ -146,26 +146,26 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         [RelayCommand]
-        private void OpenSettingsWindow()
+        private static void OpenSettingsWindow()
         {
             // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
-            SettingsWindow settings = new SettingsWindow();
+            SettingsWindow settings = new();
             settings.Show();
         }
 
         [RelayCommand]
-        private void OpenTableViewWindow()
+        private static void OpenTableViewWindow()
         {
             // TODO: Prevent the creation of multiple windows
-            TableViewWindow tableViewWindow = new TableViewWindow();
+            TableViewWindow tableViewWindow = new();
             tableViewWindow.Show();
         }
 
         [RelayCommand]
-        private void OpenDebugWindow()
+        private static void OpenDebugWindow()
         {
             // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
-            DebugWindow debugWindow = new DebugWindow();
+            DebugWindow debugWindow = new();
             debugWindow.Show();
         }
 
@@ -195,7 +195,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void PlayToggleSound()
         {
-            Sound sound = new Sound();
+            Sound sound = new();
 
             string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
 
