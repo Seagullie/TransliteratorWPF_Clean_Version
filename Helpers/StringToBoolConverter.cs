@@ -3,6 +3,7 @@ using System.Windows.Data;
 
 namespace TransliteratorWPF_Version.Helpers
 {
+    // TODO: Rewrite to BoolToStringConverter
     public class StringToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -4,7 +4,6 @@ using ModernWpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Media;
 using System.Windows;
 using System.Windows.Forms;
 using TransliteratorWPF_Version.Services;
@@ -19,6 +18,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private NotifyIcon notifyIcon;
 
+        // TODO: Rewrite to bool
         [ObservableProperty]
         private string appState;
 
