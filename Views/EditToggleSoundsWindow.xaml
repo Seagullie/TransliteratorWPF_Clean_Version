@@ -35,8 +35,14 @@
                     TextAlignment="Center"
                     ToolTip="{Binding ToggleOnSoundFilePath}"
                     ToolTipService.ShowOnDisabled="true" />
-                <Button Command="{Binding ChangeToggleOnSoundCommand}" Content="Change..." />
-                <Button Command="{Binding DeleteToggleOnSoundCommand}" Content="Clear" />
+                <Button
+                    Command="{Binding ChangeToggleOnSoundCommand}"
+                    Content="📁"
+                    ToolTip="Set custom sound" />
+                <Button
+                    Command="{Binding DeleteToggleOnSoundCommand}"
+                    Content="✕"
+                    ToolTip="Clear custom sound" />
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
         <ui:SimpleStackPanel Grid.Row="1" Spacing="10">
@@ -54,8 +60,14 @@
                     TextAlignment="Center"
                     ToolTip="{Binding ToggleOffSoundFilePath}"
                     ToolTipService.ShowOnDisabled="true" />
-                <Button Command="{Binding ChangeToggleOffSoundCommand}" Content="Change..." />
-                <Button Command="{Binding DeleteToggleOffSoundCommand}" Content="Clear" />
+                <Button
+                    Command="{Binding ChangeToggleOffSoundCommand}"
+                    Content="📁"
+                    ToolTip="Set custom sound" />
+                <Button
+                    Command="{Binding DeleteToggleOffSoundCommand}"
+                    Content="✕"
+                    ToolTip="Clear custom sound" />
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
     </ui:SimpleStackPanel>
