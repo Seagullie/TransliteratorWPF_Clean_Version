@@ -43,7 +43,7 @@ namespace TransliteratorWPF_Version.ViewModels
             liveTransliterator = Main.GetInstance();
             settingsService = SettingsService.GetInstance();
             settingsService.Load();
-            settingsService.SettingsSaved += UpdateSettings;
+            settingsService.SettingsSavedEvent += UpdateSettings;
 
             InitializeWindow();
             InitializeNotifyIcon();

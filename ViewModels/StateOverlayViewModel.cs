@@ -14,9 +14,8 @@ namespace TransliteratorWPF_Version.ViewModels
         [ObservableProperty]
         private bool isStateOverlayEnabled;
 
-        // TODO: Fix "BindingExpression path error: 'АppStateFuck' property not found on 'object' ''StateOverlayViewModel'" error
         [ObservableProperty]
-        private bool appStateFuck;
+        private bool appState;
 
         public StateOverlayViewModel()
         {
@@ -24,15 +23,11 @@ namespace TransliteratorWPF_Version.ViewModels
             keyLogger = KeyLogger.GetInstance();
 
             isStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
-            //keyLogger.StateChangedEvent += (sender, eventObj) => appState = keyLogger.State;
-            keyLogger.StateChangedEvent += UpdateAppState;
 
-            AppStateFuck = keyLogger.State;
-        }
+            settingsService.SettingsSavedEvent += (sender, eventObj) => IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
+            keyLogger.StateChangedEvent += (sender, eventObj) => AppState = keyLogger.State;
 
-        public void UpdateAppState(object sender, EventArgs eventArgs)
-        {
-            AppStateFuck = keyLogger.State;
+            AppState = keyLogger.State;
         }
     }
 }

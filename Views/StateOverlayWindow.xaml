@@ -6,10 +6,12 @@
     xmlns:helpers="clr-namespace:TransliteratorWPF_Version.Helpers"
     xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:TransliteratorWPF_Version.ViewModels"
     x:Name="StateOverlayWindow1"
     Title="StateOverlayWindow"
     Width="auto"
     Height="auto"
+    d:DataContext="{d:DesignInstance Type=viewmodels:StateOverlayViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     ContentRendered="StateOverlayWindow1_ContentRendered"
@@ -23,12 +25,14 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <helpers:StateToColorConverter x:Key="StateToColorConverter" />
-        <helpers:StringToBoolConverter x:Key="StringToBoolConverter" />
         <helpers:BoolToColorConverter x:Key="BoolToColorConverter" />
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Window.Resources>
 
-    <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
+    <StackPanel
+        VerticalAlignment="Top"
+        Orientation="Horizontal"
+        Visibility="{Binding IsStateOverlayEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
         <Image
             Width="40"
             Height="40"
@@ -39,7 +43,7 @@
             Width="20"
             Height="20"
             Margin="10,0,0,0"
-            Fill="{Binding АppStateFuck, Converter={StaticResource BoolToColorConverter}}"
+            Fill="{Binding AppState, Converter={StaticResource BoolToColorConverter}}"
             RadiusX="100"
             RadiusY="100" />
     </StackPanel>

@@ -71,7 +71,7 @@ namespace TransliteratorWPF_Version.Services
             loggerService = LoggerService.GetInstance();
             settingsService = SettingsService.GetInstance();
             settingsService.Load();
-            settingsService.SettingsSaved += UpdateSettings;
+            settingsService.SettingsSavedEvent += UpdateSettings;
 
             gkh = new GlobalKeyboardHook();
 

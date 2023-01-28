@@ -44,11 +44,11 @@ namespace TransliteratorWPF_Version.Services
         public HotKey ToggleHotKey { get; set; }
 
         // Events
-        public event EventHandler SettingsReset;
+        public event EventHandler SettingsResetEvent;
 
-        public event EventHandler SettingsLoaded;
+        public event EventHandler SettingsLoadedEvent;
 
-        public event EventHandler SettingsSaved;
+        public event EventHandler SettingsSavedEvent;
 
         private SettingsService()
         {
@@ -66,7 +66,7 @@ namespace TransliteratorWPF_Version.Services
         // TODO: Write the implementation
         public void Reset()
         {
-            SettingsReset?.Invoke(this, EventArgs.Empty);
+            SettingsResetEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void Load()
@@ -74,12 +74,12 @@ namespace TransliteratorWPF_Version.Services
             if (File.Exists(configurationFilePath))
             {
                 var settings = File.ReadAllText(configurationFilePath);
-                JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);          
+                JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);
             }
 
             SynchronizeJSONAndWindowsStartupSettings();
 
-            SettingsLoaded?.Invoke(this, EventArgs.Empty);
+            SettingsLoadedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public void Save()
@@ -89,7 +89,7 @@ namespace TransliteratorWPF_Version.Services
 
             SynchronizeJSONAndWindowsStartupSettings();
 
-            SettingsSaved?.Invoke(this, EventArgs.Empty);
+            SettingsSavedEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void SynchronizeJSONAndWindowsStartupSettings()
