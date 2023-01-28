@@ -49,12 +49,16 @@
             <CheckBox
                 HorizontalAlignment="Left"
                 Content="Start minimized"
-                IsChecked="{Binding IsMinimizedStartEnabled}" />
+                IsChecked="{Binding IsMinimizedStartEnabled}"
+                ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
             <CheckBox
                 HorizontalAlignment="Left"
                 Content="Turn on translit at startup"
                 IsChecked="{Binding IsTranslitEnabledAtStartup}" />
-            <CheckBox Content="Enable State Overlay" IsChecked="{Binding IsStateOverlayEnabled}" />
+            <CheckBox
+                Content="Enable State Overlay"
+                IsChecked="{Binding IsStateOverlayEnabled}"
+                ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
             <CheckBox
                 HorizontalAlignment="Left"
                 Content="Run at system startup"
@@ -64,7 +68,7 @@
                 HorizontalAlignment="Left"
                 Content="Disable Alt + Shift Global Shortcut"
                 IsChecked="{Binding IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
-                ToolTip="Close Settings Window for the change to take effect."
+                ToolTip="This setting stops working once the program is closed."
                 ToolTipService.ShowOnDisabled="True" />
         </ui:SimpleStackPanel>
 
@@ -104,7 +108,8 @@
                     VerticalAlignment="Top"
                     AutomationProperties.AutomationId="waitForComboRadioBtn"
                     Content="Buffer"
-                    IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
+                    IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}"
+                    ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
             </ui:SimpleStackPanel>
             <TextBox
                 Width="120"
