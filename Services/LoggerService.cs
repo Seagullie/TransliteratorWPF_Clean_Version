@@ -10,17 +10,13 @@ namespace TransliteratorWPF_Version.Services
 
         private LoggerService()
         {
-
         }
 
         public static LoggerService GetInstance()
         {
-            if (_instance == null)
-            {
-                _instance = new LoggerService();
-            }
+            _instance ??= new LoggerService();
             return _instance;
-        } 
+        }
 
         public void LogMessage(object sender, string message, string color = null)
         {
