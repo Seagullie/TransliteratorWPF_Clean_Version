@@ -46,6 +46,8 @@ namespace TransliteratorWPF_Version.Services
             // TODO: Dependency injection
             keyLogger = KeyLogger.GetInstance();
             keyLogger.liveTransliterator = this;
+            keyLogger.transliterator = this.ukrTranslit;
+
             keyLogger.LogKeys();
 
             loggerService = LoggerService.GetInstance();

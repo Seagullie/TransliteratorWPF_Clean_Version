@@ -21,6 +21,7 @@ namespace TransliteratorWPF_Version.Services
         public string alphabet;
 
         public Main liveTransliterator;
+        public Transliterator transliterator;
 
         private readonly LoggerService loggerService;
 
@@ -65,17 +66,30 @@ namespace TransliteratorWPF_Version.Services
         public string ToggleTranslitShortcutMainKey;
         public int nOfKeysOmmittedFromMemory = 0;
 
+        [DllImport("user32.dll")]
+        private static extern bool GetKeyboardState(byte[] lpKeyState);
+
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        [DllImport("user32.dll")]
+        private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
+
         private KeyLogger()
         {
             // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
+
             settingsService = SettingsService.GetInstance();
             settingsService.Load();
             settingsService.SettingsSavedEvent += UpdateSettings;
 
             gkh = new GlobalKeyboardHook();
 
-            fetchToggleTranslitShortcutFromSettings();
+            FetchToggleTranslitShortcutFromSettings();
             gkh_KeyDownHandler = new KeyEventHandler(gkh_KeyDown);
         }
 
@@ -83,10 +97,7 @@ namespace TransliteratorWPF_Version.Services
 
         public static KeyLogger GetInstance()
         {
-            if (_instance == null)
-            {
-                _instance = new KeyLogger();
-            }
+            _instance ??= new KeyLogger();
             return _instance;
         }
 
@@ -105,14 +116,14 @@ namespace TransliteratorWPF_Version.Services
 
         private void UpdateSettings(object sender, EventArgs eventArgs)
         {
-            fetchToggleTranslitShortcutFromSettings();
+            FetchToggleTranslitShortcutFromSettings();
         }
 
-        public void fetchToggleTranslitShortcutFromSettings()
+        public void FetchToggleTranslitShortcutFromSettings()
         {
             string SettingsString = settingsService.ToggleHotKey.ToString();
             string[] SettingStringAsArray;
-            if (SettingsString.Contains("+"))
+            if (SettingsString.Contains('+'))
             {
                 SettingStringAsArray = SettingsString.Split(" + ".ToCharArray()).Where(k => k != "").ToArray();
             }
@@ -133,11 +144,13 @@ namespace TransliteratorWPF_Version.Services
 
         public void LogKeys()
         {
+            // add latin alphabet
             foreach (int value in Enumerable.Range(65, 25 + 1))
             {
                 gkh.HookedKeys.Add((Keys)value);
             }
 
+            // add numbers
             foreach (int value in Enumerable.Range(48, 10))
             {
                 gkh.HookedKeys.Add((Keys)value);
@@ -176,22 +189,10 @@ namespace TransliteratorWPF_Version.Services
             IntPtr inputLocaleIdentifier = GetKeyboardLayout(0);
 
             StringBuilder result = new StringBuilder();
-            ToUnicodeEx(virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
+            _ = ToUnicodeEx(virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
 
             return result.ToString();
         }
-
-        [DllImport("user32.dll")]
-        private static extern bool GetKeyboardState(byte[] lpKeyState);
-
-        [DllImport("user32.dll")]
-        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetKeyboardLayout(uint idThread);
-
-        [DllImport("user32.dll")]
-        private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
 
         private bool HandleShortcuts(KeyEventArgs e)
         {
@@ -287,7 +288,7 @@ namespace TransliteratorWPF_Version.Services
 
             string lowerCaseKeyCode = e.KeyCode.ToString().ToLower();
 
-            if (ShouldSkipKey(UnicodeChar) && !isWordender(lowerCaseKeyCode, UnicodeChar))
+            if (ShouldSkipKey(UnicodeChar) && !IsWordender(lowerCaseKeyCode, UnicodeChar))
             {
                 loggerService.LogMessage(this, $"Skipping {e.KeyCode}");
                 return;
@@ -299,50 +300,57 @@ namespace TransliteratorWPF_Version.Services
             string caseSensitiveCharacter = isLowerCase ? UnicodeChar.ToLower() : UnicodeChar.ToUpper();
             loggerService.LogMessage(this, $"Keycode: {caseSensitiveCharacter}. KeyData: {e.KeyData} DOWN.");
 
-            if (isWordender(lowerCaseKeyCode, UnicodeChar))
+            if (IsWordender(lowerCaseKeyCode, UnicodeChar))
             {
-                handleWordenderKey(UnicodeChar, ref e);
+                HandleWordenderKey(UnicodeChar, ref e);
+                return;
+            }
+
+            if (liveTransliterator.displayCombos)
+            {
+                // transliterate without buffering input. Hard and sometimes buggy, but more fluid and snappy
+                TransliterateWithoutBuffering(caseSensitiveCharacter, ref e);
             }
             else
             {
-                if (liveTransliterator.displayCombos)
-                {
-                    decideOnKeySuppression(caseSensitiveCharacter.ToLower(), ref e);
+                // buffer input untill transliteration can be made. Simple and reliable
 
-                    Transliterator translit = liveTransliterator.ukrTranslit;
-                    string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
+                e.Handled = true;
 
-                    if (translit.EndsWithBrokenCombo(upcomingText) && translit.EndsWithComboInit(upcomingText) && !translit.IsPartOfCombination(upcomingText))
-                    {
-                        nOfKeysOmmittedFromMemory = 1;
-                        liveTransliterator.Transliterate(caseSensitiveCharacter, true);
-                        memory.Add(caseSensitiveCharacter);
-                        liveTransliterator.Write(caseSensitiveCharacter);
-                    }
-                    else
-                    {
-                        memory.Add(caseSensitiveCharacter);
-                        liveTransliterator.Transliterate(caseSensitiveCharacter);
-                    }
-                }
-                else
-                {
-                    e.Handled = true;
-
-                    memory.Add(caseSensitiveCharacter);
-                    liveTransliterator.Transliterate(caseSensitiveCharacter);
-                }
+                memory.Add(caseSensitiveCharacter);
+                liveTransliterator.Transliterate(caseSensitiveCharacter);
             }
         }
 
-        public bool isWordender(string lowerCaseKeyCode, string UnicodeChar)
+        // TODO: Come up with better name for the method
+        public void TransliterateWithoutBuffering(string caseSensitiveCharacter, ref KeyEventArgs e)
+        {
+            DecideOnKeySuppression(caseSensitiveCharacter.ToLower(), ref e);
+
+            string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
+
+            if (transliterator.EndsWithBrokenCombo(upcomingText) && transliterator.EndsWithComboInit(upcomingText) && !transliterator.IsPartOfCombination(upcomingText))
+            {
+                nOfKeysOmmittedFromMemory = 1;
+                liveTransliterator.Transliterate(caseSensitiveCharacter, true);
+                memory.Add(caseSensitiveCharacter);
+                liveTransliterator.Write(caseSensitiveCharacter);
+            }
+            else
+            {
+                memory.Add(caseSensitiveCharacter);
+                liveTransliterator.Transliterate(caseSensitiveCharacter);
+            }
+        }
+
+        public bool IsWordender(string lowerCaseKeyCode, string UnicodeChar)
         {
             var wordenders = liveTransliterator.ukrTranslit.wordenders;
 
             return wordenders.Contains(lowerCaseKeyCode) || wordenders.Contains(UnicodeChar.ToLower());
         }
 
-        public void handleWordenderKey(string UnicodeChar, ref KeyEventArgs e)
+        public void HandleWordenderKey(string UnicodeChar, ref KeyEventArgs e)
         {
             if (memory.Count == 0)
             {
@@ -355,7 +363,7 @@ namespace TransliteratorWPF_Version.Services
             liveTransliterator.Write(UnicodeChar);
         }
 
-        public bool decideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
+        public bool DecideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
             ref Transliterator translit = ref liveTransliterator.ukrTranslit;
 
@@ -406,39 +414,24 @@ namespace TransliteratorWPF_Version.Services
             return e.Handled;
         }
 
-        public void LogKey(object e)
-        {
-            Console.WriteLine("logging a key");
-        }
-
         public bool ShouldSkipKey(string key_name)
         {
             key_name = key_name.ToLower();
 
+            // this condition checks for keys that are not in the alphabet (such as shift, ctrl, alt, etc.) and should be skipped
             if (!liveTransliterator.ukrTranslit.alphabet.Contains(key_name))
             {
                 return true;
             }
 
-            if (!keyStateChecker.IsShiftPressedDown())
-            {
-                if (keyStateChecker.IsModifierPressedDown())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            // this condition checks for combinations such as ctrl + key, alt + key, win + key (those should be skipped), except for shift + key (that's capitalization and is of interest to us)
+            return !keyStateChecker.IsShiftPressedDown() && keyStateChecker.IsModifierPressedDown();
         }
 
         public bool ShouldClearMemory()
         {
-            if (keyStateChecker.IsKeyDown(Key.Tab) && (keyStateChecker.IsKeyDown(Key.LeftAlt) || keyStateChecker.IsKeyDown(Key.RightAlt)))
-            {
-                return true;
-            }
-
-            return false;
+            // checks for alt + tab combo
+            return keyStateChecker.IsKeyDown(Key.Tab) && (keyStateChecker.IsKeyDown(Key.LeftAlt) || keyStateChecker.IsKeyDown(Key.RightAlt));
         }
 
         public void HandleBackspace()
@@ -447,8 +440,10 @@ namespace TransliteratorWPF_Version.Services
             {
                 return;
             }
+            // ctrl + backspace erases entire word and needs additional handling. Here word = any sequence of characters such as abcdefg123, but not punctuation or other special symbols
             if (keyStateChecker.IsKeyDown(Key.LeftCtrl) || keyStateChecker.IsKeyDown(Key.RightCtrl))
             {
+                // erase untill apostrophe is met
                 while (memory.Count > 0 && memory.Last() != "'")
                 {
                     memory.RemoveAt(memory.Count - 1);
