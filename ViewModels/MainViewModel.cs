@@ -100,14 +100,14 @@ namespace TransliteratorWPF_Version.ViewModels
         // TODO: Improve method logic
         private void InitializeAppState()
         {
-            Sound.ForceMute = true;
+            SoundPlayerService.IsMuted = true;
 
             if (liveTransliterator.keyLogger.State)
                 AppState = "On";
             else
                 AppState = "Off";
 
-            Sound.ForceMute = false;
+            SoundPlayerService.IsMuted = false;
 
             liveTransliterator.keyLogger.StateChangedEvent += UpdateAppState;
         }
@@ -199,8 +199,6 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void PlayToggleSound()
         {
-            Sound sound = new();
-
             string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
 
             if (liveTransliterator.keyLogger.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
@@ -209,7 +207,7 @@ namespace TransliteratorWPF_Version.ViewModels
             if (liveTransliterator.keyLogger.State == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
                 pathToSoundToPlay = settingsService.PathToCustomToggleOffSound;
 
-            sound.Play(pathToSoundToPlay);
+            SoundPlayerService.Play(pathToSoundToPlay);
         }
 
         public void SaveSettings()
