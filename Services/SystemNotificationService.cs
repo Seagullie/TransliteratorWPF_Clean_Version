@@ -28,6 +28,7 @@ namespace TransliteratorWPF_Version.Services
             return _instance;
         }
 
+        // TODO: figure out how to enable .Show()
         private void CreateNotification(string text)
         {
             // Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
