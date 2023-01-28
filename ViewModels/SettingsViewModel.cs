@@ -76,25 +76,25 @@ namespace TransliteratorWPF_Version.ViewModels
             //}
             //else
             //{
-            if (ShowBufferInputIsEnabledCommand.IsRunning)
-                ShowBufferInputIsEnabledCommand.Cancel();
+            if (ShowcaseBufferInputEnabledModeCommand.IsRunning)
+                ShowcaseBufferInputEnabledModeCommand.Cancel();
 
-            if (ShowBufferInputIsDisabledCommand.IsRunning)
-                ShowBufferInputIsDisabledCommand.Cancel();
+            if (ShowcaseBufferInputDisabledModeCommand.IsRunning)
+                ShowcaseBufferInputDisabledModeCommand.Cancel();
 
             ShowcaseText = "";
 
             if (value)
-                ShowBufferInputIsEnabledCommand.ExecuteAsync(null);
+                ShowcaseBufferInputEnabledModeCommand.ExecuteAsync(null);
             else
-                ShowBufferInputIsDisabledCommand.ExecuteAsync(null);
+                ShowcaseBufferInputDisabledModeCommand.ExecuteAsync(null);
             //}
         }
 
         [RelayCommand]
-        private async Task ShowBufferInputIsEnabled(CancellationToken cancellationToken)
+        private async Task ShowcaseBufferInputEnabledMode(CancellationToken cancellationToken)
         {
-            const string showcaseString = "áóíú";
+            const string showcaseString = "âõíü";
 
             foreach (char charter in showcaseString)
             {
@@ -107,10 +107,10 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         [RelayCommand]
-        private async Task ShowBufferInputIsDisabled(CancellationToken cancellationToken)
+        private async Task ShowcaseBufferInputDisabledMode(CancellationToken cancellationToken)
         {
-            const string showcaseString = "`a`o`i`u";
-            const string showcaseString2 = "áóíú";
+            const string showcaseString = "^a~o`i\"u";
+            const string showcaseString2 = "âõíü";
 
             for (int i = 0; i < showcaseString.Length; i++)
             {
@@ -154,14 +154,8 @@ namespace TransliteratorWPF_Version.ViewModels
         [RelayCommand]
         private static void OpenEditToggleSoundsWindow()
         {
-            // TODO: Rewrite to prevent the creation of multiple windows
             EditToggleSoundsWindow editToggleSoundsWindow = new();
             editToggleSoundsWindow.ShowDialog();
-        }
-
-        partial void OnIsStateOverlayEnabledChanged(bool value)
-        {
-            // TODO: Write StateOverlayService
         }
     }
 }

@@ -193,8 +193,6 @@ namespace TransliteratorWPF_Version.ViewModels
         {
             if (settingsService.IsToggleSoundOn)
                 PlayToggleSound();
-
-            // TODO: Change state label foreground
         }
 
         private void PlayToggleSound()
