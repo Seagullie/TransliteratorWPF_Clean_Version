@@ -33,7 +33,6 @@ namespace TransliteratorWPF_Version.Services
         {
             get
             {
-                //ref var currentApp = ref Application.Current;
                 return (App)Application.Current;
             }
         }
@@ -43,11 +42,6 @@ namespace TransliteratorWPF_Version.Services
             {  "̚̚̚̚ϟ", "'"}
         };
 
-        //private DebugWindow debugWindow = System.Windows.Application.Current.Windows.;
-
-        //private DebugWindow _debugWindow;
-
-        //private List<string> _translitTables;
         private List<string> _translitTables;
 
         private int _selectedTranslitTableIndex;
@@ -99,6 +93,7 @@ namespace TransliteratorWPF_Version.Services
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        // those are the symbols that never occur somewhere within regular words, but rather at the end
         public List<string> wordenders = new List<string> {
                 "0",
                 ";",
@@ -215,9 +210,11 @@ namespace TransliteratorWPF_Version.Services
         //    { "'", "ь" }
         //};
 
+        // combo = more than one letter. Examples of combos: ch, sh, zh 
+        // while s d f are not combos
         private string[] combos;
         private KeyStateChecker keyStateChecker = new KeyStateChecker();
-        public string replacement_map_filename;
+        public string replacementMapFilename;
 
         public void SetReplacementMap(Dictionary<string, string> replacement_map)
         {
@@ -225,10 +222,12 @@ namespace TransliteratorWPF_Version.Services
 
             keys = SortReplacementMapKeys(new Dictionary<string, string>(replacement_map));
 
-            combos = getReplacementMapCombos(this.replacement_map);
+            combos = GetReplacementMapCombos(this.replacement_map);
 
+
+            // TODO: rewrite explanation
             // generating alphabet:
-
+            // alphabet is a set of all letters that can be transliterated
             foreach (string key in keys)
             {
                 if (key.Length != 1)
@@ -257,7 +256,7 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        public string[] getReplacementMapCombos(Dictionary<string, string> replacement_map)
+        public string[] GetReplacementMapCombos(Dictionary<string, string> replacement_map)
         {
             string[] keys = replacement_map.Keys.ToArray();
             string[] combos = keys.Where(key => key.Length > 1).ToArray();
@@ -265,6 +264,7 @@ namespace TransliteratorWPF_Version.Services
             return combos;
         }
 
+        // sorting is necessary so that the longest combos are moved to top
         public string[] SortReplacementMapKeys(Dictionary<string, string> replacement_map)
         {
             string[] keys = replacement_map.Keys.ToArray();
@@ -290,17 +290,17 @@ namespace TransliteratorWPF_Version.Services
             return sortedDictionary;
         }
 
-        public void SetReplacementMapFromJson(string pathToJsonFile) // is it relative or not? relative. Just the name of .json is enough
+        public void SetReplacementMapFromJson(string relativePathToJsonFile) // is it relative or not? relative. Just the name of .json is enough
         {
             try
             {
-                Dictionary<string, string> TableAsDictionary = ReadReplacementMapFromJson(pathToJsonFile);
+                Dictionary<string, string> TableAsDictionary = ReadReplacementMapFromJson(relativePathToJsonFile);
 
                 SetReplacementMap(TableAsDictionary);
             }
             finally
             {
-                replacement_map_filename = pathToJsonFile;
+                replacementMapFilename = relativePathToJsonFile;
             }
         }
 
@@ -325,7 +325,7 @@ namespace TransliteratorWPF_Version.Services
                 }
             }
 
-            return postprocess(text);
+            return Postprocess(text);
         }
 
         public bool is_nonASCII(string text)
@@ -341,14 +341,11 @@ namespace TransliteratorWPF_Version.Services
             return false;
         }
 
+
+        // how to read the param list:
+        // replace all "words" in "text" with "replacement"
         public string ReplaceKeepCase(string word, string replacement, string text)
         {
-            // how to read the param list:
-            // replace all "words" in "text" with "replacement"
-
-            // getting "namespace cannot directly contain fields or methods"
-            // that was due to me accidentaly declaring methods outside the class
-
             Func<Match, string> onMatch = match =>
             {
                 string val = match.Value;
@@ -373,17 +370,16 @@ namespace TransliteratorWPF_Version.Services
                 return replacement;
             };
 
-            //Regex.Replace(word, onMatch, text, flags = re.I);
             return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
-            //return sub(word, onMatch, text, flags = re.I);
         }
 
+        // many characters do not have an uppercase version. For example, "!", "?" ":" can't be uppercased, while letters such as a(A), b(B), c(C) do indeed have uppercase variant  
         public bool HasUpperCase(string character)
         {
             return character.ToLower() != character.ToUpper();
         }
 
-        public string postprocess(string text)
+        public string Postprocess(string text)
         {
             foreach (string char_ in postreplacement_map.Keys)
             {
@@ -435,17 +431,18 @@ namespace TransliteratorWPF_Version.Services
             return false;
         }
 
-        public bool isCombo(string text)
+        public bool IsCombo(string text)
         {
             return combos.Contains(text);
         }
 
-        public bool isSubComboFinisher(string character)
+        // subcombo is a combo within another combo. Example: [sch] (щ) contains [ch] (ч). Thus, [ch] is a subcombo
+        public bool IsSubComboFinisher(string character)
         {
-            return false; // warning danger. Will implement later
+            throw new NotImplementedException(); // warning danger. Will implement later
         }
 
-        public bool isAnyComboFinisher(string character)
+        public bool IsComboFinisher(string character)
         {
             foreach (string combo in combos)
             {
@@ -458,31 +455,32 @@ namespace TransliteratorWPF_Version.Services
             return false;
         }
 
-        public bool isAddingUpToCombo(string prefix, string characterFinisher)
+        public bool IsAddingUpToCombo(string prefix, string characterFinisher)
         {
-            return isCombo(prefix + characterFinisher);
+            return IsCombo(prefix + characterFinisher);
         }
 
+        // removes last character of text param and checks whether the remainder ends with combo init
         public bool EndsWithBrokenCombo(string text)
         {
-            // remove last character and see whether the remainder ends with combo init
 
             if (text.Length < 2)
             {
                 return false;
             }
 
-            if (isCombo(text))
+            if (IsCombo(text))
             {
                 return false;
             }
 
             string textWithoutLastCharacter = text.Substring(0, text.Length - 1);
-            // clamping combo length to text length:
             if (combos.Length == 0)
             {
                 return false;
             }
+
+            // clamping combo length to text length:
             int longestComboLen = textWithoutLastCharacter.Length < combos[0].Length ? textWithoutLastCharacter.Length : combos[0].Length;
 
             for (int i = 1; i < longestComboLen + 1; i++)
