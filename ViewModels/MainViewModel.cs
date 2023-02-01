@@ -159,6 +159,14 @@ namespace TransliteratorWPF_Version.ViewModels
         }
 
         [RelayCommand]
+        private static void OpenSnippetTranslitWindow()
+        {
+            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
+            SnippetTranslitWindow snippetTranslitWindow = new();
+            snippetTranslitWindow.Show();
+        }
+
+        [RelayCommand]
         private static void OpenTableViewWindow()
         {
             // TODO: Prevent the creation of multiple windows

@@ -1,0 +1,39 @@
+﻿<Window
+    x:Class="TransliteratorWPF_Version.Views.SnippetTranslitWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:vm="clr-namespace:TransliteratorWPF_Version.ViewModels"
+    Title="Snippet Transliterator Window"
+    Width="800"
+    Height="450"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    MouseDown="SnippetTranslitWindow_MouseDown"
+    mc:Ignorable="d">
+    <Grid Margin="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+        <!--
+            TODO: Figure out how to remove white outline around the text box.
+            The outline isn't visible when text box is disabled
+        -->
+        <DockPanel Grid.Row="0">
+            <TextBox Text="{Binding UserInput}" />
+        </DockPanel>
+        <DockPanel Grid.Row="1" HorizontalAlignment="Center">
+            <Button Command="{Binding TransliterateSnippetCommand}" Content="Transliterate" />
+        </DockPanel>
+        <DockPanel Grid.Row="2">
+            <TextBox IsEnabled="False" Text="{Binding TransliterationResults}" />
+        </DockPanel>
+    </Grid>
+</Window>

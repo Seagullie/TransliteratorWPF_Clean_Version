@@ -216,7 +216,8 @@ namespace TransliteratorWPF_Version.Services
 
             var memory_text = keyLogger.GetMemoryAsString().ToLower();
 
-            bool MemoryIsNonComboText = !ukrTranslit.IsStartOfCombination(memory_text) && !ukrTranslit.EndsWithComboInit(memory_text);
+            TableKeyAnalyzerService keyAnalyzer = ukrTranslit.tableKeyAnalayzerService;
+            bool MemoryIsNonComboText = !keyAnalyzer.IsStartOfCombination(memory_text) && !keyAnalyzer.EndsWithComboInit(memory_text);
 
             if (!breakCombo)
             {
@@ -225,7 +226,7 @@ namespace TransliteratorWPF_Version.Services
                     TransliterateAndEditIn(lastKey);
                     return true;
                 }
-                else if (ukrTranslit.LastCharacterIsComboInit(memory_text))
+                else if (ukrTranslit.tableKeyAnalayzerService.LastCharacterIsComboInit(memory_text))
                 {
                     TransliterateAndEditIn(lastKey);
                     return true;
@@ -242,7 +243,7 @@ namespace TransliteratorWPF_Version.Services
 
         public void TransliterateAndEditIn(string last_key)
         {
-            var transliterated_text = ukrTranslit.transliterate(keyLogger.GetMemoryAsString());
+            var transliterated_text = ukrTranslit.Transliterate(keyLogger.GetMemoryAsString());
             loggerService.LogMessage(this, $"transliterated version to insert: {transliterated_text}. Original ver.: {keyLogger.GetMemoryAsString()}");
             EditTextbox(last_key, transliterated_text);
         }
@@ -257,7 +258,9 @@ namespace TransliteratorWPF_Version.Services
 
             string keyLoggerMemoryAsString = keyLogger.GetMemoryAsString();
 
-            if (displayCombos && (ukrTranslit.LastCharacterIsComboInit(keyLoggerMemoryAsString) || ukrTranslit.EndsWithBrokenCombo(keyLoggerMemoryAsString) || ukrTranslit.EndsWithComboInit(keyLoggerMemoryAsString)))
+            TableKeyAnalyzerService keyAnalyzer = ukrTranslit.tableKeyAnalayzerService;
+
+            if (displayCombos && (keyAnalyzer.LastCharacterIsComboInit(keyLoggerMemoryAsString) || keyAnalyzer.EndsWithBrokenCombo(keyLoggerMemoryAsString) || keyAnalyzer.EndsWithComboInit(keyLoggerMemoryAsString)))
             {
                 bool shouldNotEraseLastChar = !ukrTranslit.wordenders.Contains(lastKey);
                 int nOfEraseSignalsToSend = keyLoggerMemoryAsString.Length - (shouldNotEraseLastChar ? 1 : 0) + keyLogger.nOfKeysOmmittedFromMemory;

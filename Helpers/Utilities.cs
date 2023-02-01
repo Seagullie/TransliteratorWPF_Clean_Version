@@ -36,6 +36,16 @@ namespace TransliteratorWPF_Version.Helpers
             return Files.Select(file => file.Name).ToArray();
         }
 
+        public static bool IsUpperCase(string text)
+        {
+            return text.All(char.IsUpper);
+        }
+
+        public static bool IsLowerCase(string text)
+        {
+            return text.All(char.IsLower);
+        }
+
         public static string MapLayoutName(string code = null)
         {
             if (code == null)

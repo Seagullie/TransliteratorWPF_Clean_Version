@@ -329,7 +329,8 @@ namespace TransliteratorWPF_Version.Services
 
             string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
 
-            if (transliterator.EndsWithBrokenCombo(upcomingText) && transliterator.EndsWithComboInit(upcomingText) && !transliterator.IsPartOfCombination(upcomingText))
+            // TODO: Figure out how to shorten those long property chains
+            if (transliterator.tableKeyAnalayzerService.EndsWithBrokenCombo(upcomingText) && transliterator.tableKeyAnalayzerService.EndsWithComboInit(upcomingText) && !transliterator.tableKeyAnalayzerService.IsPartOfCombination(upcomingText))
             {
                 nOfKeysOmmittedFromMemory = 1;
                 liveTransliterator.Transliterate(caseSensitiveCharacter, true);
@@ -366,27 +367,28 @@ namespace TransliteratorWPF_Version.Services
         public bool DecideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
             ref Transliterator translit = ref liveTransliterator.ukrTranslit;
+            TableKeyAnalyzerService keyAnalyzer = translit.tableKeyAnalayzerService;
 
-            if (translit.IsPartOfCombination(caseSensitiveCharacter))
+            if (keyAnalyzer.IsPartOfCombination(caseSensitiveCharacter))
             {
                 string upcomingText = (GetMemoryAsString() + caseSensitiveCharacter).ToLower();
 
-                if (translit.isSubComboFinisher(caseSensitiveCharacter))
+                if (keyAnalyzer.IsSubComboFinisher(caseSensitiveCharacter))
                 {
                     e.Handled = false;
                 }
-                else if (translit.isCombo(upcomingText))
+                else if (keyAnalyzer.IsCombo(upcomingText))
                 {
                     e.Handled = true;
                     loggerService.LogMessage(this, $"{caseSensitiveCharacter} – is full combo finisher");
                 }
-                else if (translit.EndsWithBrokenCombo(upcomingText) && !translit.IsPartOfCombination(upcomingText))
+                else if (keyAnalyzer.EndsWithBrokenCombo(upcomingText) && !keyAnalyzer.IsPartOfCombination(upcomingText))
                 {
                     e.Handled = true;
                 }
-                else if (!translit.IsStartOfCombination(caseSensitiveCharacter))
+                else if (!keyAnalyzer.IsStartOfCombination(caseSensitiveCharacter))
                 {
-                    if (upcomingText.Length > 1 && translit.IsPartOfCombination(upcomingText))
+                    if (upcomingText.Length > 1 && keyAnalyzer.IsPartOfCombination(upcomingText))
                     {
                         e.Handled = false;
                     }

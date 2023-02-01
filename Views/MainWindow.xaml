@@ -43,19 +43,30 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="25*" />
-            <RowDefinition Height="65*" />
-            <RowDefinition Height="10*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="25*" />
         </Grid.RowDefinitions>
 
-        <Button
+        <ui:SimpleStackPanel
             Grid.Row="2"
             Grid.Column="2"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            HorizontalContentAlignment="Right"
-            VerticalContentAlignment="Center"
-            Command="{Binding OpenDebugWindowCommand}"
-            Content="To Debug Panel" />
+            Orientation="Vertical"
+            Spacing="10">
+            <!--  TODO: Come up with better name for snippet panel  -->
+            <Button
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Center"
+                Command="{Binding OpenSnippetTranslitWindowCommand}"
+                Content="To Snippet Panel" />
+            <Button
+                HorizontalContentAlignment="Right"
+                VerticalContentAlignment="Center"
+                Command="{Binding OpenDebugWindowCommand}"
+                Content="To Debug Panel" />
+        </ui:SimpleStackPanel>
+
         <ui:SimpleStackPanel
             Grid.Row="0"
             Grid.Column="2"

@@ -261,7 +261,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
         {
-            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.replacement_map, Newtonsoft.Json.Formatting.Indented);
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.ReplacementTable, Newtonsoft.Json.Formatting.Indented);
             loggerService.LogMessage(this, "\n" + serializedTable);
         }
 

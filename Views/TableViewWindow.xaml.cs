@@ -276,7 +276,7 @@ namespace TransliteratorWPF_Version.Views
 
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
-            string[] combos = liveTransliterator.ukrTranslit.getReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.ukrTranslit.GetReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = CheckForCompositeCombos(combos);
 
