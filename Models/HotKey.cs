@@ -2,7 +2,7 @@
 using System.Windows.Input;
 
 // References:
-//https://github.com/Tyrrrz/LightBulb
+// https://github.com/Tyrrrz/LightBulb
 
 namespace TransliteratorWPF_Version.Models
 {

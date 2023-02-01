@@ -194,7 +194,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         partial void OnSelectedTranslitTableChanged(string value)
         {
-            liveTransliterator.ukrTranslit.SetReplacementMapFromJson($"{value}");
+            liveTransliterator.ukrTranslit.SetReplacementMap(value);
         }
 
         partial void OnAppStateChanged(string value)

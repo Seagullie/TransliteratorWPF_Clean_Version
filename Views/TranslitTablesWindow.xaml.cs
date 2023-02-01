@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
+using TransliteratorWPF_Version.Models;
 using TransliteratorWPF_Version.Services;
 using static TransliteratorWPF_Version.Services.LoggerService;
 using Application = System.Windows.Application;
@@ -138,21 +139,21 @@ namespace TransliteratorWPF_Version.Views
             string selectedTranslitTable = comboBox1.SelectedItem.ToString();
             // delete all existing characer fields and generate new ones
 
-            // I would like you to not touch the translit itself
-            //mainWindow.liveTranslit.ukrTranslit.SetReplacementMapFromJson($"Resources/translitTables/{selectedTranslitTable}");
-
             panel1.Children.Clear();
 
-            generateEditBoxesForTranslitTable(liveTransliterator.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
+            // I'm not sure whether it's alright to instantiate model here. According to MVVM pattern, models should be instatiated in viewmodels and not in views?
+            TransliterationTableModel tableModel = new(selectedTranslitTable);
+
+            generateEditBoxesForTranslitTable(tableModel);
         }
 
         // can't see the textboxes at all. Is there a way to inspect all controls available?
         // the same way it is done with browser devtools
-        public void generateEditBoxesForTranslitTable(Dictionary<string, string> replacement_map)
+        public void generateEditBoxesForTranslitTable(TransliterationTableModel tableModel)
         {
-            foreach (string key in liveTransliterator.ukrTranslit.SortReplacementMapKeys(replacement_map))
+            foreach (string key in tableModel.keys)
             {
-                generatePanelWithEditBoxes(key, replacement_map[key]);
+                generatePanelWithEditBoxes(key, tableModel.replacementTable[key]);
             }
 
             //CenterWindow();
@@ -351,7 +352,7 @@ namespace TransliteratorWPF_Version.Views
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
             // first gotta figure out the combos. then gotta check whether some of them don't contain another ones
-            string[] combos = liveTransliterator.ukrTranslit.GetReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.ukrTranslit.transliterationTableModel.GetReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = checkForCompositeCombos(combos);
 

@@ -33,7 +33,7 @@
             <Button Command="{Binding TransliterateSnippetCommand}" Content="Transliterate" />
         </DockPanel>
         <DockPanel Grid.Row="2">
-            <TextBox IsEnabled="False" Text="{Binding TransliterationResults}" />
+            <TextBox IsReadOnly="True" Text="{Binding TransliterationResults}" />
         </DockPanel>
     </Grid>
 </Window>

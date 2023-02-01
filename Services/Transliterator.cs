@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows;
 using TransliteratorWPF_Version.Helpers;
+using TransliteratorWPF_Version.Models;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 
@@ -14,11 +15,10 @@ namespace TransliteratorWPF_Version.Services
 {
     public class Transliterator : INotifyPropertyChanged
     {
-        public HashSet<string> alphabet = new HashSet<string> { };
-
         private readonly SettingsService settingsService;
         public TableKeyAnalyzerService tableKeyAnalayzerService;
 
+        // TODO: Annotate
         private Dictionary<string, string> PostreplacementMap = new Dictionary<string, string>()
         {
             {  "̚̚̚̚ϟ", "'"}
@@ -28,7 +28,8 @@ namespace TransliteratorWPF_Version.Services
 
         private int _selectedTranslitTableIndex;
 
-        public int selectedTranslitTableIndex
+        // TODO: Refactor?
+        public int SelectedTranslitTableIndex
         {
             get
             {
@@ -36,12 +37,13 @@ namespace TransliteratorWPF_Version.Services
             }
             set
             {
-                _selectedTranslitTableIndex = value >= 0 && value < TranslitTables.Count ? value : 0;
-                ReadReplacementMapFromJson(TranslitTables[_selectedTranslitTableIndex]);
+                _selectedTranslitTableIndex = Math.Clamp(value, 0, TranslitTables.Count - 1);
+                SetReplacementMap(TranslitTables[_selectedTranslitTableIndex]);
                 NotifyPropertyChanged();
             }
         }
 
+        // TODO: Refactor?
         public List<string> TranslitTables
         {
             get
@@ -51,9 +53,10 @@ namespace TransliteratorWPF_Version.Services
 
             set
             {
+                // TODO: Annotate
                 if (TranslitTables != null && value.Count < _translitTables.Count)
                 {
-                    selectedTranslitTableIndex = _translitTables.Count - 1;
+                    SelectedTranslitTableIndex = _translitTables.Count - 1;
                 }
 
                 _translitTables = value;
@@ -62,6 +65,8 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
+        public TransliterationTableModel transliterationTableModel;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -69,33 +74,7 @@ namespace TransliteratorWPF_Version.Services
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // those are the symbols that never occur somewhere within regular words, but rather at the end
-        public List<string> wordenders = new List<string> {
-                "0",
-                ";",
-                ":",
-                "!",
-                ")",
-                "]",
-                ",",
-                ".",
-                "\"",
-                @"\",
-                "/",
-                "}",
-                ">",
-                "?",
-                "-",
-                "_",
-                "*",
-                "space",
-                " ",
-                "enter",
-                // one wild enter incoming:
-                @"
-",
-                "EOF",
-            };
+        public event Action TransliterationTableChangedEvent;
 
         public List<string> wordendersVanilla;
 
@@ -103,117 +82,29 @@ namespace TransliteratorWPF_Version.Services
         {
             // TODO: Dependency injection
 
-            // .toList() returns a copy of existing array
-            // TODO: explain wordendersVanilla or rename the variable to something more descriptive
-            wordendersVanilla = wordenders.ToList();
             settingsService = SettingsService.GetInstance();
 
             // warning: hardcoded
             TranslitTables = Utilities.getAllFilesInFolder(@"Resources/TranslitTables").ToList();
             string lastTranslitTable = settingsService.LastSelectedTranslitTable;
             int lastTranslitTableIndex = TranslitTables.FindIndex((tableString) => tableString == lastTranslitTable);
-            // TODO: rewrite clamp
-            selectedTranslitTableIndex = Math.Clamp(lastTranslitTableIndex, 0, 99999);
+            SelectedTranslitTableIndex = Math.Clamp(lastTranslitTableIndex, 0, TranslitTables.Count - 1);
 
-            SetReplacementMapFromJson(TranslitTables[selectedTranslitTableIndex]);
+            SetReplacementMap(TranslitTables[SelectedTranslitTableIndex]);
 
             // TODO: Decouple TableKeyAnalyzerSerivce from Transliterator
-            tableKeyAnalayzerService = new TableKeyAnalyzerService(combos);
+            tableKeyAnalayzerService = new TableKeyAnalyzerService(transliterationTableModel.combos);
         }
 
-        private string[] keys;
-
-        public Dictionary<string, string> ReplacementTable = new Dictionary<string, string>();
-
-        // combo = more than one letter. Examples of combos: ch, sh, zh
-        // while s d f are not combos
-        private string[] combos;
-
+        // TODO: Decouple. Perhaps through inheritance?
         private KeyStateChecker keyStateChecker = new KeyStateChecker();
-        public string replacementMapFilename;
 
-        public void SetReplacementMap(Dictionary<string, string> replacementTable)
+        public void SetReplacementMap(string relativePathToJsonFile)
         {
-            ReplacementTable = replacementTable;
+            transliterationTableModel = new TransliterationTableModel(relativePathToJsonFile);
+            TransliterationTableChangedEvent?.Invoke();
 
-            keys = SortReplacementMapKeys(new Dictionary<string, string>(replacementTable));
-
-            combos = GetReplacementMapCombos(this.ReplacementTable);
-
-            tableKeyAnalayzerService = new TableKeyAnalyzerService(combos);
-
-            // TODO: rewrite explanation
-            // generating alphabet:
-            // alphabet is a set of all letters that can be transliterated
-            foreach (string key in keys)
-            {
-                if (key.Length != 1)
-                {
-                    foreach (char subkey in key)
-                    {
-                        alphabet.Add(subkey.ToString());
-                    }
-                }
-                else
-                {
-                    alphabet.Add(key);
-                }
-            }
-
-            // excluding alphabet keys from wordenders
-
-            wordenders = wordendersVanilla;
-
-            foreach (string alphabetLetter in alphabet)
-            {
-                if (wordenders.Contains(alphabetLetter))
-                {
-                    wordenders.Remove(alphabetLetter);
-                }
-            }
-        }
-
-        public string[] GetReplacementMapCombos(Dictionary<string, string> replacement_map)
-        {
-            string[] keys = replacement_map.Keys.ToArray();
-            string[] combos = keys.Where(key => key.Length > 1).ToArray();
-
-            return combos;
-        }
-
-        // sorting is necessary so that the longest combos are moved to top
-        public string[] SortReplacementMapKeys(Dictionary<string, string> replacement_map)
-        {
-            string[] keys = replacement_map.Keys.ToArray();
-
-            keys = keys.OrderBy(key => key.Length).ToArray();
-
-            Array.Reverse(keys);
-
-            return keys;
-        }
-
-        public void SetReplacementMapFromJson(string relativePathToJsonFile) // is it relative or not? relative. Just the name of .json is enough
-        {
-            try
-            {
-                Dictionary<string, string> TableAsDictionary = ReadReplacementMapFromJson(relativePathToJsonFile);
-
-                SetReplacementMap(TableAsDictionary);
-            }
-            finally
-            {
-                replacementMapFilename = relativePathToJsonFile;
-            }
-        }
-
-        public Dictionary<string, string> ReadReplacementMapFromJson(string pathToJsonFile)
-        {
-            string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources\\TranslitTables\\{pathToJsonFile}"));
-            dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
-            Dictionary<string, string> TableAsDictionary = deserializedTableObj;
-
-            return TableAsDictionary;
+            tableKeyAnalayzerService = new TableKeyAnalyzerService(transliterationTableModel.combos);
         }
 
         public string Transliterate(string text)
@@ -222,9 +113,9 @@ namespace TransliteratorWPF_Version.Services
             // loop over all possible user inputs and replace them with corresponding transliterations.
             // Replacement map is sorted, thus combinations will be transliterated first
 
-            foreach (string key in keys)
+            foreach (string key in transliterationTableModel.keys)
             {
-                text = ReplaceKeepCase(key, ReplacementTable[key], text);
+                text = ReplaceKeepCase(key, transliterationTableModel.replacementTable[key], text);
 
                 if (IsNonASCII(text))
                 {
@@ -258,7 +149,7 @@ namespace TransliteratorWPF_Version.Services
 
                 // nonalphabetic characters don't have uppercase
                 // we can optimize this part by making a dictionary for such characters when replacement map is installed
-                if (!HasUpperCase(matchString))
+                if (!Utilities.HasUpperCase(matchString))
                 {
                     if (keyStateChecker.IsLowerCase()) return replacement.ToLower();
                     return replacement.ToUpper();
@@ -277,13 +168,7 @@ namespace TransliteratorWPF_Version.Services
             return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
         }
 
-        // many characters do not have an uppercase version. For example, "!", "?" ":" can't be uppercased, while letters such as a(A), b(B), c(C) do indeed have uppercase variant
-        public bool HasUpperCase(string character)
-        {
-            return character.ToLower() != character.ToUpper();
-        }
-
-        // TODO: annotate
+        // TODO: Annotate
         public string Postprocess(string text)
         {
             foreach (string char_ in PostreplacementMap.Keys)

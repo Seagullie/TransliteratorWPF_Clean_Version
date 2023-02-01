@@ -191,7 +191,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             string selectedTable = translitTablesBox.SelectedItem.ToString();
-            liveTransliterator.ukrTranslit.SetReplacementMapFromJson($"{selectedTable}");
+            liveTransliterator.ukrTranslit.SetReplacementMap(selectedTable);
         }
 
         private void testTextBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -261,7 +261,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
         {
-            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.ReplacementTable, Newtonsoft.Json.Formatting.Indented);
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.transliterationTableModel.replacementTable, Newtonsoft.Json.Formatting.Indented);
             loggerService.LogMessage(this, "\n" + serializedTable);
         }
 

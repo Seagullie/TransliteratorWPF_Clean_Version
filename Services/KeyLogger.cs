@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using TransliteratorWPF_Version.Helpers;
+using TransliteratorWPF_Version.Models;
 using TransliteratorWPF_Version.Views;
 using Application = System.Windows.Application;
 using Key = System.Windows.Input.Key;
@@ -17,8 +18,6 @@ namespace TransliteratorWPF_Version.Services
     {
         private bool state;
         public bool State { get => state; set => SetState(value); }
-
-        public string alphabet;
 
         public Main liveTransliterator;
         public Transliterator transliterator;
@@ -49,6 +48,8 @@ namespace TransliteratorWPF_Version.Services
 
         private KeyEventHandler gkh_KeyDownHandler;
 
+        public List<string> wordendersVanilla { get; private set; }
+
         public List<string> memory = new List<string>();
 
         public KeyStateChecker keyStateChecker = new KeyStateChecker();
@@ -61,7 +62,7 @@ namespace TransliteratorWPF_Version.Services
 
         public HashSet<string> ChangeLanguageShortcut = new HashSet<string> { "Alt", "LShiftKey" };
 
-        public HashSet<string> ChangeLanguageShortcut3 = new HashSet<string> { "LMenu", "Shift" };
+        public HashSet<string> ChangeLanguageShortcutAlt = new HashSet<string> { "LMenu", "Shift" };
 
         public string ToggleTranslitShortcutMainKey;
         public int nOfKeysOmmittedFromMemory = 0;
@@ -91,6 +92,26 @@ namespace TransliteratorWPF_Version.Services
 
             FetchToggleTranslitShortcutFromSettings();
             gkh_KeyDownHandler = new KeyEventHandler(gkh_KeyDown);
+
+            // TODO: explain wordendersVanilla or rename the variable to something more descriptive
+            wordendersVanilla = wordenders.ToList();
+        }
+
+        // TODO: rename
+        public void UpdateWordenders()
+        {
+            // excluding alphabet keys from wordenders
+
+            wordenders = wordendersVanilla;
+            HashSet<string> alphabet = liveTransliterator.ukrTranslit.transliterationTableModel.alphabet;
+
+            foreach (string alphabetLetter in alphabet)
+            {
+                if (wordenders.Contains(alphabetLetter))
+                {
+                    wordenders.Remove(alphabetLetter);
+                }
+            }
         }
 
         private static KeyLogger _instance;
@@ -100,6 +121,34 @@ namespace TransliteratorWPF_Version.Services
             _instance ??= new KeyLogger();
             return _instance;
         }
+
+        // those are the symbols that never occur somewhere within regular words, but rather at the end
+        public List<string> wordenders = new List<string> {
+                "0",
+                ";",
+                ":",
+                "!",
+                ")",
+                "]",
+                ",",
+                ".",
+                "\"",
+                @"\",
+                "/",
+                "}",
+                ">",
+                "?",
+                "-",
+                "_",
+                "*",
+                "space",
+                " ",
+                "enter",
+                // one wild enter incoming:
+                @"
+",
+                "EOF",
+            };
 
         private void SetState(bool value)
         {
@@ -158,6 +207,7 @@ namespace TransliteratorWPF_Version.Services
 
             gkh.HookedKeys.Add(Keys.Back);
 
+            // add wordenders
             gkh.HookedKeys.Add(Keys.OemSemicolon);
             gkh.HookedKeys.Add(Keys.Space);
             gkh.HookedKeys.Add(Keys.Enter);
@@ -237,7 +287,7 @@ namespace TransliteratorWPF_Version.Services
             }
 
             // I don't udnerstand why it even works if shift isn't pressed simultaneously with alt, but rather a moment later, which makes catching shift as main key more favourable
-            else if (!settingsService.IsAltShiftGlobalShortcutEnabled && (registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut) || registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut3)))
+            else if (!settingsService.IsAltShiftGlobalShortcutEnabled && (registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcut) || registeredKeyStrokesAsHash.SetEquals(ChangeLanguageShortcutAlt)))
             {
                 e.Handled = true;
                 return true;
@@ -346,8 +396,6 @@ namespace TransliteratorWPF_Version.Services
 
         public bool IsWordender(string lowerCaseKeyCode, string UnicodeChar)
         {
-            var wordenders = liveTransliterator.ukrTranslit.wordenders;
-
             return wordenders.Contains(lowerCaseKeyCode) || wordenders.Contains(UnicodeChar.ToLower());
         }
 
@@ -420,8 +468,10 @@ namespace TransliteratorWPF_Version.Services
         {
             key_name = key_name.ToLower();
 
+            TransliterationTableModel tableModel = liveTransliterator.ukrTranslit.transliterationTableModel;
+
             // this condition checks for keys that are not in the alphabet (such as shift, ctrl, alt, etc.) and should be skipped
-            if (!liveTransliterator.ukrTranslit.alphabet.Contains(key_name))
+            if (!tableModel.alphabet.Contains(key_name))
             {
                 return true;
             }

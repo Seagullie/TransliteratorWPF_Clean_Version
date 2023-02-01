@@ -46,6 +46,12 @@ namespace TransliteratorWPF_Version.Helpers
             return text.All(char.IsLower);
         }
 
+        // many characters do not have an uppercase version. For example, "!", "?" ":" can't be uppercased, while letters such as a(A), b(B), c(C) do indeed have uppercase variant
+        public static bool HasUpperCase(string character)
+        {
+            return character.ToLower() != character.ToUpper();
+        }
+
         public static string MapLayoutName(string code = null)
         {
             if (code == null)

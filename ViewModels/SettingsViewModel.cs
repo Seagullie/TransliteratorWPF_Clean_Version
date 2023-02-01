@@ -65,8 +65,10 @@ namespace TransliteratorWPF_Version.ViewModels
             ToggleHotKey = settingsService.ToggleHotKey;
         }
 
+        // TODO: not trigger on window init
         partial void OnIsBufferInputEnabledChanged(bool value)
         {
+
             liveTransliterator.displayCombos = value;
 
             // TODO: Add DebugService

@@ -13,7 +13,7 @@ namespace TransliteratorWPF_Version.Services
     public sealed class Main
     {
         public int state = 1;
-        public Transliterator ukrTranslit = new Transliterator();
+        public Transliterator ukrTranslit = new();
         public KeyLogger keyLogger;
         public int slowDownKBEInjections = 0;
 
@@ -45,8 +45,11 @@ namespace TransliteratorWPF_Version.Services
         {
             // TODO: Dependency injection
             keyLogger = KeyLogger.GetInstance();
+            // TODO: Refactor
             keyLogger.liveTransliterator = this;
             keyLogger.transliterator = this.ukrTranslit;
+            ukrTranslit.TransliterationTableChangedEvent += keyLogger.UpdateWordenders;
+            keyLogger.UpdateWordenders();
 
             keyLogger.LogKeys();
 
@@ -132,7 +135,7 @@ namespace TransliteratorWPF_Version.Services
             {
                 if (!isTestInput && (debugWindow?.underTestByWinDriverCheckBox.IsChecked == true || keyLogger.gkh.alwaysAllowInjected || !keyLogger.gkh.skipInjected))
                 {
-                    if (ukrTranslit.alphabet.Contains(character.ToString().ToLower()))
+                    if (ukrTranslit.transliterationTableModel.alphabet.Contains(character.ToString().ToLower()))
                     {
                         keyLogger.keysToIgnore.Add(character.ToString());
                     }
@@ -248,7 +251,7 @@ namespace TransliteratorWPF_Version.Services
             EditTextbox(last_key, transliterated_text);
         }
 
-        public async void EditTextbox(string lastKey, string transliterated_text)
+        public void EditTextbox(string lastKey, string transliterated_text)
         {
             if (transliterated_text == "")
             {
@@ -262,7 +265,7 @@ namespace TransliteratorWPF_Version.Services
 
             if (displayCombos && (keyAnalyzer.LastCharacterIsComboInit(keyLoggerMemoryAsString) || keyAnalyzer.EndsWithBrokenCombo(keyLoggerMemoryAsString) || keyAnalyzer.EndsWithComboInit(keyLoggerMemoryAsString)))
             {
-                bool shouldNotEraseLastChar = !ukrTranslit.wordenders.Contains(lastKey);
+                bool shouldNotEraseLastChar = !keyLogger.wordenders.Contains(lastKey);
                 int nOfEraseSignalsToSend = keyLoggerMemoryAsString.Length - (shouldNotEraseLastChar ? 1 : 0) + keyLogger.nOfKeysOmmittedFromMemory;
                 keyLogger.nOfKeysOmmittedFromMemory = 0;
 
@@ -276,11 +279,6 @@ namespace TransliteratorWPF_Version.Services
             }
 
             keyLogger.memory.Clear();
-        }
-
-        public void ToggleTranslit()
-        {
-            keyLogger.State = !keyLogger.State;
         }
     }
 }

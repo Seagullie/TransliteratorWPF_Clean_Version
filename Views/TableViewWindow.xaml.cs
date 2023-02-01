@@ -16,6 +16,7 @@ using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 using TextBox = System.Windows.Controls.TextBox;
 using static TransliteratorWPF_Version.Services.LoggerService;
+using TransliteratorWPF_Version.Models;
 
 namespace TransliteratorWPF_Version.Views
 {
@@ -118,17 +119,20 @@ namespace TransliteratorWPF_Version.Views
                 return;
             }
 
-            string selectedTranslitTable = comboBox1.SelectedItem.ToString();
+            string selectedTranslitTableName = comboBox1.SelectedItem.ToString();
+            // TODO: Refactor
+            TransliterationTableModel tableModel = new(selectedTranslitTableName);
+
             panel1.Children.Clear();
 
-            generateEditBoxesForTranslitTable(liveTransliterator.ukrTranslit.ReadReplacementMapFromJson(selectedTranslitTable));
+            generateEditBoxesForTranslitTable(tableModel);
         }
 
-        public void generateEditBoxesForTranslitTable(Dictionary<string, string> replacement_map)
+        public void generateEditBoxesForTranslitTable(TransliterationTableModel tableModel)
         {
-            foreach (string key in liveTransliterator.ukrTranslit.SortReplacementMapKeys(replacement_map))
+            foreach (string key in tableModel.keys)
             {
-                GeneratePanelWithEditBoxes(key, replacement_map[key]);
+                GeneratePanelWithEditBoxes(key, tableModel.replacementTable[key]);
             }
         }
 
@@ -276,7 +280,7 @@ namespace TransliteratorWPF_Version.Views
 
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
-            string[] combos = liveTransliterator.ukrTranslit.GetReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.ukrTranslit.transliterationTableModel.GetReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = CheckForCompositeCombos(combos);
 
@@ -327,7 +331,7 @@ namespace TransliteratorWPF_Version.Views
 
             BindingOperations.SetBinding(comboBox1, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
 
-            int currentlySelectedTableIndex = liveTransliterator.ukrTranslit.selectedTranslitTableIndex;
+            int currentlySelectedTableIndex = liveTransliterator.ukrTranslit.SelectedTranslitTableIndex;
             comboBox1.SelectedIndex = currentlySelectedTableIndex;
         }
 
