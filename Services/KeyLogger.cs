@@ -23,12 +23,11 @@ namespace TransliteratorWPF_Version.Services
         public TransliteratorService transliterator;
 
         private readonly LoggerService loggerService;
+        private readonly SettingsService settingsService;
 
         public event EventHandler StateChangedEvent;
 
         public event EventHandler ToggleTranslitShortcutChanged;
-
-        private readonly SettingsService settingsService;
 
         public DebugWindow debugWindow
         {
@@ -91,7 +90,7 @@ namespace TransliteratorWPF_Version.Services
             gkh = new GlobalKeyboardHook();
 
             FetchToggleTranslitShortcutFromSettings();
-            gkh_KeyDownHandler = new KeyEventHandler(gkh_KeyDown);
+            gkh_KeyDownHandler = new KeyEventHandler(Gkh_KeyDown);
 
             // TODO: explain wordendersVanilla or rename the variable to something more descriptive
             wordendersVanilla = wordenders.ToList();
@@ -123,6 +122,7 @@ namespace TransliteratorWPF_Version.Services
         }
 
         // those are the symbols that never occur somewhere within regular words, but rather at the end
+        // majority of these are punctuation marks
         public List<string> wordenders = new List<string> {
                 "0",
                 ";",
@@ -191,7 +191,7 @@ namespace TransliteratorWPF_Version.Services
             return string.Join("", memory);
         }
 
-        public void LogKeys()
+        public void HookKeys()
         {
             // add latin alphabet
             foreach (int value in Enumerable.Range(65, 25 + 1))
@@ -296,7 +296,7 @@ namespace TransliteratorWPF_Version.Services
             return false;
         }
 
-        private void gkh_KeyDown(object sender, KeyEventArgs e)
+        private void Gkh_KeyDown(object sender, KeyEventArgs e)
         {
             loggerService.LogMessage(this, "key pressed");
 
@@ -312,6 +312,7 @@ namespace TransliteratorWPF_Version.Services
 
             if (UnicodeChar.Length == 0) return;
 
+            // TODO: explain difference between shouldIgnoreKey & ShouldSkipKey
             bool shouldIgnoreKey = (debugWindow?.underTestByWinDriverCheckBox.IsChecked == true || gkh.alwaysAllowInjected || gkh.skipInjected != true) && keysToIgnore.Count > 0 && keysToIgnore[0] == UnicodeChar;
 
             if (shouldIgnoreKey)
@@ -399,6 +400,7 @@ namespace TransliteratorWPF_Version.Services
             return wordenders.Contains(lowerCaseKeyCode) || wordenders.Contains(UnicodeChar.ToLower());
         }
 
+        // not sure whether this method is necessary when buffer mode is on. Perhaps should separate it from the class
         public void HandleWordenderKey(string UnicodeChar, ref KeyEventArgs e)
         {
             if (memory.Count == 0)
@@ -412,6 +414,7 @@ namespace TransliteratorWPF_Version.Services
             liveTransliterator.Write(UnicodeChar);
         }
 
+        // TODO: Move to separate class
         public bool DecideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
             ref TransliteratorService translit = ref liveTransliterator.ukrTranslit;
@@ -464,14 +467,14 @@ namespace TransliteratorWPF_Version.Services
             return e.Handled;
         }
 
-        public bool ShouldSkipKey(string key_name)
+        public bool ShouldSkipKey(string keyName)
         {
-            key_name = key_name.ToLower();
+            keyName = keyName.ToLower();
 
             TransliterationTableModel tableModel = liveTransliterator.ukrTranslit.transliterationTableModel;
 
             // this condition checks for keys that are not in the alphabet (such as shift, ctrl, alt, etc.) and should be skipped
-            if (!tableModel.alphabet.Contains(key_name))
+            if (!tableModel.alphabet.Contains(keyName))
             {
                 return true;
             }

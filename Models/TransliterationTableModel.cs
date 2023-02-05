@@ -22,6 +22,7 @@ namespace TransliteratorWPF_Version.Models
         public TransliterationTableModel(string pathToJsonFile)
         {
             replacementMapFilename = pathToJsonFile;
+            // TODO: transfer file reading to service
             replacementTable = ReadReplacementMapFromJson(pathToJsonFile);
             keys = SortReplacementMapKeys(new Dictionary<string, string>(replacementTable));
             combos = GetReplacementMapCombos(replacementTable);
@@ -59,13 +60,13 @@ namespace TransliteratorWPF_Version.Models
             return combos;
         }
 
+        // generating alphabet:
+        // alphabet is a set of all letters that can be transliterated.
+        // basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
         private HashSet<string> ParseAlphabet()
         {
             HashSet<string> alphabetHashset = new();
 
-            // TODO: rewrite explanation
-            // generating alphabet:
-            // alphabet is a set of all letters that can be transliterated
             foreach (string key in keys)
             {
                 if (key.Length != 1)

@@ -72,6 +72,7 @@ namespace TransliteratorWPF_Version.Services
         // subcombo is a combo within another combo. Example: [sch] (щ) contains [ch] (ч). Thus, [ch] is a subcombo
         public bool IsSubComboFinisher(string character)
         {
+            // TODO: Implement
             return false; // warning danger. Will implement later
         }
 

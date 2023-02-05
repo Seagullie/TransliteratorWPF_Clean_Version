@@ -51,7 +51,7 @@ namespace TransliteratorWPF_Version.Services
             ukrTranslit.TransliterationTableChangedEvent += keyLogger.UpdateWordenders;
             keyLogger.UpdateWordenders();
 
-            keyLogger.LogKeys();
+            keyLogger.HookKeys();
 
             loggerService = LoggerService.GetInstance();
 
