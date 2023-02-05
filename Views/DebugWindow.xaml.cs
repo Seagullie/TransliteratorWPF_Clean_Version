@@ -191,7 +191,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             string selectedTable = translitTablesBox.SelectedItem.ToString();
-            liveTransliterator.ukrTranslit.SetTableModel(selectedTable);
+            liveTransliterator.transliteratorService.SetTableModel(selectedTable);
         }
 
         private void testTextBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -228,7 +228,7 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
-                Source = liveTransliterator.ukrTranslit
+                Source = liveTransliterator.transliteratorService
             };
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
@@ -236,7 +236,7 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxSelectedIndex = new Binding("selectedTranslitTableIndex")
             {
                 Mode = BindingMode.TwoWay,
-                Source = liveTransliterator.ukrTranslit
+                Source = liveTransliterator.transliteratorService
             };
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.SelectedIndexProperty, tablesComboBoxSelectedIndex);
@@ -261,7 +261,7 @@ namespace TransliteratorWPF_Version.Views
 
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
         {
-            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.ukrTranslit.transliterationTableModel.replacementTable, Newtonsoft.Json.Formatting.Indented);
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.transliteratorService.transliterationTableModel.replacementTable, Newtonsoft.Json.Formatting.Indented);
             loggerService.LogMessage(this, "\n" + serializedTable);
         }
 
@@ -276,7 +276,7 @@ namespace TransliteratorWPF_Version.Views
         private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
         {
             textBox1.Focus();
-            await liveTransliterator.WriteInjected("simulated");
+            await liveTransliterator.keyInjectorService.WriteInjected("simulated");
         }
 
         private void getKeyLoggerMemoryBtn_Click(object sender, RoutedEventArgs e)

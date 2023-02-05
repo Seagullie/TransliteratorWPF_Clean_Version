@@ -11,7 +11,7 @@ namespace TransliteratorWPF_Version.ViewModels
     public partial class SnippetTranslitViewModel : ObservableObject
     {
         private readonly SettingsService settingsService;
-        private readonly KeyLogger keyLogger;
+        private readonly KeyLoggerService keyLogger;
         private TransliteratorService transliterator;
 
         [ObservableProperty]
@@ -23,7 +23,7 @@ namespace TransliteratorWPF_Version.ViewModels
         public SnippetTranslitViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            keyLogger = KeyLogger.GetInstance();
+            keyLogger = KeyLoggerService.GetInstance();
             transliterator = keyLogger.transliterator;
         }
 

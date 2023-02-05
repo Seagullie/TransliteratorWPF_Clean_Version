@@ -71,8 +71,8 @@ namespace TransliteratorWPF_Version.Views
 
                 File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{tableName}.json"), "{}");
 
-                liveTransliterator.ukrTranslit.TranslitTables.Add($"{tableName}.json");
-                liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
+                liveTransliterator.transliteratorService.TranslitTables.Add($"{tableName}.json");
+                liveTransliterator.transliteratorService.TranslitTables = liveTransliterator.transliteratorService.TranslitTables.ToArray().ToList();
             }
             else
             {
@@ -108,8 +108,8 @@ namespace TransliteratorWPF_Version.Views
 
             loggerService.LogMessage(this, $"{tableName} has been deleted");
 
-            liveTransliterator.ukrTranslit.TranslitTables.Remove(tableName);
-            liveTransliterator.ukrTranslit.TranslitTables = liveTransliterator.ukrTranslit.TranslitTables.ToArray().ToList();
+            liveTransliterator.transliteratorService.TranslitTables.Remove(tableName);
+            liveTransliterator.transliteratorService.TranslitTables = liveTransliterator.transliteratorService.TranslitTables.ToArray().ToList();
         }
 
         private void comboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -280,7 +280,7 @@ namespace TransliteratorWPF_Version.Views
 
         private bool VerifyCombos(Dictionary<string, string> replacementMap)
         {
-            string[] combos = liveTransliterator.ukrTranslit.transliterationTableModel.GetReplacementMapCombos(replacementMap);
+            string[] combos = liveTransliterator.transliteratorService.transliterationTableModel.GetReplacementMapCombos(replacementMap);
 
             List<string> compositeCombos = CheckForCompositeCombos(combos);
 
@@ -326,12 +326,12 @@ namespace TransliteratorWPF_Version.Views
             var tablesComboBoxItemsBindingObject = new Binding("TranslitTables")
             {
                 Mode = BindingMode.OneWay,
-                Source = liveTransliterator.ukrTranslit
+                Source = liveTransliterator.transliteratorService
             };
 
             BindingOperations.SetBinding(comboBox1, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
 
-            int currentlySelectedTableIndex = liveTransliterator.ukrTranslit.SelectedTranslitTableIndex;
+            int currentlySelectedTableIndex = liveTransliterator.transliteratorService.SelectedTranslitTableIndex;
             comboBox1.SelectedIndex = currentlySelectedTableIndex;
         }
 
@@ -356,7 +356,7 @@ namespace TransliteratorWPF_Version.Views
                 string fileName = Path.GetFileName(pathToFile);
 
                 File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@"Resources\TranslitTables\{fileName}"), File.ReadAllText(pathToFile));
-                liveTransliterator.ukrTranslit.TranslitTables.Add(fileName);
+                liveTransliterator.transliteratorService.TranslitTables.Add(fileName);
             }
         }
 

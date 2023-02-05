@@ -114,7 +114,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void UpdateAppState(object sender, EventArgs e)
         {
-            if (sender is KeyLogger keyLogger)
+            if (sender is KeyLoggerService keyLogger)
             {
                 if (keyLogger.State == true)
                     AppState = "On";
@@ -125,7 +125,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void LoadTranslitTables()
         {
-            TranslitTables = liveTransliterator.ukrTranslit.TranslitTables;
+            TranslitTables = liveTransliterator.transliteratorService.TranslitTables;
             SelectedTranslitTable = settingsService.LastSelectedTranslitTable;
         }
 
@@ -194,7 +194,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         partial void OnSelectedTranslitTableChanged(string value)
         {
-            liveTransliterator.ukrTranslit.SetTableModel(value);
+            liveTransliterator.transliteratorService.SetTableModel(value);
         }
 
         partial void OnAppStateChanged(string value)

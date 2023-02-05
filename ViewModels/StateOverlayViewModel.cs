@@ -9,7 +9,7 @@ namespace TransliteratorWPF_Version.ViewModels
     public partial class StateOverlayViewModel : ObservableObject
     {
         private readonly SettingsService settingsService;
-        private readonly KeyLogger keyLogger;
+        private readonly KeyLoggerService keyLogger;
 
         [ObservableProperty]
         private bool isStateOverlayEnabled;
@@ -20,7 +20,7 @@ namespace TransliteratorWPF_Version.ViewModels
         public StateOverlayViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            keyLogger = KeyLogger.GetInstance();
+            keyLogger = KeyLoggerService.GetInstance();
 
             isStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
 

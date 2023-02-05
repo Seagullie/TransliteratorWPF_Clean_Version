@@ -14,7 +14,7 @@ using Key = System.Windows.Input.Key;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public sealed partial class KeyLogger
+    public sealed partial class KeyLoggerService
     {
         private bool state;
         public bool State { get => state; set => SetState(value); }
@@ -78,7 +78,7 @@ namespace TransliteratorWPF_Version.Services
         [DllImport("user32.dll")]
         private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
 
-        private KeyLogger()
+        private KeyLoggerService()
         {
             // TODO: Dependency injection
             loggerService = LoggerService.GetInstance();
@@ -102,7 +102,7 @@ namespace TransliteratorWPF_Version.Services
             // excluding alphabet keys from wordenders
 
             wordenders = wordendersVanilla;
-            HashSet<string> alphabet = liveTransliterator.ukrTranslit.transliterationTableModel.alphabet;
+            HashSet<string> alphabet = liveTransliterator.transliteratorService.transliterationTableModel.alphabet;
 
             foreach (string alphabetLetter in alphabet)
             {
@@ -113,11 +113,11 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        private static KeyLogger _instance;
+        private static KeyLoggerService _instance;
 
-        public static KeyLogger GetInstance()
+        public static KeyLoggerService GetInstance()
         {
-            _instance ??= new KeyLogger();
+            _instance ??= new KeyLoggerService();
             return _instance;
         }
 
@@ -386,7 +386,7 @@ namespace TransliteratorWPF_Version.Services
                 nOfKeysOmmittedFromMemory = 1;
                 liveTransliterator.Transliterate(caseSensitiveCharacter, true);
                 memory.Add(caseSensitiveCharacter);
-                liveTransliterator.Write(caseSensitiveCharacter);
+                liveTransliterator.keyInjectorService.Write(caseSensitiveCharacter);
             }
             else
             {
@@ -411,13 +411,13 @@ namespace TransliteratorWPF_Version.Services
             e.Handled = true;
 
             liveTransliterator.Transliterate(UnicodeChar, true);
-            liveTransliterator.Write(UnicodeChar);
+            liveTransliterator.keyInjectorService.Write(UnicodeChar);
         }
 
         // TODO: Move to separate class
         public bool DecideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
-            ref TransliteratorService translit = ref liveTransliterator.ukrTranslit;
+            TransliteratorService translit = liveTransliterator.transliteratorService;
             TableKeyAnalyzerService keyAnalyzer = translit.tableKeyAnalayzerService;
 
             if (keyAnalyzer.IsPartOfCombination(caseSensitiveCharacter))
@@ -471,7 +471,7 @@ namespace TransliteratorWPF_Version.Services
         {
             keyName = keyName.ToLower();
 
-            TransliterationTableModel tableModel = liveTransliterator.ukrTranslit.transliterationTableModel;
+            TransliterationTableModel tableModel = liveTransliterator.transliteratorService.transliterationTableModel;
 
             // this condition checks for keys that are not in the alphabet (such as shift, ctrl, alt, etc.) and should be skipped
             if (!tableModel.alphabet.Contains(keyName))

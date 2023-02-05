@@ -66,7 +66,15 @@ namespace TransliteratorWPF_Version.Services
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public TransliteratorService()
+        private static TransliteratorService _instance;
+
+        public static TransliteratorService GetInstance()
+        {
+            _instance ??= new TransliteratorService();
+            return _instance;
+        }
+
+        private TransliteratorService()
         {
             // TODO: Dependency injection
 
