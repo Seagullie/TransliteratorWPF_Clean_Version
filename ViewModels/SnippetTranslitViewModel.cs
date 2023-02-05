@@ -12,7 +12,7 @@ namespace TransliteratorWPF_Version.ViewModels
     {
         private readonly SettingsService settingsService;
         private readonly KeyLogger keyLogger;
-        private Transliterator transliterator;
+        private TransliteratorService transliterator;
 
         [ObservableProperty]
         private string userInput;

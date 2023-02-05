@@ -4,6 +4,7 @@ using Key = System.Windows.Input.Key;
 
 namespace TransliteratorWPF_Version.Helpers
 {
+    // TODO: Convert Class and methods to static
     public class KeyStateChecker
     {
         private Key[] modifiers = { Key.LeftCtrl, Key.LeftAlt, Key.LWin, Key.RightCtrl, Key.RightAlt, Key.RWin };

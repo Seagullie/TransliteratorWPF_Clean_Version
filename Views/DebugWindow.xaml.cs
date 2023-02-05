@@ -191,7 +191,7 @@ namespace TransliteratorWPF_Version.Views
             }
 
             string selectedTable = translitTablesBox.SelectedItem.ToString();
-            liveTransliterator.ukrTranslit.SetReplacementMap(selectedTable);
+            liveTransliterator.ukrTranslit.SetTableModel(selectedTable);
         }
 
         private void testTextBox1_TextChanged(object sender, TextChangedEventArgs e)

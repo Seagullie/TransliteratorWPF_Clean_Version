@@ -13,7 +13,7 @@ namespace TransliteratorWPF_Version.Services
     public sealed class Main
     {
         public int state = 1;
-        public Transliterator ukrTranslit = new();
+        public TransliteratorService ukrTranslit = new();
         public KeyLogger keyLogger;
         public int slowDownKBEInjections = 0;
 

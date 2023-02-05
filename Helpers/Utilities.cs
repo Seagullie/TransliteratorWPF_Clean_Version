@@ -52,6 +52,19 @@ namespace TransliteratorWPF_Version.Helpers
             return character.ToLower() != character.ToUpper();
         }
 
+        public static bool IsNonASCII(string text)
+        {
+            // does C# have .isASCII ?
+            // here some simple solution to this:
+            // https://stackoverflow.com/questions/18596245/in-c-how-can-i-detect-if-a-character-is-a-non-ascii-character
+
+            if (text.Any((char_) =>
+            {
+                return char_ >= 128;
+            })) return true;
+            return false;
+        }
+
         public static string MapLayoutName(string code = null)
         {
             if (code == null)

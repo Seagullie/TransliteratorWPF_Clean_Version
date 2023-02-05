@@ -20,7 +20,7 @@ namespace TransliteratorWPF_Version.Services
         public bool State { get => state; set => SetState(value); }
 
         public Main liveTransliterator;
-        public Transliterator transliterator;
+        public TransliteratorService transliterator;
 
         private readonly LoggerService loggerService;
 
@@ -414,7 +414,7 @@ namespace TransliteratorWPF_Version.Services
 
         public bool DecideOnKeySuppression(string caseSensitiveCharacter, ref KeyEventArgs e)
         {
-            ref Transliterator translit = ref liveTransliterator.ukrTranslit;
+            ref TransliteratorService translit = ref liveTransliterator.ukrTranslit;
             TableKeyAnalyzerService keyAnalyzer = translit.tableKeyAnalayzerService;
 
             if (keyAnalyzer.IsPartOfCombination(caseSensitiveCharacter))
