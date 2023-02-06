@@ -78,24 +78,11 @@
                 Columns="1"
                 Rows="11">
 
-                <!--<StackPanel.Resources>
-                    <Style TargetType="{x:Type Button}" BasedOn="{ButtonStyle}">
-                        <Setter Property="Margin" Value="0,10,0,0" />
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                    </Style>
-                </StackPanel.Resources>-->
-
-                <!-- <UniformGrid.Resources>
-                    <Style BasedOn="{x:Type ButtonStyle}" TargetType="{x:Type Button}">
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                    </Style>
-                </UniformGrid.Resources>-->
-
                 <Button
                     x:Name="toggleTranslitBtn"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    Click="toggleTranslitBtn_Click"
+                    Command="{Binding ToggleTranslitCommand}"
                     Content="Toggle" />
                 <Button
                     x:Name="settingsBtn"
@@ -106,7 +93,7 @@
                 <Button
                     x:Name="toggleLogsBtn"
                     HorizontalAlignment="Stretch"
-                    Click="toggleLogsBtn_Click"
+                    Command="{Binding ToggleLogsCommand}"
                     Content="Toggle Logs"
                     Foreground="#FFA41E9E" />
                 <Button

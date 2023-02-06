@@ -1,7 +1,5 @@
 ﻿using ModernWpf;
 using System;
-using System.IO;
-using System.Media;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Services;
+using TransliteratorWPF_Version.ViewModels;
 using WindowsInput;
 using WindowsInput.Native;
 using Binding = System.Windows.Data.Binding;
@@ -23,32 +22,20 @@ namespace TransliteratorWPF_Version.Views
 {
     public partial class DebugWindow : Window
     {
-        private SoundPlayer soundCont;
-
-        private SoundPlayer soundPause;
-
-        public bool logsEnabled = true;
-
-        private readonly Main liveTransliterator;
-        private readonly LoggerService loggerService;
-        private readonly SettingsService settingsService;
+        private DebugViewModel ViewModel;
+        private LoggerService loggerService;
+        private Main liveTransliterator;
 
         public DebugWindow()
         {
-            // TODO: Dependency injection
-            liveTransliterator = Main.GetInstance();
-            settingsService = SettingsService.GetInstance();
             loggerService = LoggerService.GetInstance();
+            liveTransliterator = Main.GetInstance();
 
             loggerService.NewLogMessage += ConsoleLog;
 
-            string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";
-            Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
-            soundCont = new(s);
+            ViewModel = new();
+            DataContext = ViewModel;
 
-            str = "TransliteratorWPF_Version.Resources.Audio.pause.wav";
-            s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
-            soundPause = new(s);
             InitializeComponent();
         }
 
@@ -112,7 +99,7 @@ namespace TransliteratorWPF_Version.Views
 
         public void ConsoleLog(object sender, NewLogMessageEventArg e)
         {
-            if (!logsEnabled)
+            if (!ViewModel.logsEnabled)
             {
                 return;
             }
@@ -147,34 +134,6 @@ namespace TransliteratorWPF_Version.Views
             catch (FormatException) { }
         }
 
-        public void toggleTranslit_Click()
-        {
-            liveTransliterator.keyLogger.State = !liveTransliterator.keyLogger.State;
-            string stateDesc = (liveTransliterator.keyLogger.State == true ? "On" : "Off");
-
-            if ((settingsService.IsToggleSoundOn))
-            {
-                SoundPlayer soundToPlay = liveTransliterator.keyLogger.State == true ? soundCont : soundPause;
-                soundToPlay.Play();
-            }
-
-            loggerService.LogMessage(this, $"Translit {stateDesc}");
-            StateLabel.Content = stateDesc;
-            if (liveTransliterator.keyLogger.State == true)
-            {
-                StateLabel.Foreground = new SolidColorBrush(Colors.Green);
-            }
-            else
-            {
-                StateLabel.Foreground = new SolidColorBrush(Colors.Red);
-            }
-        }
-
-        private void toggleTranslitBtn_Click(object sender, RoutedEventArgs e)
-        {
-            toggleTranslit_Click();
-        }
-
         private void underTestByWinDriverCheckBox_Checked(object sender, RoutedEventArgs e)
         {
         }
@@ -204,6 +163,7 @@ namespace TransliteratorWPF_Version.Views
             settings.Show();
         }
 
+        // TODO: Transfer the bindings to XAML
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var stateBindingObject = new Binding("StateDesc")
@@ -253,11 +213,6 @@ namespace TransliteratorWPF_Version.Views
         private void allowInjectedKeysButton_Click(object sender, RoutedEventArgs e)
         {
             liveTransliterator.keyLogger.gkh.alwaysAllowInjected = true;
-        }
-
-        private void toggleLogsBtn_Click(object sender, RoutedEventArgs e)
-        {
-            logsEnabled = !logsEnabled;
         }
 
         private void showTranslitTableBtn_Click(object sender, RoutedEventArgs e)
