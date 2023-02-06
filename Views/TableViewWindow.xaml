@@ -48,10 +48,12 @@
                     VerticalAlignment="Top"
                     Content="Choose table to view:" />
                 <ComboBox
-                    x:Name="comboBox1"
+                    x:Name="tableComboBox"
                     Width="120"
                     HorizontalAlignment="Center"
-                    SelectionChanged="comboBox1_SelectionChanged" />
+                    ItemsSource="{Binding TranslitTables}"
+                    SelectedItem="{Binding SelectedTableName}"
+                    SelectionChanged="tableComboBox_SelectionChanged" />
             </ui:SimpleStackPanel>
         </ui:SimpleStackPanel>
         <ScrollViewer

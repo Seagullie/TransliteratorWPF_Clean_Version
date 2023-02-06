@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using TransliteratorWPF_Version.Helpers;
-using TransliteratorWPF_Version.Models;
 
 namespace TransliteratorWPF_Version.Services
 {
@@ -18,14 +16,15 @@ namespace TransliteratorWPF_Version.Services
 
         private List<string> _translitTables;
 
-        private int _selectedTranslitTableIndex;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
+        // TODO: stop being lazy and send data with the event
         public event Action TransliterationTableChangedEvent;
 
+        private int _selectedTranslitTableIndex;
+
         // TODO: Refactor?
-        public int SelectedTranslitTableIndex
+        private int SelectedTranslitTableIndex
         {
             get
             {

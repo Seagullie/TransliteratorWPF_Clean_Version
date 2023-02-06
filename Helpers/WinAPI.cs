@@ -89,13 +89,6 @@ namespace TransliteratorWPF_Version.Helpers
         }
 
         [DllImport("user32.dll")]
-        private static extern IntPtr GetMessageExtraInfo();
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
         public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
         public static INPUT CreateKeyInput(KeyCode keyCode, int state = 0) // 0x0002 for up, 0 for down

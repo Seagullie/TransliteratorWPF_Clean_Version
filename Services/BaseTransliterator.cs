@@ -10,7 +10,7 @@ namespace TransliteratorWPF_Version.Services
     {
         public TransliterationTableModel transliterationTableModel = null;
 
-        public BaseTransliterator()
+        protected BaseTransliterator()
         {
         }
 

@@ -233,6 +233,7 @@ namespace TransliteratorWPF_Version.Views
 
             BindingOperations.SetBinding(translitTablesBox, ComboBox.ItemsSourceProperty, tablesComboBoxItemsBindingObject);
 
+            // TODO: Transfer binding to XAML
             var tablesComboBoxSelectedIndex = new Binding("selectedTranslitTableIndex")
             {
                 Mode = BindingMode.TwoWay,
