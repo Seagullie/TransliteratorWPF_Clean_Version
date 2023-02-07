@@ -1,13 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
+using ModernWpf;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+using TransliteratorWPF_Version.Helpers;
 using TransliteratorWPF_Version.Services;
 using TransliteratorWPF_Version.Views;
 
@@ -15,33 +10,54 @@ namespace TransliteratorWPF_Version.ViewModels
 {
     public partial class DebugViewModel : ObservableObject
     {
-        private SoundPlayer soundCont;
-
-        private SoundPlayer soundPause;
-
         public bool logsEnabled = true;
 
-        private readonly Main liveTransliterator;
-        private readonly SettingsService settingsService;
+        private Main liveTransliterator;
+        private TransliteratorService transliteratorService;
         private LoggerService loggerService;
+        private KeyLoggerService keyLoggerService;
 
-        // TODO: Rewrite to bool
         [ObservableProperty]
-        private string appState;
+        [NotifyPropertyChangedFor(nameof(AppStateDesc))]
+        private bool appState;
+
+        public string AppStateDesc { get => AppState ? "On" : "Off"; }
+
+        [ObservableProperty]
+        private List<string> translitTables;
+
+        [ObservableProperty]
+        private string selectedTranslitTable;
+
+        // TODO: Refactor
+        partial void OnSelectedTranslitTableChanged(string value)
+        {
+            transliteratorService.SetTableModel(value);
+        }
 
         public DebugViewModel()
         {
             // TODO: Dependency injection
-            settingsService = SettingsService.GetInstance();
             loggerService = LoggerService.GetInstance();
+            liveTransliterator = Main.GetInstance();
+            keyLoggerService = KeyLoggerService.GetInstance();
+            transliteratorService = TransliteratorService.GetInstance();
 
-            string str = "TransliteratorWPF_Version.Resources.Audio.cont.wav";
-            Stream s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
-            soundCont = new(s);
+            // ---
 
-            str = "TransliteratorWPF_Version.Resources.Audio.pause.wav";
-            s = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(str);
-            soundPause = new(s);
+            TranslitTables = transliteratorService.TranslitTables;
+
+            keyLoggerService.StateChangedEvent += (s, e) => AppState = keyLoggerService.State;
+
+            // TODO: Convert it into two-way binding by configuring "Path" property of XAML binding and targeting property
+            // of TransliteratorService.
+            // Is it ok to make service property observable?
+            // https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/binding-declarations-overview?view=netdesktop-6.0
+            transliteratorService.TransliterationTableChangedEvent += () => SelectedTranslitTable = transliteratorService.transliterationTableModel.replacementMapFilename;
+
+            SelectedTranslitTable = transliteratorService.transliterationTableModel.replacementMapFilename;
+
+            // TODO: Subscribe to TranslitTablesChanged event
         }
 
         [RelayCommand]
@@ -54,25 +70,71 @@ namespace TransliteratorWPF_Version.ViewModels
         private void ToggleTranslit()
         {
             liveTransliterator.keyLogger.State = !liveTransliterator.keyLogger.State;
-            string stateDesc = (liveTransliterator.keyLogger.State == true ? "On" : "Off");
-
-            if ((settingsService.IsToggleSoundOn))
-            {
-                SoundPlayer soundToPlay = liveTransliterator.keyLogger.State == true ? soundCont : soundPause;
-                soundToPlay.Play();
-            }
+            string stateDesc = liveTransliterator.keyLogger.State ? "enabled" : "disabled";
 
             loggerService.LogMessage(this, $"Translit {stateDesc}");
-            AppState = stateDesc;
-            if (liveTransliterator.keyLogger.State == true)
+        }
+
+        [RelayCommand]
+        private void OpenSettingsWindow()
+        {
+            SettingsWindow settingsWindow = new();
+            settingsWindow.Show();
+        }
+
+        [RelayCommand]
+        private void ShowTranslitTable()
+        {
+            string serializedTable = Newtonsoft.Json.JsonConvert.SerializeObject(liveTransliterator.transliteratorService.transliterationTableModel.replacementTable, Newtonsoft.Json.Formatting.Indented);
+            loggerService.LogMessage(this, "\n" + serializedTable);
+        }
+
+        [RelayCommand]
+        private void GetKeyLoggerMemory()
+        {
+            string memory = liveTransliterator.keyLogger.GetMemoryAsString();
+            loggerService.LogMessage(this, $"Key Logger memory: [{memory}]");
+        }
+
+        [RelayCommand]
+        private void AllowInjectedKeys()
+        {
+            liveTransliterator.keyLogger.gkh.alwaysAllowInjected = true;
+        }
+
+        [RelayCommand]
+        private void SlowDownKBEInjections()
+        {
+            liveTransliterator.slowDownKBEInjections = 2000;
+        }
+
+        [RelayCommand]
+        private void GetLayout()
+        {
+            string layout = Utilities.GetCurrentKbLayout();
+            loggerService.LogMessage(this, layout);
+        }
+
+        [RelayCommand]
+        private void CheckCaseButtons()
+        {
+            bool isCAPSLOCKon = liveTransliterator.keyLogger.keyStateChecker.IsCAPSLOCKon();
+            bool isShiftPressedDown = liveTransliterator.keyLogger.keyStateChecker.IsShiftPressedDown();
+
+            loggerService.LogMessage(this, $"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
+        }
+
+        // TODO: Move to own service
+        [RelayCommand]
+        private void ChangeTheme()
+        {
+            if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark)
             {
-                // TODO: Update State Label Foreground
-                //StateLabel.Foreground = new SolidColorBrush(Colors.Green);
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
             }
             else
             {
-                // TODO: Update State Label Foreground
-                //StateLabel.Foreground = new SolidColorBrush(Colors.Red);
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             }
         }
     }

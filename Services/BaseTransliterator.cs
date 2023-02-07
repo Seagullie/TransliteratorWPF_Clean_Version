@@ -19,7 +19,7 @@ namespace TransliteratorWPF_Version.Services
             transliterationTableModel = new TransliterationTableModel(relativePathToJsonFile);
         }
 
-        public string Transliterate(string text)
+        public string Transliterate(string text = "")
         {
             if (transliterationTableModel == null)
             {

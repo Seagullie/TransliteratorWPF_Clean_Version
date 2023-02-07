@@ -3,27 +3,32 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:TransliteratorWPF_Version.Helpers"
     xmlns:local="clr-namespace:TransliteratorWPF_Version.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.modernwpf.com/2019"
+    xmlns:viewmodels="clr-namespace:TransliteratorWPF_Version.ViewModels"
     x:Name="DebugWindow1"
     Title="Debug"
     Width="910"
     Height="Auto"
+    d:DataContext="{d:DesignInstance Type=viewmodels:DebugViewModel}"
     d:DesignHeight="618.058"
     ui:WindowHelper.UseModernWindowStyle="True"
     Activated="MainWindow1_Activated"
     Closed="DebugWindow1_Closed"
     Foreground="#FF9E2626"
-    IsVisibleChanged="MainWindow1_IsVisibleChanged"
     Loaded="MainWindow_Loaded"
     MouseDown="MainWindow1_MouseDown"
     ResizeMode="CanMinimize"
-    StateChanged="MainWindow1_StateChanged"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <Window.Resources />
+    <Window.Resources>
+        <helpers:StringToBoolConverter x:Key="StringToBoolConverter" />
+        <helpers:StringToBoolConverter x:Key="BoolToStringConverter" />
+        <helpers:StringToBoolConverter x:Key="BoolToColorConverter" />
+    </Window.Resources>
     <Border x:Name="WindowBorder">
 
         <Grid Margin="15" HorizontalAlignment="Stretch">
@@ -38,21 +43,23 @@
                 <RowDefinition Height="8*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
+            <!--  TODO: Fix Foreground binding  -->
             <Label
                 x:Name="StateLabel"
                 Grid.Column="1"
                 Margin="3,11,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Content="On"
-                Foreground="#FF2FB32F" />
+                Content="{Binding AppStateDesc}"
+                Foreground="Green" />
             <ComboBox
                 x:Name="translitTablesBox"
                 Grid.Column="1"
                 Margin="0,14,0,0"
                 HorizontalAlignment="Right"
                 BorderBrush="#0F000000"
-                SelectionChanged="translitTablesBox_SelectionChanged" />
+                ItemsSource="{Binding TranslitTables, Mode=OneWay}"
+                SelectedItem="{Binding SelectedTranslitTable}" />
 
             <DockPanel Grid.Row="1" Grid.Column="1">
 
@@ -60,13 +67,12 @@
                     x:Name="textBox1"
                     Margin="0,30,0,0"
                     DockPanel.Dock="Bottom"
-                    TextChanged="testTextBox1_TextChanged"
                     TextWrapping="Wrap" />
+                <!--  TODO: Figure out how to remove white border around the textbox  -->
+                <!--  TODO: Figure out how to make it noneditable  -->
                 <RichTextBox
                     x:Name="outputTextBox"
                     DockPanel.Dock="Bottom"
-                    IsEnabled="False"
-                    TextChanged="outputTextBox_TextChanged"
                     VerticalScrollBarVisibility="Auto" />
             </DockPanel>
 
@@ -88,7 +94,7 @@
                     x:Name="settingsBtn"
                     HorizontalAlignment="Stretch"
                     AutomationProperties.AutomationId="settingsBtn"
-                    Click="settingsBtn_Click"
+                    Command="{Binding OpenSettingsWindowCommand}"
                     Content="Settings" />
                 <Button
                     x:Name="toggleLogsBtn"
@@ -99,12 +105,12 @@
                 <Button
                     x:Name="showTranslitTableBtn"
                     HorizontalAlignment="Stretch"
-                    Click="showTranslitTableBtn_Click"
+                    Command="{Binding ShowTranslitTableCommand}"
                     Content="Show Translit Table" />
                 <Button
                     x:Name="checkCaseButtonsBtn"
                     HorizontalAlignment="Stretch"
-                    Click="checkCaseButtonsBtn_Click"
+                    Command="{Binding CheckCaseButtonsCommand}"
                     Content="Check Case Buttons" />
                 <Button
                     x:Name="simulateKeyboardInputBtn"
@@ -114,49 +120,25 @@
                 <Button
                     x:Name="getKeyLoggerMemoryBtn"
                     HorizontalAlignment="Stretch"
-                    Click="getKeyLoggerMemoryBtn_Click"
+                    Command="{Binding GetKeyLoggerMemoryCommand}"
                     Content="Get Key Logger Memory" />
                 <Button
                     x:Name="allowInjectedKeysBtn"
                     HorizontalAlignment="Stretch"
-                    Click="allowInjectedKeysBtn_Click"
+                    Command="{Binding AllowInjectedKeysCommand}"
                     Content="Allow Injected Keys" />
                 <Button
                     x:Name="slowDownKBEInjectionsBtn"
                     HorizontalAlignment="Stretch"
-                    Click="slowDownKBEInjectionsBtn_Click"
+                    Command="{Binding SlowDownKBEInjectionsCommand}"
                     Content="Slow Down KBE Injections" />
                 <Button
                     x:Name="getLayoutBtn"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
-                    Click="getLayoutBtn_Click"
+                    Command="{Binding GetLayoutCommand}"
                     Content="Get Layout" />
             </UniformGrid>
-
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="2"
-                Margin="0,15,0,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Orientation="Horizontal"
-                Visibility="Hidden">
-
-                <Button
-                    x:Name="closeBtn"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Click="closeBtn_Click"
-                    Content="Close" />
-                <Button
-                    x:Name="minimizeBtn"
-                    Margin="15,0,0,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Click="minimizeBtn_Click"
-                    Content="Minimize" />
-            </StackPanel>
 
             <CheckBox
                 x:Name="underTestByWinDriverCheckBox"
@@ -168,7 +150,6 @@
                 Background="#FF882727"
                 BorderBrush="#FF962828"
                 BorderThickness="1,1,1,1"
-                Checked="underTestByWinDriverCheckBox_Checked"
                 Content="Under Test By WinDriver"
                 Foreground="#FFA43636" />
             <Button
@@ -176,15 +157,8 @@
                 Grid.Row="2"
                 Grid.Column="1"
                 VerticalAlignment="Center"
-                Click="changeThemeBtn_Click"
+                Command="{Binding ChangeThemeCommand}"
                 Content="Change Theme" />
-            <Button
-                x:Name="launchMainWindowBtn"
-                Grid.Column="2"
-                Margin="109,0,0,0"
-                Click="launchMainWindowBtn_Click"
-                Content="To Main Window"
-                Visibility="Hidden" />
         </Grid>
     </Border>
 </Window>

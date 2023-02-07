@@ -94,12 +94,12 @@ namespace TransliteratorWPF_Version.Services
 
         private void SynchronizeJSONAndWindowsStartupSettings()
         {
-            bool isHasStartProgEntry = StartupMethods.HasStartProgEntry();
+            bool isHasStartProgEntry = AutostartMethods.HasAutostartEntry();
 
             if (IsAutoStartEnabled && !isHasStartProgEntry)
-                StartupMethods.WriteStartProgEntry();
+                AutostartMethods.WriteAutostartEntry();
             if (!IsAutoStartEnabled && isHasStartProgEntry)
-                StartupMethods.DeleteStartProgEntry();
+                AutostartMethods.DeleteAutostartEntry();
         }
     }
 }

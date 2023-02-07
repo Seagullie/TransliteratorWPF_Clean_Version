@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace TransliteratorWPF_Version.Helpers
 {
@@ -10,9 +11,10 @@ namespace TransliteratorWPF_Version.Helpers
             bool val = (bool)value;
             if (val)
             {
-                return "Green";
+                return new SolidColorBrush(Colors.Green);
             }
-            return "Red";
+
+            return new SolidColorBrush(Colors.Red);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

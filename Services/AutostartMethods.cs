@@ -8,16 +8,16 @@ using System.Runtime.InteropServices;
 
 namespace TransliteratorWPF_Version.Services
 {
-    public static class StartupMethods
+    public static class AutostartMethods
     {
         private static string lnkPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + $"\\{App.AppName}.lnk";
 
-        public static bool HasStartProgEntry()
+        public static bool HasAutostartEntry()
         {
             return File.Exists(lnkPath);
         }
 
-        public static void WriteStartProgEntry()
+        public static void WriteAutostartEntry()
         {
             Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); // Windows Script Host Shell Object
             dynamic shell = Activator.CreateInstance(t);
@@ -40,7 +40,7 @@ namespace TransliteratorWPF_Version.Services
             }
         }
 
-        public static void DeleteStartProgEntry()
+        public static void DeleteAutostartEntry()
         {
             if (File.Exists(lnkPath) && !new FileInfo(lnkPath).IsReadOnly)
             {

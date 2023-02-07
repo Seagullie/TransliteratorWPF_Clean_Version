@@ -242,50 +242,24 @@ namespace TransliteratorWPF_Version.Views
                 verticalOffset = (int)(lastChild.Margin.Top);
             }
 
-            Size textBoxSize = new Size(40, 20);
-            int textBoxWidth = 40;
-            int textBoxHeight = 20;
-            Size hostingPanelSize = new Size((40 + 40) * 2, 20);
-            //int hostingPanelWidth = (40 + 40 + 100) * 2;
-            int hostingPanelHeight = 20;
-
             StackPanel hostingPanel = new StackPanel();
             hostingPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
             hostingPanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-            //hostingPanel.Location = new Point(90, verticalOffset + 10);
             hostingPanel.Margin = new Thickness(0, verticalOffset, 0, 0);
-            //hostingPanel.Size = hostingPanelSize;
-            //hostingPanel.Height = hostingPanelHeight;
-            //hostingPanel.Width = hostingPanelWidth;
-            //hostingPanel.
 
             TextBox keyTxtBox = new TextBox();
-            //keyTxtBox.Location = new Point(90, verticalOffset + 10);
             keyTxtBox.Text = key;
-            //keyTxtBox.Size = textBoxSize;
-            //keyTxtBox.Width = textBoxWidth;
-            //keyTxtBox.Height = textBoxHeight;
             keyTxtBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
 
-            //keyTxtBox.TextAlign = HorizontalAlignment.Center;
             keyTxtBox.TextAlignment = TextAlignment.Center;
             keyTxtBox.Margin = new Thickness(0, 0, 30, 0);
             // struggling with configuring AutoResize property
-            //keyTxtBox.Dock = DockStyle.Left;
-            //keyTxtBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
 
             TextBox valueTxtBox = new TextBox();
             valueTxtBox.Text = value;
-            //valueTxtBox.Location = new Point(90 + 100, verticalOffset + 10);
-            //valueTxtBox.Size = textBoxSize;
-            //valueTxtBox.Width = textBoxWidth;
-            //valueTxtBox.Height = textBoxHeight;
 
             valueTxtBox.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             valueTxtBox.TextAlignment = TextAlignment.Center;
-
-            //valueTxtBox.Margin = new Thickness(50);
-            //valueTxtBox.Dock = DockStyle.Right;
 
             hostingPanel.Children.Add(keyTxtBox);
             hostingPanel.Children.Add(valueTxtBox);

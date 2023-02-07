@@ -13,8 +13,9 @@ namespace TransliteratorWPF_Version.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly Main liveTransliterator;
         private readonly SettingsService settingsService;
+        private readonly TransliteratorService transliteratorService;
+        private readonly KeyLoggerService keyLoggerService;
 
         private NotifyIcon notifyIcon;
 
@@ -40,8 +41,10 @@ namespace TransliteratorWPF_Version.ViewModels
         public MainViewModel()
         {
             // TODO: Dependency injection
-            liveTransliterator = Main.GetInstance();
+            transliteratorService = TransliteratorService.GetInstance();
             settingsService = SettingsService.GetInstance();
+            keyLoggerService = KeyLoggerService.GetInstance();
+
             settingsService.Load();
             settingsService.SettingsSavedEvent += UpdateSettings;
 
@@ -81,6 +84,8 @@ namespace TransliteratorWPF_Version.ViewModels
                 Visible = true
             };
 
+            // TODO: Fix window state assignement
+
             notifyIcon.Click +=
                 delegate (object sender, EventArgs args)
                 {
@@ -102,14 +107,14 @@ namespace TransliteratorWPF_Version.ViewModels
         {
             SoundPlayerService.IsMuted = true;
 
-            if (liveTransliterator.keyLogger.State)
+            if (keyLoggerService.State)
                 AppState = "On";
             else
                 AppState = "Off";
 
             SoundPlayerService.IsMuted = false;
 
-            liveTransliterator.keyLogger.StateChangedEvent += UpdateAppState;
+            keyLoggerService.StateChangedEvent += UpdateAppState;
         }
 
         private void UpdateAppState(object sender, EventArgs e)
@@ -125,14 +130,15 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void LoadTranslitTables()
         {
-            TranslitTables = liveTransliterator.transliteratorService.TranslitTables;
+            TranslitTables = transliteratorService.TranslitTables;
             SelectedTranslitTable = settingsService.LastSelectedTranslitTable;
+            transliteratorService.TransliterationTableChangedEvent += () => SelectedTranslitTable = transliteratorService.transliterationTableModel.replacementMapFilename;
         }
 
         [RelayCommand]
         private void ToggleAppState()
         {
-            liveTransliterator.keyLogger.State = !liveTransliterator.keyLogger.State;
+            keyLoggerService.State = !keyLoggerService.State;
         }
 
         [RelayCommand]
@@ -194,7 +200,7 @@ namespace TransliteratorWPF_Version.ViewModels
 
         partial void OnSelectedTranslitTableChanged(string value)
         {
-            liveTransliterator.transliteratorService.SetTableModel(value);
+            transliteratorService.SetTableModel(value);
         }
 
         partial void OnAppStateChanged(string value)
@@ -205,12 +211,12 @@ namespace TransliteratorWPF_Version.ViewModels
 
         private void PlayToggleSound()
         {
-            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(liveTransliterator.keyLogger.State == true ? "cont" : "pause")}.wav");
+            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(keyLoggerService.State == true ? "cont" : "pause")}.wav");
 
-            if (liveTransliterator.keyLogger.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
+            if (keyLoggerService.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
                 pathToSoundToPlay = settingsService.PathToCustomToggleOnSound;
 
-            if (liveTransliterator.keyLogger.State == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
+            if (keyLoggerService.State == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
                 pathToSoundToPlay = settingsService.PathToCustomToggleOffSound;
 
             SoundPlayerService.Play(pathToSoundToPlay);
